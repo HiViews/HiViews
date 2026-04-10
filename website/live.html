@@ -23,8 +23,8 @@
         body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
         /* Terminal */
-        .term{position:relative;z-index:2;background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 20px;font-family:var(--fc);font-size:12px;color:var(--t3);line-height:1.6;overflow:hidden;max-height:72px}
-        .term .ln{white-space:nowrap}.term .ln::before{content:'>';margin-right:8px}.term .ln.on{color:var(--green)}
+        .term{position:relative;z-index:2;background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 20px;font-family:var(--fc);font-size:12px;color:var(--t3);line-height:1.35;overflow:hidden;max-height:72px}
+        .term .ln{white-space:nowrap}.term .ln::before{content:'>';margin-right:10px;opacity:.5}.term .ln.on{color:var(--green)}
 
         /* Header */
         .hdr{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border)}
@@ -45,12 +45,13 @@
         .pt{font-size:12px;font-weight:700;letter-spacing:.3px}
         .pc{font-size:10px;color:var(--t3)}
 
-        /* Ghost */
-        .ghost-row{display:flex;gap:14px;align-items:flex-start}
-        .ghost-art{font-family:var(--fc);font-size:12px;line-height:1.2;color:rgba(255,255,255,.85);white-space:pre;flex-shrink:0}
+        /* Agent Status */
+        .ghost-row{display:flex;gap:14px;align-items:center}
+        .ghost-img{width:160px;height:160px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);opacity:0;transition:opacity .6s ease}
+        .ghost-img.loaded{opacity:1}
         .ghost-info{flex:1}
-        .ghost-name{font-size:14px;font-weight:700;margin-bottom:3px}
-        .ghost-msg{font-size:12px;color:var(--t2);line-height:1.6}
+        .ghost-name{font-size:14px;font-weight:700;margin-bottom:3px;color:var(--green)}
+        .ghost-msg{font-size:10px;color:var(--t2);line-height:1.5}
 
         /* Activity */
         .ai{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03);gap:8px}
@@ -158,16 +159,10 @@
     <div>
         <div class="ph"><span class="pt">AlphaCMO</span></div>
         <div class="ghost-row">
-            <pre class="ghost-art" id="g-art">   .-"""-.
-  /       \
- | ◎     ◎ |
- |    ▽    |
- |  ╌╌╌╌╌  |
- |         |
- /\  /\  /\</pre>
+            <img class="ghost-img" id="g-img" src="" alt="Agent Status">
             <div class="ghost-info">
-                <div class="ghost-name" id="g-name">Scouting</div>
-                <div class="ghost-msg" id="g-msg">Scanning hashtags for viral talking-head reels across Instagram.</div>
+                <div class="ghost-name" id="g-name">Transcribing</div>
+                <div class="ghost-msg" id="g-msg">Converting raw audio from client briefings and source material into precise text that becomes the foundation for every script.</div>
             </div>
         </div>
     </div>
@@ -295,30 +290,42 @@ const tl=['Scanning #contentmarketing for viral reels...','Found 11 reels · fil
 const term=document.getElementById('term');let ti=0;
 setInterval(()=>{const ls=term.querySelectorAll('.ln');ls.forEach(l=>l.classList.remove('on'));if(ls.length>=4)ls[0].remove();const n=document.createElement('div');n.className='ln on';n.textContent=tl[ti%tl.length];term.appendChild(n);ti++},3200);
 
+const imgBase='https://raw.githubusercontent.com/AlphaCMOAI/AlphaCMO/main/website/images/';
 const gs=[
-{name:'Scouting',msg:'Scanning hashtags for viral talking-head reels across Instagram.',
-art:"   .-\"\"\"-.  \n  /       \\ \n | \u25ce     \u25ce | \n |    \u25bd    | \n |  \u254c\u254c\u254c\u254c\u254c  | \n |         | \n /\\  /\\  /\\"},
-{name:'Analyzing',msg:'Transcribing and scoring reels by viral potential.',
-art:"    _____   \n  .'     '. \n / \u2299     \u2299 \\ \n |    \u25cb    | \n |  ~~~~~  | \n |         | \n )\\_/\\_/\\_/("},
-{name:'Strategizing',msg:'Studying brand voice and mapping hook structures.',
-art:"   .~~~~~. \n  /       \\ \n | \u25c9     \u25c9 | \n |    \u25c7    | \n |  \\___/  | \n |         | \n ~\\~/\\~/\\~"},
-{name:'Rewriting',msg:'Adapting top scripts for client brand voice and audience.',
-art:"    ___     \n  /`   `\\  \n / \u25cf   \u25cf \\ \n |   \u25b3    | \n |  \u2550\u2550\u2550\u2550\u2550  | \n |         | \n /~\\/~\\/~\\"},
-{name:'Conjuring',msg:'Avatar engine rendering vertical video with lip sync.',
-art:"   ,-\"\"\"-,\n  /       \\ \n | ^     ^ | \n |    \u25bf    | \n |  \\___/  | \n |         | \n )\\  /\\  /("},
-{name:'Compositing',msg:'Layering captions, overlays, and CTAs onto final video.',
-art:"   .------.\n  (        )\n | -     - | \n |    .    | \n |  .....  | \n |         | \n /\\_/\\_/\\_\\"},
-{name:'Publishing',msg:'Pushing approved reels to Instagram via Metricool.',
-art:"    _..._  \n  .'     '.\n | \u25c9     \u25c9 | \n |    \u25bd    | \n |  \\___/  | \n |         | \n ~\\/~\\/~\\/~"},
-{name:'Processing',msg:'Handling an ad-hoc reel URL dropped in Slack.',
-art:"   /~~~~~\\\n  /       \\ \n | x     x | \n |    \u25cb    | \n |  -----  | \n |         | \n /\\__/\\__/\\"},
-{name:'Recovering',msg:'Auto-retrying after an avatar engine error.',
-art:"   .*\"\"*.  \n  /       \\ \n | *     * | \n |    \u25c7    | \n |  \\___/  | \n |         | \n )\\/\\/\\/\\/("},
-{name:'Delivering',msg:'Posting finished videos to Slack for client review.',
-art:"    .oOo.  \n  /       \\ \n | \u25ce     \u25ce | \n |    .    | \n |  .....  | \n |         | \n /~\\__/~\\_\\"},
+{name:'Transcribing',msg:'Converting raw audio from client briefings and source material into precise text that becomes the foundation for every script.',img:'01-Transcribing-AlphaCMO-AI-Marketing-Automation-Agent-115.jpg'},
+{name:'Composing',msg:'Crafting the narrative arc and dialogue from scratch, shaping every word to land with the exact emotional weight the client\u2019s audience needs.',img:'02-Composing-AlphaCMO-AI-Marketing-Automation-Agent-118.jpg'},
+{name:'Architecting',msg:'Designing the structural blueprint of the entire video \u2014 pacing, segments, transitions \u2014 so every second serves a strategic purpose.',img:'03-Architecting-AlphaCMO-AI-Marketing-Automation-Agent-114.jpg'},
+{name:'Scheming',msg:'Mapping out the distribution angles, hook sequences, and platform-specific tactics before a single frame is produced.',img:'04-Scheming-AlphaCMO-AI-Marketing-Automation-Agent-120.jpg'},
+{name:'Orchestrating',msg:'Coordinating every moving piece \u2014 assets, talent, music, graphics \u2014 into a single cohesive production pipeline.',img:'05-Orchestrating-AlphaCMO-AI-Marketing-Automation-Agent-116.jpg'},
+{name:'Mastering',msg:'Running the final quality pass across audio, color, and compression to ensure broadcast-grade output every time.',img:'06-Mastering-AlphaCMO-AI-Marketing-Automation-Agent-106.jpg'},
+{name:'Splicing',msg:'Cutting and rejoining footage at exact edit points to maintain continuity that the viewer never consciously notices.',img:'07-Splicing-AlphaCMO-AI-Marketing-Automation-Agent-126.jpg'},
+{name:'Rigging',msg:'Building the skeletal control system inside a digital avatar so every joint, muscle, and micro-expression moves naturally.',img:'08-Rigging-AlphaCMO-AI-Marketing-Automation-Agent-109.jpg'},
+{name:'Lip-Syncing',msg:'Aligning mouth shapes to audio phonemes frame by frame until the avatar\u2019s speech is indistinguishable from a real human.',img:'09-Lip-Syncing-AlphaCMO-AI-Marketing-Automation-Agent-101.jpg'},
+{name:'Deepfaking',msg:'Mapping photorealistic facial textures and expressions onto the avatar so the final output passes as authentic on-camera talent.',img:'10-Deepfaking-AlphaCMO-AI-Marketing-Automation-Agent-108.jpg'},
+{name:'Motion-Capturing',msg:'Translating real human gestures, posture, and body language onto the digital avatar so movement feels alive and unscripted.',img:'11-Motion-Capturing-AlphaCMO-AI-Marketing-Automation-Agent-107.jpg'},
+{name:'Weaponizing',msg:'Taking a finished asset and reverse-engineering the platform algorithm to maximize reach, turning a single video into an unstoppable distribution event.',img:'12-Weaponizing-AlphaCMO-AI-Marketing-Automation-Agent-103.jpg'},
+{name:'Psych-Profiling',msg:'Building deep behavioral models of the target audience so every hook, cut, and CTA exploits exactly how they process information.',img:'13-Psych-Profiling-AlphaCMO-AI-Marketing-Automation-Agent-104.jpg'},
+{name:'War-Gaming',msg:'Simulating competitor responses and audience reactions before launch, stress-testing the campaign so it dominates every scenario.',img:'14-War-Gaming-AlphaCMO-AI-Marketing-Automation-Agent-110.jpg'},
+{name:'Mythmaking',msg:'Engineering a narrative so magnetic around the brand that the audience doesn\u2019t just watch \u2014 they adopt it as part of their own identity.',img:'15-Mythmaking-AlphaCMO-AI-Marketing-Automation-Agent-112.jpg'},
+{name:'Narrative-Hijacking',msg:'Intercepting trending cultural moments and redirecting the conversation so the brand becomes the center of the discourse.',img:'16-Narrative-Hijacking-AlphaCMO-AI-Marketing-Automation-Agent-113.jpg'},
+{name:'Mindshare-Sieging',msg:'Flooding every touchpoint with coordinated messaging until the brand occupies so much mental real estate the competition becomes invisible.',img:'17-Mindshare-Sieging-AlphaCMO-AI-Marketing-Automation-Agent-102.jpg'},
+{name:'Signal-Jamming',msg:'Strategically timing and positioning content to drown out competitor messaging and own the entire conversation window.',img:'18-Signal-Jamming-AlphaCMO-AI-Marketing-Automation-Agent-117.jpg'},
+{name:'Storyboarding',msg:'Sketching each shot and scene transition frame by frame, locking the visual rhythm before production begins.',img:'19-Storyboarding-AlphaCMO-AI-Marketing-Automation-Agent-105.jpg'},
+{name:'Color-Grading',msg:'Manipulating every hue, shadow, and highlight to establish a cinematic tone that makes the brand feel unmistakable.',img:'20-Color-Grading-AlphaCMO-AI-Marketing-Automation-Agent-125.jpg'},
+{name:'Sequencing',msg:'Arranging clips, b-roll, and overlays into a locked timeline where every cut hits at the precise millisecond.',img:'21-Sequencing-AlphaCMO-AI-Marketing-Automation-Agent-119.jpg'},
+{name:'Rendering',msg:'Compiling all layers, effects, and audio into a final pixel-perfect export ready for delivery.',img:'22-Rendering-AlphaCMO-AI-Marketing-Automation-Agent-124.jpg'},
 ];
+
+// Preload all images
+gs.forEach(s=>{const i=new Image();i.src=imgBase+encodeURIComponent(s.img)});
+
+// Set initial
+const gImg=document.getElementById('g-img');
+gImg.src=imgBase+encodeURIComponent(gs[0].img);
+gImg.onload=()=>gImg.classList.add('loaded');
+
 let gi=0;
-setInterval(()=>{gi=(gi+1)%gs.length;document.getElementById('g-art').textContent=gs[gi].art;document.getElementById('g-name').textContent=gs[gi].name;document.getElementById('g-msg').textContent=gs[gi].msg},6000);
+setInterval(()=>{gi=(gi+1)%gs.length;const s=gs[gi];gImg.classList.remove('loaded');setTimeout(()=>{gImg.src=imgBase+encodeURIComponent(s.img);gImg.onload=()=>gImg.classList.add('loaded');document.getElementById('g-name').textContent=s.name;document.getElementById('g-msg').textContent=s.msg},300)},6000);
 
 setInterval(()=>{document.querySelectorAll('.tt').forEach(t=>{const m=t.textContent.match(/(\d+)m (\d+)s/);if(m){let min=+m[1],sec=+m[2]+1;if(sec>=60){sec=0;min++}t.textContent=`Running for ${min}m ${String(sec).padStart(2,'0')}s`}})},1000);
 </script>
