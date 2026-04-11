@@ -132,12 +132,6 @@
             </div>
         </div>
 
-        <!-- Status Feed -->
-        <div class="section">
-            <div class="section-h"><span>📡</span> Status Feed</div>
-            <div class="feed" id="feed"></div>
-        </div>
-
         <!-- Onboarding Checklist -->
         <div class="section">
             <div class="section-h"><span>✅</span> Getting Started</div>
@@ -182,6 +176,12 @@
             </div>
         </div>
 
+        <!-- Status Feed -->
+        <div class="section">
+            <div class="section-h"><span>📡</span> Status Feed</div>
+            <div class="feed" id="feed"></div>
+        </div>
+
         <div class="help">
             <p>Need help? Message your agent in Telegram or email <a href="/cdn-cgi/l/email-protection#dbb9a9b2bab59bbab7abb3bab8b6b4f5bab2"><span class="__cf_email__" data-cfemail="9cfeeef5fdf2dcfdf0ecf4fdfff1f3b2fdf5">[email&#160;protected]</span></a></p>
         </div>
@@ -200,7 +200,7 @@ const SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
 const path = window.location.pathname.replace(/\/+$/, '').split('/');
 const CID = path[path.length - 1];
 
-if (!CID || CID === 'dashboard' || CID === 'live') {
+if (!CID || CID === 'dashboard') {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('errorState').style.display = 'block';
 }
@@ -315,15 +315,5 @@ async function init() {
     showEvents(events);
 
     setInterval(async () => {
-        if (!polling) return;
         const ev = await sbGet('events', 'customer_id=eq.' + CID + '&order=created_at.asc&limit=100');
-        showEvents(ev);
-        const cs = await sbGet('customers', 'id=eq.' + CID + '&limit=1');
-        if (cs.length) showCustomer(cs[0]);
-    }, polling ? 3000 : 30000);
-}
-
-init();
-</script>
-</body>
-</html><!-- deployed 2026-04-11T06:45:14Z -->
+        sh
