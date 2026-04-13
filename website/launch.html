@@ -3,94 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkOps — Pricing</title>
-    <meta name="description" content="DarkOps finds viral trends, creates avatar videos, and publishes — while you sleep. Starting at ~$16/video.">
+    <title>DarkOps — Your Own AI Video Team. Starting at $499/mo.</title>
+    <meta name="description" content="Get your own dedicated OpenClaw running 10 AI agents that find viral trends, create branded videos, and publish to Instagram — while you sleep. Starting at ~$16/video.">
+    <meta property="og:url" content="https://darkops.team/launch">
+    <meta property="og:title" content="DarkOps — 10 AI Agents. Your Own Server. $499/mo.">
+    <link rel="icon" href="/favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#000;--t1:#fff;--t2:#aaa;--t3:#666;--green:#00ff88;--green-d:rgba(0,255,136,.08);--green-g:rgba(0,255,136,.2);--border:#1a1a1a;--card:#080808;--card-hover:#0c0c0c}
+        :root{--bg:#000;--bg2:#070707;--card:#080808;--t1:#fff;--t2:#aaa;--t3:#666;--green:#00ff88;--green-d:rgba(0,255,136,.08);--green-g:rgba(0,255,136,.2);--green-b:rgba(0,255,136,.04);--orange:#ff8a00;--red:#ff4444;--border:#1a1a1a;--border2:#252525;--f:'Inter',system-ui,sans-serif;--fc:'Fira Code',monospace}
         html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-        body{background:var(--bg);color:var(--t1);font-family:'Inter',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+        body{background:var(--bg);color:var(--t1);font-family:var(--f);line-height:1.6;overflow-x:hidden}
         body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
         .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px}
-        .mono{font-family:'JetBrains Mono',monospace}
 
         /* Nav */
-        nav{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:rgba(0,0,0,.05);backdrop-filter:blur(12px);z-index:100}
-        nav .logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+        nav{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:rgba(0,0,0,.85);backdrop-filter:blur(16px);z-index:100}
+        nav .logo{font-size:26px;font-weight:900;letter-spacing:-.5px;text-decoration:none;color:var(--t1)}
         nav .logo span{color:var(--green)}
-        .nav-links{display:flex;gap:24px;align-items:center}
+        .nav-links{display:flex;gap:20px;align-items:center}
         .nav-links a{color:var(--t2);font-size:13px;text-decoration:none;font-weight:500;transition:color .2s}
         .nav-links a:hover{color:var(--t1)}
 
         /* Hero */
-        .hero{padding:32px 0 48px;text-align:center}
-        .hero .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--t2);margin-bottom:34px;font-weight:500}
+        .hero{padding:48px 0 40px;text-align:center}
+        .hero .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border2);border-radius:100px;font-size:12px;color:var(--t2);margin-bottom:28px;font-weight:500;font-family:var(--fc);letter-spacing:.3px}
         .hero .eyebrow .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-        .hero h1{font-size:clamp(32px,6vw,52px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:16px}
+        .hero h1{font-size:clamp(30px,6vw,50px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:16px}
         .hero h1 em{font-style:normal;color:var(--green)}
-        .hero .sub{font-size:17px;color:var(--t2);max-width:560px;margin:0 auto;line-height:1.7}
+        .hero .sub{font-size:17px;color:var(--t2);max-width:580px;margin:0 auto;line-height:1.7}
+        .hero .sub strong{color:var(--t1)}
 
-        /* Comparison strip */
-        .compare-strip{display:flex;justify-content:center;gap:40px;padding:32px 0 40px;flex-wrap:wrap}
-        .compare-item{text-align:center}
-        .compare-item .old{font-size:14px;color:var(--t3);text-decoration:line-through;margin-bottom:2px}
-        .compare-item .val{font-size:22px;font-weight:800;letter-spacing:-.5px}
-        .compare-item .val.green{color:var(--green)}
-        .compare-item .label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+        /* Value prop strip */
+        .value-strip{display:flex;justify-content:center;gap:32px;padding:28px 0 36px;flex-wrap:wrap}
+        .value-item{text-align:center}
+        .value-item .num{font-family:var(--fc);font-size:24px;font-weight:800;color:var(--green);letter-spacing:-1px}
+        .value-item .lab{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
 
-        /* Toggle */
-        .toggle-wrap{display:flex;justify-content:center;margin-bottom:48px}
+        /* Anchor strip — what you're replacing */
+        .anchor{text-align:center;padding:0 0 40px}
+        .anchor-line{font-size:14px;color:var(--t3);margin-bottom:3px}
+        .anchor-line s{color:var(--red);opacity:.7}
 
         /* Pricing Grid */
-        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:64px}
+        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
         .price-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;transition:border-color .3s,transform .3s;position:relative}
         .price-card:hover{border-color:#333;transform:translateY(-2px)}
         .price-card.featured{border-color:var(--green);background:linear-gradient(180deg,rgba(0,255,136,.03) 0%,var(--card) 40%)}
-        .price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;letter-spacing:1.5px;color:#000;background:var(--green);padding:3px 14px;border-radius:6px;white-space:nowrap}
+        .price-card.featured::before{content:'BEST VALUE';position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-family:var(--fc);font-size:10px;font-weight:700;letter-spacing:1.5px;color:#000;background:var(--green);padding:3px 14px;border-radius:6px;white-space:nowrap}
 
-        .card-header{margin-bottom:24px}
-        .tier-name{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:12px}
+        .card-header{margin-bottom:20px}
+        .tier-name{font-family:var(--fc);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:12px}
         .featured .tier-name{color:var(--green)}
         .price-amount{font-size:48px;font-weight:900;letter-spacing:-2px;line-height:1}
         .price-amount span{font-size:18px;font-weight:400;color:var(--t3);letter-spacing:0}
         .per-video{font-size:13px;color:var(--green);margin-top:8px;font-weight:600}
-        .card-desc{font-size:14px;color:var(--t2);margin-top:12px;line-height:1.6}
+        .card-desc{font-size:14px;color:var(--t2);margin-top:10px;line-height:1.55}
 
         .features-list{list-style:none;flex:1;margin-bottom:28px}
         .features-list li{font-size:13px;color:var(--t2);padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:10px;line-height:1.5}
         .features-list li:last-child{border-bottom:none}
-        .features-list .check{color:var(--green);font-weight:700;flex-shrink:0;font-size:14px;line-height:1.4}
-        .features-list .highlight{color:var(--t1);font-weight:600}
+        .features-list .ck{color:var(--green);font-weight:700;flex-shrink:0;font-size:14px;line-height:1.4}
+        .features-list .hi{color:var(--t1);font-weight:600}
 
-        .card-cta{display:flex;align-items:center;justify-content:center;width:100%;padding:14px;font-family:inherit;font-size:14px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .25s;text-decoration:none;letter-spacing:-.2px;border:none}
+        .card-cta{display:flex;align-items:center;justify-content:center;width:100%;padding:15px;font-family:var(--f);font-size:15px;font-weight:700;border-radius:10px;cursor:pointer;transition:all .25s;text-decoration:none;letter-spacing:-.2px;border:none}
         .card-cta.primary{background:var(--green);color:#000}
         .card-cta.primary:hover{background:#00e67a;box-shadow:0 0 30px var(--green-g)}
         .card-cta.secondary{background:transparent;color:var(--t1);border:1px solid var(--border)}
         .card-cta.secondary:hover{border-color:var(--t2);background:rgba(255,255,255,.03)}
 
-        /* Social proof */
-        .proof{text-align:center;padding:48px 0;border-top:1px solid var(--border)}
-        .proof-quote{font-size:18px;font-weight:500;font-style:italic;max-width:580px;margin:0 auto 16px;line-height:1.7;color:var(--t2)}
-        .proof-quote strong{color:var(--t1);font-style:normal}
+        .fine-print{text-align:center;font-size:12px;color:var(--t3);margin-bottom:64px;line-height:1.6}
 
-        /* How it works — compact */
+        /* USP block — OpenClaw */
+        .usp{padding:48px 0;border-top:1px solid var(--border);text-align:center}
+        .usp-inner{max-width:640px;margin:0 auto}
+        .usp-label{font-family:var(--fc);font-size:11px;font-weight:600;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px}
+        .usp h2{font-size:clamp(24px,4vw,34px);font-weight:900;letter-spacing:-1px;margin-bottom:14px;line-height:1.1}
+        .usp p{font-size:16px;color:var(--t2);line-height:1.7;margin-bottom:10px}
+        .usp strong{color:var(--t1)}
+        .usp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px;text-align:left}
+        .usp-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 18px;transition:border-color .3s}
+        .usp-card:hover{border-color:var(--green)}
+        .usp-card-n{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--green);margin-bottom:6px}
+        .usp-card-t{font-size:14px;font-weight:700;margin-bottom:4px}
+        .usp-card-d{font-size:12px;color:var(--t3);line-height:1.5}
+
+        /* How it works */
         .how-section{padding:48px 0;border-top:1px solid var(--border)}
         .how-section h2{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:32px;text-align:center}
-        .how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
-        .how-step{text-align:center;padding:20px 12px}
-        .how-num{width:36px;height:36px;border-radius:50%;background:var(--green-d);border:1px solid rgba(0,255,136,.15);color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-bottom:12px}
+        .how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+        .how-step{text-align:center;padding:16px 10px}
+        .how-num{width:36px;height:36px;border-radius:50%;background:var(--green-d);border:1px solid rgba(0,255,136,.15);color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-family:var(--fc);font-size:14px;font-weight:700;margin-bottom:12px}
         .how-step h3{font-size:14px;font-weight:700;margin-bottom:6px}
         .how-step p{font-size:12px;color:var(--t3);line-height:1.6}
+
+        /* Pitch block */
+        .pitch{padding:48px 0;border-top:1px solid var(--border)}
+        .pitch-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 32px;max-width:680px;margin:0 auto}
+        .pitch-box p{font-size:15px;line-height:1.8}
+        .pitch-box .dim{color:var(--t3)}
+        .pitch-box .bright{color:var(--t1);font-weight:600}
 
         /* FAQ */
         .faq-section{padding:48px 0;border-top:1px solid var(--border)}
         .faq-section h2{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:32px;text-align:center}
         .faq-grid{max-width:700px;margin:0 auto}
-        .faq{border-bottom:1px solid var(--border);padding-bottom:0}
+        .faq{border-bottom:1px solid var(--border)}
         .faq summary{font-size:14px;font-weight:600;cursor:pointer;padding:16px 0;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
         .faq summary::after{content:'+';font-size:18px;color:var(--t3);transition:transform .2s;flex-shrink:0}
         .faq[open] summary::after{transform:rotate(45deg)}
@@ -98,17 +119,16 @@
 
         /* Final CTA */
         .final-cta{text-align:center;padding:64px 0;border-top:1px solid var(--border)}
-        .final-cta h2{font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:12px}
-        .final-cta p{color:var(--t2);font-size:15px;margin-bottom:28px}
-        .final-cta .cta-btn{display:inline-flex;align-items:center;padding:16px 40px;font-family:inherit;font-size:16px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:10px;cursor:pointer;transition:all .25s;text-decoration:none;letter-spacing:-.2px}
-        .final-cta .cta-btn:hover{background:#00e67a;box-shadow:0 0 30px var(--green-g);transform:translateY(-1px)}
+        .final-cta h2{font-size:clamp(24px,4vw,30px);font-weight:900;letter-spacing:-1px;margin-bottom:12px}
+        .final-cta p{color:var(--t2);font-size:15px;margin-bottom:28px;line-height:1.6}
+        .cta-btn{display:inline-flex;align-items:center;padding:16px 40px;font-family:var(--f);font-size:16px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:10px;cursor:pointer;transition:all .25s;text-decoration:none}
+        .cta-btn:hover{background:#00e67a;box-shadow:0 0 30px var(--green-g);transform:translateY(-1px)}
         .cta-sub{font-size:12px;color:var(--t3);margin-top:12px}
 
         /* Footer */
         footer{border-top:1px solid var(--border);padding:24px 0;margin-top:16px}
         footer p{font-size:12px;color:var(--t3);text-align:center}
-        footer a{color:var(--t3);text-decoration:none}
-        footer a:hover{color:var(--t2)}
+        footer a{color:var(--t3);text-decoration:none}footer a:hover{color:var(--t2)}
 
         /* Checkout Modal */
         .checkout-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:9999;align-items:center;justify-content:center;padding:24px}
@@ -122,13 +142,27 @@
 
         @media(max-width:900px){
             .pricing-grid{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
-            .price-card.featured{order:0}
             .how-grid{grid-template-columns:repeat(2,1fr)}
+            .usp-grid{grid-template-columns:1fr}
         }
         @media(max-width:640px){
-            .hero{padding:48px 0 32px}
-            .compare-strip{gap:24px}
+            .hero{padding:36px 0 28px}
+            .hero h1{letter-spacing:-1.5px}
+            .hero .sub{font-size:16px}
+            .value-strip{gap:16px}
+            .value-item .num{font-size:20px}
+            .anchor{padding:0 0 28px}
+            .anchor-line{font-size:13px}
+            .price-card{padding:28px 22px}
+            .card-cta{padding:16px;font-size:16px;min-height:52px}
             .how-grid{grid-template-columns:1fr 1fr}
+            .pitch-box{padding:28px 22px}
+            .faq summary{font-size:13px;padding:14px 0}
+            .final-cta{padding:48px 0}
+            .final-cta h2{font-size:24px}
+            .cta-btn{padding:16px 32px;width:100%;justify-content:center;min-height:52px}
+            .nav-links a:not(:last-child){display:none}
+            .fine-print{font-size:11px}
         }
     </style>
     <script>
@@ -139,11 +173,11 @@
 <body>
 
 <nav>
-    <div class="logo">Alpha<span>CMO</span></div>
+    <a href="/" class="logo">Dark<span>Ops</span></a>
     <div class="nav-links">
         <a href="#how">How it works</a>
         <a href="#faq">FAQ</a>
-        <a href="#pricing">Pricing</a>
+        <a href="#pricing">Choose a plan</a>
     </div>
 </nav>
 
@@ -151,29 +185,10 @@
 
     <!-- Hero -->
     <div class="hero">
-        <div class="eyebrow"><span class="dot"></span> Automatic video pipeline — running 24/7</div>
-        <h1>Finished videos on your Instagram.<br><em>While you sleep.</em></h1>
-        <p class="sub">DarkOps finds viral trends, rewrites scripts in your voice, creates AI avatar videos, and publishes — every single night. You just approve.</p>
+        <div class="eyebrow"><span class="dot"></span> 10 AI agents · your own dedicated server</div>
+        <h1>More views on your offers.<br><em>Every single day.</em></h1>
+        <p class="sub">DarkOps deploys <strong>10 AI agents on your own server</strong> that find viral trends in your niche, create branded avatar videos, and publish to Instagram — while you sleep. You just approve from your phone.</p>
     </div>
-
-    <!-- Price anchoring -->
-    <!--<div class="compare-strip">
-        <div class="compare-item">
-            <div class="old">$150–500</div>
-            <div class="val green">~$16</div>
-            <div class="label">Per video</div>
-        </div>
-        <div class="compare-item">
-            <div class="old">$3K–10K/mo</div>
-            <div class="val green">$499</div>
-            <div class="label">vs. agency</div>
-        </div>
-        <div class="compare-item">
-            <div class="old">$250K/yr</div>
-            <div class="val green">$0 equity</div>
-            <div class="label">No hires needed</div>
-        </div>
-    </div>-->
 
     <!-- Pricing -->
     <div id="pricing" class="pricing-grid">
@@ -183,20 +198,21 @@
             <div class="card-header">
                 <div class="tier-name">Launch</div>
                 <div class="price-amount">$499<span>/mo</span></div>
-                <div class="per-video">~$16/video</div>
-                <p class="card-desc">Full pipeline. 30 videos/month. Everything automated.</p>
+                <div class="per-video">~$16/video · 30 videos included</div>
+                <p class="card-desc">Your own OpenClaw instance with 10 agents. Full viral video pipeline — automated.</p>
             </div>
             <ul class="features-list">
-                <li><span class="check">✓</span><span>Nightly trend scouting (2AM)</span></li>
-                <li><span class="check">✓</span><span>Unlimited reel processing</span></li>
-                <li><span class="check">✓</span><span>Brand voice script rewriting</span></li>
-                <li><span class="check">✓</span><span class="highlight">30 AI avatar videos/month</span></li>
-                <li><span class="check">✓</span><span>Branded overlays + captions</span></li>
-                <li><span class="check">✓</span><span>Instagram Reels publishing</span></li>
-                <li><span class="check">✓</span><span>Dedicated Telegram channel</span></li>
-                <li><span class="check">✓</span><span>ClickUp pipeline dashboard</span></li>
+                <li><span class="ck">✓</span><span class="hi">Dedicated server (your own OpenClaw)</span></li>
+                <li><span class="ck">✓</span><span class="hi">10 AI agents working 24/7</span></li>
+                <li><span class="ck">✓</span><span>Nightly viral trend scouting (2AM)</span></li>
+                <li><span class="ck">✓</span><span>Brand voice script rewriting</span></li>
+                <li><span class="ck">✓</span><span class="hi">30 AI avatar videos/month</span></li>
+                <li><span class="ck">✓</span><span>Branded overlays + synced captions</span></li>
+                <li><span class="ck">✓</span><span>Instagram Reels publishing</span></li>
+                <li><span class="ck">✓</span><span>Talk to Commander via Telegram</span></li>
+                <li><span class="ck">✓</span><span>ClickUp pipeline dashboard</span></li>
             </ul>
-            <button class="card-cta secondary" onclick="openCheckout('launch')">Get Started →</button>
+            <button class="card-cta secondary" onclick="openCheckout('launch')">Deploy Launch →</button>
         </div>
 
         <!-- Dominate -->
@@ -204,18 +220,19 @@
             <div class="card-header">
                 <div class="tier-name">Dominate</div>
                 <div class="price-amount">$999<span>/mo</span></div>
-                <div class="per-video">~$14/video</div>
-                <p class="card-desc">Scale output. 70 videos/month. Theme page distribution.</p>
+                <div class="per-video">~$14/video · 70 videos included</div>
+                <p class="card-desc">Scale your output. More videos, more platforms, more views on every offer you publish.</p>
             </div>
             <ul class="features-list">
-                <li><span class="check">✓</span><span>Everything in Launch</span></li>
-                <li><span class="check">✓</span><span class="highlight">70 AI avatar videos/month</span></li>
-                <li><span class="check">✓</span><span class="highlight">Posting to theme pages</span></li>
-                <li><span class="check">✓</span><span>Dedicated Slack channel</span></li>
-                <li><span class="check">✓</span><span>Priority rendering queue</span></li>
-                <li><span class="check">✓</span><span>Advanced viral scoring</span></li>
+                <li><span class="ck">✓</span><span>Everything in Launch</span></li>
+                <li><span class="ck">✓</span><span class="hi">70 AI avatar videos/month</span></li>
+                <li><span class="ck">✓</span><span class="hi">Theme page distribution</span></li>
+                <li><span class="ck">✓</span><span class="hi">Priority rendering queue</span></li>
+                <li><span class="ck">✓</span><span>Advanced viral scoring</span></li>
+                <li><span class="ck">✓</span><span>Dedicated Slack channel</span></li>
+                <li><span class="ck">✓</span><span>Weekly performance insights</span></li>
             </ul>
-            <button class="card-cta primary" onclick="openCheckout('dominate')">Get Dominate →</button>
+            <button class="card-cta primary" onclick="openCheckout('dominate')">Deploy Dominate →</button>
         </div>
 
         <!-- Special Ops -->
@@ -223,22 +240,70 @@
             <div class="card-header">
                 <div class="tier-name">Special Ops</div>
                 <div class="price-amount">$1,999<span>/mo</span></div>
-                <div class="per-video">White-glove</div>
-                <p class="card-desc">Everything in Dominate + strategy calls and multi-platform.</p>
+                <div class="per-video">White-glove · Unlimited output</div>
+                <p class="card-desc">Full strategic partnership. Weekly calls, multi-platform, custom avatar built from your likeness.</p>
             </div>
             <ul class="features-list">
-                <li><span class="check">✓</span><span>Everything in Dominate</span></li>
-                <li><span class="check">✓</span><span class="highlight">Weekly strategy call (30 min)</span></li>
-                <li><span class="check">✓</span><span class="highlight">Custom hashtag strategy</span></li>
-                <li><span class="check">✓</span><span class="highlight">Multi-platform publishing</span></li>
-                <li><span class="check">✓</span><span>Priority support</span></li>
-                <li><span class="check">✓</span><span>Meta Ads integration (coming soon)</span></li>
+                <li><span class="ck">✓</span><span>Everything in Dominate</span></li>
+                <li><span class="ck">✓</span><span class="hi">Weekly strategy call (30 min)</span></li>
+                <li><span class="ck">✓</span><span class="hi">Multi-platform publishing</span></li>
+                <li><span class="ck">✓</span><span class="hi">Custom avatar (your likeness)</span></li>
+                <li><span class="ck">✓</span><span>Custom hashtag strategy</span></li>
+                <li><span class="ck">✓</span><span>Priority support + direct line</span></li>
+                <li><span class="ck">✓</span><span>Meta Ads integration (coming soon)</span></li>
             </ul>
-            <button class="card-cta secondary" onclick="openCheckout('specialops')">Get Special Ops →</button>
+            <button class="card-cta secondary" onclick="openCheckout('specialops')">Deploy Special Ops →</button>
         </div>
     </div>
 
-    <p style="text-align:center;font-size:13px;color:var(--t3);margin-top:-48px;margin-bottom:64px">No contracts. No setup fees. Cancel anytime.</p>
+    <p class="fine-print">No contracts. No setup fees. Cancel anytime. Nothing publishes without your approval.<br>Securely hosted on a dedicated DigitalOcean Droplet VPS. We set it up, we maintain it.</p>
+
+    <!-- Value strip -->
+    <div class="value-strip">
+        <div class="value-item"><div class="num">10</div><div class="lab">AI Agents</div></div>
+        <div class="value-item"><div class="num">30+</div><div class="lab">Videos / Month</div></div>
+        <div class="value-item"><div class="num">~$16</div><div class="lab">Per Video</div></div>
+        <div class="value-item"><div class="num">24/7</div><div class="lab">Always Running</div></div>
+    </div>
+
+    <!-- Price anchoring -->
+    <div class="anchor">
+        <div class="anchor-line"><s>Freelance video editor: $150–$500 per video</s></div>
+        <div class="anchor-line"><s>Content agency: $3,000–$10,000/month</s></div>
+        <div class="anchor-line"><s>In-house CMO: $250,000/year</s></div>
+    </div>
+    
+    <!-- USP — What makes this different -->
+    <section class="usp">
+        <div class="usp-inner">
+            <div class="usp-label">What You're Actually Getting</div>
+            <h2>Your own OpenClaw.<br>10 agents. One mission.</h2>
+            <p>Every plan deploys a <strong>dedicated OpenClaw instance</strong> — your own private server running 10 specialized AI agents. Not a shared tool. Not a login to someone else's platform. <strong>Your machine, your team, your content.</strong></p>
+            <p>You talk to the Commander in Telegram. The Commander orchestrates Scout, Strategist, Writer, Director, Captioner, Editor, Publisher, Sentinel, and Ops — each an expert at one job. Together they find what's going viral, create branded videos, and get more views on your offers.</p>
+            <div class="usp-grid">
+                <div class="usp-card">
+                    <div class="usp-card-n">01</div>
+                    <div class="usp-card-t">Fully isolated</div>
+                    <div class="usp-card-d">Your brand voice, your data, your content. Nobody else's system touches yours.</div>
+                </div>
+                <div class="usp-card">
+                    <div class="usp-card-n">02</div>
+                    <div class="usp-card-t">Always running</div>
+                    <div class="usp-card-d">Scans at 2AM. Creates by morning. Publishes when you approve. 24/7/365.</div>
+                </div>
+                <div class="usp-card">
+                    <div class="usp-card-n">03</div>
+                    <div class="usp-card-t">One command</div>
+                    <div class="usp-card-d">Send "promote" in Telegram. Commander handles the rest. Voice notes supported.</div>
+                </div>
+                <div class="usp-card">
+                    <div class="usp-card-n">04</div>
+                    <div class="usp-card-t">More views, daily</div>
+                    <div class="usp-card-d">Every video is designed to get your offer in front of more people, every single day.</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- How it works -->
     <section id="how" class="how-section">
@@ -247,7 +312,7 @@
             <div class="how-step">
                 <div class="how-num">1</div>
                 <h3>Scout</h3>
-                <p>Every night at 2AM, DarkOps scans Instagram for viral talking-head reels in your niche and ranks them by viral potential.</p>
+                <p>Every night at 2AM, your agents scan Instagram for viral talking-head reels in your niche and rank them by potential.</p>
             </div>
             <div class="how-step">
                 <div class="how-num">2</div>
@@ -262,17 +327,17 @@
             <div class="how-step">
                 <div class="how-num">4</div>
                 <h3>Publish</h3>
-                <p>You approve with one message. DarkOps publishes to Instagram Reels. TikTok and YouTube Shorts coming soon.</p>
+                <p>You approve with one message in Telegram. DarkOps publishes to Instagram Reels. More platforms coming soon.</p>
             </div>
         </div>
     </section>
 
-    <!-- The pitch block -->
-    <section style="padding:48px 0;border-top:1px solid var(--border)">
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 32px;max-width:700px;margin:0 auto">
-            <p style="font-size:15px;color:var(--t2);line-height:1.8">A reel went viral in your niche yesterday. Your competitor caught it, rewrote it for their audience, published an avatar video, and got 40K views.</p>
-            <p style="font-size:15px;color:var(--t3);line-height:1.8;margin-top:12px">You didn't even see it.</p>
-            <p style="font-size:15px;color:var(--t1);line-height:1.8;margin-top:12px;font-weight:600">DarkOps would have caught it at 2AM, rewritten it by 2:15, and had a video in your inbox by morning.</p>
+    <!-- Pitch block -->
+    <section class="pitch">
+        <div class="pitch-box">
+            <p style="color:var(--t2)">A reel went viral in your niche yesterday. Your competitor caught it, rewrote it for their audience, published an avatar video, and got 40K views on their offer.</p>
+            <p class="dim" style="margin-top:12px">You didn't even see it.</p>
+            <p class="bright" style="margin-top:12px">Your DarkOps agents would have caught it at 2AM, rewritten it by 2:15, and had a branded video in your inbox by morning.</p>
         </div>
     </section>
 
@@ -281,8 +346,12 @@
         <h2>Questions</h2>
         <div class="faq-grid">
             <details class="faq">
+                <summary>What is an OpenClaw?</summary>
+                <p>OpenClaw is the AI agent platform that powers DarkOps. When you sign up, we deploy your own dedicated OpenClaw instance on a private server — 10 specialized agents running exclusively for your brand. It's your machine. We set it up and maintain it.</p>
+            </details>
+            <details class="faq">
                 <summary>What exactly does DarkOps do?</summary>
-                <p>Every night, DarkOps scans Instagram for viral talking-head reels in your niche, transcribes and scores them, rewrites the best scripts in your brand voice, generates AI avatar videos with branded overlays, and publishes to your Instagram. You control everything from Telegram on your phone.</p>
+                <p>Every night, your 10 agents scan Instagram for viral talking-head reels in your niche, transcribe and score them, rewrite the best scripts in your brand voice, generate AI avatar videos with branded overlays, and publish to your Instagram. You control everything from Telegram on your phone.</p>
             </details>
             <details class="faq">
                 <summary>Do I need to be on camera?</summary>
@@ -290,42 +359,42 @@
             </details>
             <details class="faq">
                 <summary>How much of my time does this take?</summary>
-                <p>About 5 minutes per day. Review scripts and approve videos in Telegram. That's it.</p>
+                <p>About 5 minutes per day. Review scripts and approve videos in Telegram. Say "promote" and your agents handle the rest.</p>
             </details>
             <details class="faq">
-                <summary>Is the content actually original?</summary>
-                <p>Yes. DarkOps discovers proven viral hook structures and rewrites them entirely for your voice, audience, and CTA. Only the hook pattern is borrowed — the content is 100% original.</p>
+                <summary>Will this actually get me more views?</summary>
+                <p>DarkOps doesn't guess at content. It finds what's already going viral in your niche, adapts proven hook structures for your brand, and publishes consistently. More content from proven patterns means more views on your offers — daily.</p>
             </details>
             <details class="faq">
-                <summary>What platforms does it publish to?</summary>
-                <p>Instagram Reels at launch. TikTok, YouTube Shorts, and Facebook Reels are on the roadmap.</p>
+                <summary>Is my server shared with anyone else?</summary>
+                <p>No. Every customer gets their own dedicated DigitalOcean Droplet VPS. Your brand voice, your data, your agents. Fully isolated.</p>
             </details>
             <details class="faq">
-                <summary>How is this different from Okara or other AI marketing tools?</summary>
-                <p>Most AI marketing tools output strategy docs and text content. DarkOps outputs finished videos — published to your Instagram. Trend discovery through publishing, fully automated. Different category entirely.</p>
+                <summary>How is this different from other AI marketing tools?</summary>
+                <p>Most AI marketing tools output strategy docs and text. DarkOps outputs finished videos — published to your Instagram. You get your own server running 10 agents, not a shared SaaS login. Different category entirely.</p>
             </details>
             <details class="faq">
                 <summary>Can I cancel anytime?</summary>
-                <p>Yes. No contracts, no setup fees. Cancel from your billing dashboard and service stops at the end of your billing period.</p>
+                <p>Yes. No contracts, no setup fees. Cancel from your billing dashboard and your server shuts down at the end of your billing period.</p>
             </details>
         </div>
     </section>
 
     <!-- Final CTA -->
     <div class="final-cta">
-        <h2>Stop watching competitors go viral.</h2>
-        <p>30+ branded videos on your Instagram every month. Starting at ~$16/video.</p>
-        <button class="cta-btn" onclick="openCheckout('launch')">Get Started →</button>
+        <h2>Your competitors are posting right now.</h2>
+        <p>Deploy your own DarkOps team. 10 agents. Your own server. More views on your offers — starting tomorrow morning.</p>
+        <button class="cta-btn" onclick="openCheckout('launch')">Deploy Your Agents →</button>
         <p class="cta-sub">No contracts · Cancel anytime · First videos within 48 hours</p>
     </div>
 
 </div>
 
 <footer><div class="wrap">
-    <p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · © 2026 DarkOps · New Empire AI</p>
+    <p><a href="/">Home</a> · <a href="/live">Live Demo</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · © 2026 DarkOps · New Empire AI</p>
 </div></footer>
 
-<!-- Checkout Modal — all 3 embeds pre-rendered, toggled via display -->
+<!-- Checkout Modal — all 3 embeds pre-rendered -->
 <div class="checkout-overlay" id="checkoutOverlay" onclick="closeCheckout(event)">
     <div class="checkout-modal" onclick="event.stopPropagation()">
         <button class="checkout-close" onclick="closeCheckout()">&times;</button>
@@ -341,7 +410,7 @@
     </div>
 </div>
 
-<!-- ThriveCart v2 script — loaded once, scans all 3 embeds on DOMContentLoaded -->
+<!-- ThriveCart v2 script -->
 <script async src="//tinder.thrivecart.com/embed/v2/thrivecart.js"></script>
 
 <script>

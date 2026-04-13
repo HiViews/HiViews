@@ -14,7 +14,7 @@
             --bg:#000;--bg2:#0a0a0a;--bg3:#0d0d0d;
             --t1:#fff;--t2:#b0b0b0;--t3:#777;
             --green:#00ff88;--green-d:rgba(0,255,136,.12);--green-g:rgba(0,255,136,.25);
-            --orange:#ffcc00;--orange-d:rgba(255,138,0,.12);--orange-b:rgba(255,138,0,.3);
+            --orange:#ff4d4d;--orange-d:rgba(255, 55, 0, 0.12);--orange-b:rgba(255, 72, 0, 0.3);
             --purple:#8a8aff;--purple-d:rgba(138,138,255,.15);
             --border:#1a1a1a;--f:'Inter',sans-serif;--fc:'Fira Code',monospace;
         }
@@ -29,7 +29,8 @@
         /* Header */
         .hdr{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border)}
         .hdr-l{display:flex;align-items:center;gap:12px}
-        .hdr h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
+        .hdr h1{font-size:24px;font-weight:800;letter-spacing:-.5px}
+        .hdr h1 a{color:inherit;text-decoration:none}
         .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--border);border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--t2)}
         .badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:p 2s ease-in-out infinite;box-shadow:0 0 6px var(--green-g)}
         @keyframes p{0%,100%{opacity:1}50%{opacity:.4}}
@@ -209,10 +210,10 @@
 
 <div class="hdr">
     <div class="hdr-l">
-        <h1>DarkOps</h1>
+        <h1><a href="/">DarkOps</a></h1>
         <span class="badge"><span class="dot"></span>LIVE</span>
     </div>
-    <div class="hdr-r"><a href="/">Get DarkOps</a></div>
+    <div class="hdr-r"><a href="javascript:;" onclick="document.getElementById('offerModal').classList.add('open')">Get DarkOps</a></div>
 </div>
 
 <div class="dash">
