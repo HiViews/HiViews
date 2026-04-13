@@ -79,7 +79,7 @@
 
         /* Script cards */
         .script-tabs{display:flex;gap:8px;margin-bottom:16px}
-        .script-tab{padding:10px 20px;font-family:var(--f);font-size:13px;font-weight:600;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--t3);transition:all .2s}
+        .script-tab{flex:1;padding:10px 12px;font-family:var(--f);font-size:13px;font-weight:600;background:var(--bg2);border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--t3);transition:all .2s;text-align:center;white-space:nowrap}
         .script-tab.active{background:var(--green-d);border-color:var(--green);color:var(--green)}
         .script-card{background:var(--bg2);border:1px solid rgba(0,255,136,.2);border-radius:14px;padding:24px;margin-bottom:12px;display:none}
         .script-card.active{display:block}
@@ -101,6 +101,37 @@
         .report-cta .cta:hover{background:#00e67a;box-shadow:0 0 24px var(--green-g);transform:translateY(-1px)}
         .report-cta .price{font-size:13px;color:var(--t3);margin-top:14px}
 
+        /* Offer Modal */
+        .offer-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
+        .offer-overlay.open{display:flex}
+        .offer-modal{background:#111;border:1px solid var(--border);border-radius:16px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:offerIn .3s ease}
+        @keyframes offerIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .offer-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;width:32px;height:32px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
+        .offer-close:hover{background:rgba(255,255,255,.15)}
+        .offer-top{padding:32px 28px 20px;text-align:center}
+        .offer-logo{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:6px}
+        .offer-logo span{color:var(--green)}
+        .offer-dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-left:8px;vertical-align:middle;animation:pulse 2s ease-in-out infinite}
+        .offer-headline{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;line-height:1.2}
+        .offer-sub{font-size:13px;color:var(--t2);line-height:1.6}
+        .offer-features{padding:0 28px 20px}
+        .offer-features-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:14px;font-weight:600}
+        .offer-feat{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+        .offer-feat:last-child{border-bottom:none}
+        .offer-feat-icon{font-size:18px;flex-shrink:0;width:28px;text-align:center}
+        .offer-feat-text{font-size:13px;font-weight:600;line-height:1.4}
+        .offer-feat-text small{display:block;font-weight:400;color:var(--t3);margin-top:2px;font-size:11px}
+        .offer-bottom{padding:0 28px 28px;text-align:center}
+        .offer-price-card{background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.15);border-radius:10px;padding:16px;margin-bottom:16px}
+        .offer-price-old{font-size:18px;color:var(--t3);text-decoration:line-through;margin-right:10px}
+        .offer-price-new{font-size:32px;font-weight:900;letter-spacing:-1px}
+        .offer-price-new span{font-size:14px;color:var(--t3);font-weight:400}
+        .offer-price-per{font-size:12px;color:var(--green);margin-top:4px;font-weight:600}
+        .offer-price-note{font-size:11px;color:var(--t3);margin-top:4px}
+        .offer-go{display:block;width:100%;padding:16px;font-family:var(--f);font-size:16px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:10px;cursor:pointer;transition:all .2s;text-decoration:none;text-align:center}
+        .offer-go:hover{background:#00e67a;box-shadow:0 0 24px var(--green-g)}
+        .offer-note{font-size:11px;color:var(--t3);margin-top:10px}
+
         footer{border-top:1px solid var(--border);padding:24px;text-align:center;margin-top:48px}
         footer p{font-size:12px;color:var(--t3)}footer a{color:var(--t3);text-decoration:none}
 
@@ -109,8 +140,12 @@
             .stat-n{font-size:20px}
             .score-big{font-size:56px}
             .profile{flex-direction:column;text-align:center}
-            .script-tabs{flex-wrap:wrap}
+            .script-tabs{gap:6px}
+            .script-tab{font-size:12px;padding:10px 8px}
             .script-meta{flex-direction:column;gap:12px;align-items:flex-start}
+            .script-btn{width:100%;text-align:center}
+            .script-actions{flex-direction:column;width:100%}
+            .report-cta .cta{width:100%;justify-content:center;min-height:52px}
         }
     </style>
     <script>
@@ -196,7 +231,7 @@
         <div class="report-cta">
             <h3>These scripts took DarkOps 8 seconds to write.</h3>
             <p>Imagine 30 of these per month &mdash; scripted, filmed with your AI avatar, edited with captions and branding, and posted to Instagram. While you sleep.</p>
-            <a class="cta" href="/start">Start DarkOps &rarr;</a>
+            <a class="cta" href="javascript:;" onclick="document.getElementById('offerModal').classList.add('open')">Start DarkOps &rarr;</a>
             <p class="price">$499/month &middot; ~$16/video &middot; Cancel anytime</p>
         </div>
 
@@ -204,6 +239,36 @@
 </div>
 
 <footer><p><a href="/">DarkOps</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; &copy; 2026 New Empire AI</p></footer>
+
+<!-- Offer Modal -->
+<div class="offer-overlay" id="offerModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="offer-modal">
+        <button class="offer-close" onclick="document.getElementById('offerModal').classList.remove('open')">&times;</button>
+        <div class="offer-top">
+            <div class="offer-logo">Dark<span>Ops</span> <span class="offer-dot"></span></div>
+            <div class="offer-headline">Your 24/7 Viral Video Engine</div>
+            <div class="offer-sub">Finds viral trends. Rewrites scripts in your voice. Creates AI avatar videos. Publishes to Instagram — while you sleep.</div>
+        </div>
+        <div class="offer-features">
+            <div class="offer-features-title">What's Included</div>
+            <div class="offer-feat"><div class="offer-feat-icon">01</div><div class="offer-feat-text">Your Own Dedicated OpenClaw<small>10 AI agents on your own server — fully isolated</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">02</div><div class="offer-feat-text">Nightly Trend Scouting<small>Scans Instagram at 2AM for viral talking-head reels</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">03</div><div class="offer-feat-text">Brand Voice Script Rewriting<small>Viral hooks rewritten for your audience and CTA</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">04</div><div class="offer-feat-text">30 AI Avatar Videos / Month<small>1080×1920 vertical with branded overlays + captions</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">05</div><div class="offer-feat-text">Auto-Publish to Instagram Reels<small>You approve with one message — DarkOps publishes</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">06</div><div class="offer-feat-text">Talk to Commander via Telegram<small>Voice notes supported — your direct line to the team</small></div></div>
+        </div>
+        <div class="offer-bottom">
+            <div class="offer-price-card">
+                <div><span class="offer-price-old">$750</span><span class="offer-price-new">$499<span>/month</span></span></div>
+                <div class="offer-price-per">~$16/video · 30 videos included</div>
+                <div class="offer-price-note">Cancel anytime · No contracts · No setup fees</div>
+            </div>
+            <a href="/checkout" class="offer-go">Start Now →</a>
+            <div class="offer-note">First videos delivered within 48 hours</div>
+        </div>
+    </div>
+</div>
 
 <script>
 const API_URL = 'https://provision.darkops.team/api/analyze';
@@ -353,7 +418,7 @@ function renderReport(data) {
                 '<div class="script-meta-left">' + words + ' words &middot; ~' + seconds + ' seconds &middot; optimized for Reels</div>' +
                 '<div class="script-actions">' +
                     '<button class="script-btn copy" onclick="copyScript(' + i + ')">Copy Script</button>' +
-                    '<a class="script-btn video" href="/start">Get This As A Video &rarr;</a>' +
+                    '<a class="script-btn video" href="javascript:;" onclick="document.getElementById(\'offerModal\').classList.add(\'open\')">Get This As A Video &rarr;</a>' +
                 '</div>' +
             '</div>';
         cardsEl.appendChild(card);
@@ -389,6 +454,7 @@ function formatNumber(n) {
 function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('offerModal').classList.remove('open')});
 </script>
 </body>
 </html>
