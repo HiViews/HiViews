@@ -336,12 +336,12 @@
     <div>
         <div class="ph"><span class="pt">Recent Videos</span><span class="pc" data-metric="videos_24h">18 in last 24h</span></div>
         <div class="vg" id="videoGrid">
-            <div class="vc"><div class="vt" data-task-code="A7K2"><img src="images/1.jpeg" alt="A7K2" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A7K2</div><span class="vg-st pub">Published</span></div>
-            <div class="vc"><div class="vt" data-task-code="K9M1"><img src="images/2.jpeg" alt="A9M1" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A9M1</div><span class="vg-st pub">Published</span></div>
-            <div class="vc"><div class="vt" data-task-code="W4R8"><img src="images/3.jpeg" alt="A4R8" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A4R8</div><span class="vg-st ren">Rendering</span></div>
-            <div class="vc"><div class="vt" data-task-code="N3S7"><img src="images/4.jpeg" alt="A3S7" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A3S7</div><span class="vg-st pub">Published</span></div>
-            <div class="vc"><div class="vt" data-task-code="T2Q5"><img src="images/5.jpeg" alt="A2Q5" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A2Q5</div><span class="vg-st rev">In Review</span></div>
-            <div class="vc"><div class="vt" data-task-code="F6J3"><img src="images/6.jpeg" alt="A6J3" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">F6J3</div><span class="vg-st pub">Published</span></div>
+            <div class="vc"><div class="vt" data-task-code="A7K2"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/1.jpeg" alt="A7K2" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A7K2</div><span class="vg-st pub">Published</span></div>
+            <div class="vc"><div class="vt" data-task-code="K9M1"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/2.jpeg" alt="A9M1" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A9M1</div><span class="vg-st pub">Published</span></div>
+            <div class="vc"><div class="vt" data-task-code="W4R8"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/3.jpeg" alt="A4R8" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A4R8</div><span class="vg-st ren">Rendering</span></div>
+            <div class="vc"><div class="vt" data-task-code="N3S7"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/4.jpeg" alt="A3S7" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A3S7</div><span class="vg-st pub">Published</span></div>
+            <div class="vc"><div class="vt" data-task-code="T2Q5"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/5.jpeg" alt="A2Q5" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">A2Q5</div><span class="vg-st rev">In Review</span></div>
+            <div class="vc"><div class="vt" data-task-code="F6J3"><img src="https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/6.jpeg" alt="A6J3" style="width:100%;height:100%;object-fit:cover;display:block"><div class="play">▶</div></div><div class="vg-id">F6J3</div><span class="vg-st pub">Published</span></div>
         </div>
         <div class="more" style="margin-top:8px">+ 12 more videos this morning</div>
     </div>
@@ -453,30 +453,30 @@ const term=document.getElementById('term');let ti=0;
 setInterval(()=>{const ls=term.querySelectorAll('.ln');ls.forEach(l=>l.classList.remove('on'));if(ls.length>=4)ls[0].remove();const n=document.createElement('div');n.className='ln on';n.textContent=tl[ti%tl.length];term.appendChild(n);ti++},3200);
 
 /* Agent Status */
-const imgBase='https://raw.githubusercontent.com/DarkOpsAI/DarkOps/main/website/images/';
+const imgBase='https://raw.githubusercontent.com/getDarkOps/DarkOps/main/website/images/';
 const gs=[
-{name:'Transcribing',msg:'Converting raw audio from client briefings and source material into precise text that becomes the foundation for every script.',img:'01-Transcribing-DarkOps-AI-Marketing-Automation-Agent-115.jpg'},
-{name:'Composing',msg:'Crafting the narrative arc and dialogue from scratch, shaping every word to land with the exact emotional weight your audience needs.',img:'02-Composing-DarkOps-AI-Marketing-Automation-Agent-118.jpg'},
-{name:'Architecting',msg:'Designing the structural blueprint of the entire video \u2014 pacing, segments, transitions \u2014 so every second serves a strategic purpose.',img:'03-Architecting-DarkOps-AI-Marketing-Automation-Agent-114.jpg'},
-{name:'Scheming',msg:'Mapping out the distribution angles, hook sequences, and platform-specific tactics before a single frame is produced.',img:'04-Scheming-DarkOps-AI-Marketing-Automation-Agent-120.jpg'},
-{name:'Orchestrating',msg:'Coordinating every moving piece \u2014 assets, talent, music, graphics \u2014 into a single cohesive production pipeline.',img:'05-Orchestrating-DarkOps-AI-Marketing-Automation-Agent-116.jpg'},
-{name:'Mastering',msg:'Running the final quality pass across audio, color, and compression to ensure broadcast-grade output every time.',img:'06-Mastering-DarkOps-AI-Marketing-Automation-Agent-106.jpg'},
-{name:'Splicing',msg:'Cutting and rejoining footage at exact edit points to maintain continuity that the viewer never consciously notices.',img:'07-Splicing-DarkOps-AI-Marketing-Automation-Agent-126.jpg'},
-{name:'Rigging',msg:'Building the skeletal control system inside a digital avatar so every joint, muscle, and micro-expression moves naturally.',img:'08-Rigging-DarkOps-AI-Marketing-Automation-Agent-109.jpg'},
-{name:'Lip-Syncing',msg:'Aligning mouth shapes to audio phonemes frame by frame until the avatar\u2019s speech is indistinguishable from a real human.',img:'09-Lip-Syncing-DarkOps-AI-Marketing-Automation-Agent-101.jpg'},
-{name:'Deepfaking',msg:'Mapping photorealistic facial textures and expressions onto the avatar so the final output passes as authentic on-camera talent.',img:'10-Deepfaking-DarkOps-AI-Marketing-Automation-Agent-108.jpg'},
-{name:'Motion-Capturing',msg:'Translating real human gestures, posture, and body language onto the digital avatar so movement feels alive and unscripted.',img:'11-Motion-Capturing-DarkOps-AI-Marketing-Automation-Agent-107.jpg'},
-{name:'Weaponizing',msg:'Taking a finished asset and reverse-engineering the platform algorithm to maximize reach, turning a single video into an unstoppable distribution event.',img:'12-Weaponizing-DarkOps-AI-Marketing-Automation-Agent-103.jpg'},
-{name:'Psych-Profiling',msg:'Building deep behavioral models of the target audience so every hook, cut, and CTA exploits exactly how they process information.',img:'13-Psych-Profiling-DarkOps-AI-Marketing-Automation-Agent-104.jpg'},
-{name:'War-Gaming',msg:'Simulating competitor responses and audience reactions before launch, stress-testing the campaign so it dominates every scenario.',img:'14-War-Gaming-DarkOps-AI-Marketing-Automation-Agent-110.jpg'},
-{name:'Mythmaking',msg:'Engineering a narrative so magnetic around the brand that your audience doesn\u2019t just watch \u2014 they adopt it as part of their own identity.',img:'15-Mythmaking-DarkOps-AI-Marketing-Automation-Agent-112.jpg'},
-{name:'Narrative-Hijacking',msg:'Intercepting trending cultural moments and redirecting the conversation so your brand becomes the center of the discourse.',img:'16-Narrative-Hijacking-DarkOps-AI-Marketing-Automation-Agent-113.jpg'},
-{name:'Mindshare-Sieging',msg:'Flooding every touchpoint with coordinated messaging until your brand occupies so much mental real estate the competition becomes invisible.',img:'17-Mindshare-Sieging-DarkOps-AI-Marketing-Automation-Agent-102.jpg'},
-{name:'Signal-Jamming',msg:'Strategically timing and positioning content to drown out competitor messaging and own the entire conversation window.',img:'18-Signal-Jamming-DarkOps-AI-Marketing-Automation-Agent-117.jpg'},
-{name:'Storyboarding',msg:'Sketching each shot and scene transition frame by frame, locking the visual rhythm before production begins.',img:'19-Storyboarding-DarkOps-AI-Marketing-Automation-Agent-105.jpg'},
-{name:'Color-Grading',msg:'Manipulating every hue, shadow, and highlight to establish a cinematic tone that makes your brand feel unmistakable.',img:'20-Color-Grading-DarkOps-AI-Marketing-Automation-Agent-125.jpg'},
-{name:'Sequencing',msg:'Arranging clips, b-roll, and overlays into a locked timeline where every cut hits at the precise millisecond.',img:'21-Sequencing-DarkOps-AI-Marketing-Automation-Agent-119.jpg'},
-{name:'Rendering',msg:'Compiling all layers, effects, and audio into a final pixel-perfect export ready for delivery.',img:'22-Rendering-DarkOps-AI-Marketing-Automation-Agent-124.jpg'},
+{name:'Transcribing',msg:'Converting raw audio from client briefings and source material into precise text that becomes the foundation for every script.',img:'01-Transcribing-AlphaCMO-AI-Marketing-Automation-Agent-115.jpg'},
+{name:'Composing',msg:'Crafting the narrative arc and dialogue from scratch, shaping every word to land with the exact emotional weight your audience needs.',img:'02-Composing-AlphaCMO-AI-Marketing-Automation-Agent-118.jpg'},
+{name:'Architecting',msg:'Designing the structural blueprint of the entire video \u2014 pacing, segments, transitions \u2014 so every second serves a strategic purpose.',img:'03-Architecting-AlphaCMO-AI-Marketing-Automation-Agent-114.jpg'},
+{name:'Scheming',msg:'Mapping out the distribution angles, hook sequences, and platform-specific tactics before a single frame is produced.',img:'04-Scheming-AlphaCMO-AI-Marketing-Automation-Agent-120.jpg'},
+{name:'Orchestrating',msg:'Coordinating every moving piece \u2014 assets, talent, music, graphics \u2014 into a single cohesive production pipeline.',img:'05-Orchestrating-AlphaCMO-AI-Marketing-Automation-Agent-116.jpg'},
+{name:'Mastering',msg:'Running the final quality pass across audio, color, and compression to ensure broadcast-grade output every time.',img:'06-Mastering-AlphaCMO-AI-Marketing-Automation-Agent-106.jpg'},
+{name:'Splicing',msg:'Cutting and rejoining footage at exact edit points to maintain continuity that the viewer never consciously notices.',img:'07-Splicing-AlphaCMO-AI-Marketing-Automation-Agent-126.jpg'},
+{name:'Rigging',msg:'Building the skeletal control system inside a digital avatar so every joint, muscle, and micro-expression moves naturally.',img:'08-Rigging-AlphaCMO-AI-Marketing-Automation-Agent-109.jpg'},
+{name:'Lip-Syncing',msg:'Aligning mouth shapes to audio phonemes frame by frame until the avatar\u2019s speech is indistinguishable from a real human.',img:'09-Lip-Syncing-AlphaCMO-AI-Marketing-Automation-Agent-101.jpg'},
+{name:'Deepfaking',msg:'Mapping photorealistic facial textures and expressions onto the avatar so the final output passes as authentic on-camera talent.',img:'10-Deepfaking-AlphaCMO-AI-Marketing-Automation-Agent-108.jpg'},
+{name:'Motion-Capturing',msg:'Translating real human gestures, posture, and body language onto the digital avatar so movement feels alive and unscripted.',img:'11-Motion-Capturing-AlphaCMO-AI-Marketing-Automation-Agent-107.jpg'},
+{name:'Weaponizing',msg:'Taking a finished asset and reverse-engineering the platform algorithm to maximize reach, turning a single video into an unstoppable distribution event.',img:'12-Weaponizing-AlphaCMO-AI-Marketing-Automation-Agent-103.jpg'},
+{name:'Psych-Profiling',msg:'Building deep behavioral models of the target audience so every hook, cut, and CTA exploits exactly how they process information.',img:'13-Psych-Profiling-AlphaCMO-AI-Marketing-Automation-Agent-104.jpg'},
+{name:'War-Gaming',msg:'Simulating competitor responses and audience reactions before launch, stress-testing the campaign so it dominates every scenario.',img:'14-War-Gaming-AlphaCMO-AI-Marketing-Automation-Agent-110.jpg'},
+{name:'Mythmaking',msg:'Engineering a narrative so magnetic around the brand that your audience doesn\u2019t just watch \u2014 they adopt it as part of their own identity.',img:'15-Mythmaking-AlphaCMO-AI-Marketing-Automation-Agent-112.jpg'},
+{name:'Narrative-Hijacking',msg:'Intercepting trending cultural moments and redirecting the conversation so your brand becomes the center of the discourse.',img:'16-Narrative-Hijacking-AlphaCMO-AI-Marketing-Automation-Agent-113.jpg'},
+{name:'Mindshare-Sieging',msg:'Flooding every touchpoint with coordinated messaging until your brand occupies so much mental real estate the competition becomes invisible.',img:'17-Mindshare-Sieging-AlphaCMO-AI-Marketing-Automation-Agent-102.jpg'},
+{name:'Signal-Jamming',msg:'Strategically timing and positioning content to drown out competitor messaging and own the entire conversation window.',img:'18-Signal-Jamming-AlphaCMO-AI-Marketing-Automation-Agent-117.jpg'},
+{name:'Storyboarding',msg:'Sketching each shot and scene transition frame by frame, locking the visual rhythm before production begins.',img:'19-Storyboarding-AlphaCMO-AI-Marketing-Automation-Agent-105.jpg'},
+{name:'Color-Grading',msg:'Manipulating every hue, shadow, and highlight to establish a cinematic tone that makes your brand feel unmistakable.',img:'20-Color-Grading-AlphaCMO-AI-Marketing-Automation-Agent-125.jpg'},
+{name:'Sequencing',msg:'Arranging clips, b-roll, and overlays into a locked timeline where every cut hits at the precise millisecond.',img:'21-Sequencing-AlphaCMO-AI-Marketing-Automation-Agent-119.jpg'},
+{name:'Rendering',msg:'Compiling all layers, effects, and audio into a final pixel-perfect export ready for delivery.',img:'22-Rendering-AlphaCMO-AI-Marketing-Automation-Agent-124.jpg'},
 ];
 gs.forEach(s=>{const i=new Image();i.src=imgBase+encodeURIComponent(s.img)});
 const gImg=document.getElementById('g-img');
