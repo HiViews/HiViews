@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DarkOps Live — Watch Your AI Video Engine Work in Real Time</title>
-    <meta name="description" content="Watch DarkOps discover viral trends, generate avatar videos, and publish to Instagram — live.">
+    <meta name="description" content="Watch DarkOps discover viral trends, generate avatar videos, and publish to Instagram — live. 10 AI agents running 24/7.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://darkops.team/live">
+    <meta property="og:title" content="DarkOps Live — Watch the Engine Work in Real Time">
+    <meta property="og:description" content="10 AI agents finding viral trends, creating videos, and publishing to Instagram — right now. Watch it live.">
+    <meta property="og:site_name" content="DarkOps">
+    <meta property="og:image" content="https://darkops.team/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DarkOps Live — Watch the Engine Work">
+    <meta name="twitter:description" content="10 AI agents. Viral trends. Avatar videos. Publishing to Instagram — live.">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,6 +23,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        ::selection{background:rgba(0,255,136,.2);color:#fff}
         :root{
             --bg:#000;--bg2:#0a0a0a;--bg3:#0d0d0d;
             --t1:#fff;--t2:#b0b0b0;--t3:#777;
@@ -20,13 +32,13 @@
             --purple:#8a8aff;--purple-d:rgba(138,138,255,.15);
             --border:#1a1a1a;--f:'Inter',sans-serif;--fc:'Fira Code',monospace;
         }
-        html{font-size:13px;-webkit-font-smoothing:antialiased}
+        html{font-size:13px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
         body{background:var(--bg);color:var(--t1);font-family:var(--f);min-height:100vh;overflow-x:hidden}
         body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
         /* Terminal */
         .term{position:relative;z-index:2;background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 20px;font-family:var(--fc);font-size:12px;color:var(--t3);line-height:1.35;overflow:hidden;max-height:72px}
-        .term .ln{white-space:nowrap}.term .ln::before{content:'>';margin-right:10px;opacity:.5}.term .ln.on{color:var(--green)}
+        .term .ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.term .ln::before{content:'\203A';margin-right:10px;opacity:.5}.term .ln.on{color:var(--green)}.term .ln.on::before{opacity:1}
 
         /* Header */
         .hdr{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border)}
@@ -144,8 +156,8 @@
         .chat-cta-body{padding:16px 14px}
         .chat-cta-msg{font-size:12px;color:var(--t2);line-height:1.6;background:var(--green-d);border:1px solid rgba(0,255,136,.1);border-radius:12px;border-bottom-left-radius:3px;padding:12px 14px;margin-bottom:14px}
         .chat-cta-msg strong{color:var(--green)}
-        .chat-cta-btn{display:block;width:100%;padding:12px;font-family:var(--f);font-size:13px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:8px;cursor:pointer;transition:all .2s;text-align:center}
-        .chat-cta-btn:hover{background:#00e67a;box-shadow:0 0 16px var(--green-g)}
+        .chat-cta-btn{display:block;width:100%;padding:12px;font-family:var(--f);font-size:13px;font-weight:700;color:var(--t2);background:transparent;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;text-align:center}
+        .chat-cta-btn:hover{color:var(--green);border-color:var(--green);background:var(--green-d)}
 
         /* Offer Modal */
         .offer-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
@@ -185,8 +197,9 @@
         }
 
         /* Bottom bar (mobile) */
-        .bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;padding:12px 16px;background:var(--bg);border-top:1px solid var(--border)}
-        .bottom-bar a{display:block;width:100%;padding:14px;font-family:var(--f);font-size:14px;font-weight:600;color:#000;background:var(--green);border-radius:8px;text-align:center;text-decoration:none}
+        .bottom-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;padding:12px 16px;background:rgba(0,0,0,.95);backdrop-filter:blur(12px);border-top:1px solid var(--border)}
+        .bottom-bar a{display:block;width:100%;padding:14px;font-family:var(--f);font-size:14px;font-weight:600;color:var(--green);background:var(--green-d);border:1px solid rgba(0,255,136,.15);border-radius:8px;text-align:center;text-decoration:none;transition:all .2s}
+        .bottom-bar a:hover{background:rgba(0,255,136,.15);border-color:rgba(0,255,136,.3)}
         @media(max-width:700px){.bottom-bar{display:block}body{padding-bottom:72px}}
     </style>
     <script>
@@ -226,49 +239,49 @@
         <div class="ph"><span class="pt">Activity Feed</span><span class="pc">DarkOps narrating</span></div>
         <div id="activityFeed">
             <div class="feed-item" data-event-type="video.published">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Published <span class="code">K9M1</span> to <strong>@Nextgen</strong>'s Instagram. Hook: "Your funnel isn't broken..."</div>
                     <div class="feed-time">2m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="video.completed">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Video <span class="code">A7K2</span> compositing complete for <strong>@Nextgen</strong>. Sending for approval.</div>
                     <div class="feed-time">5m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="script.rewritten">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Rewrote <span class="code">N3S7</span> for <strong>@FunnelForge</strong>. Score: 91. This one's going to hit.</div>
                     <div class="feed-time">8m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="scout.completed">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Overnight scout complete. Found <strong>23 scripts</strong> across 8 niches. 7 promoted to production.</div>
                     <div class="feed-time">14m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="video.published">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Published <span class="code">W4R8</span> to <strong>@RevenueStack</strong>. 3rd reel this morning.</div>
                     <div class="feed-time">22m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="capture.created">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg">Captured <span class="code">P6Y2</span> from #contentcreator. Score: 74. Promoting for <strong>@RevenueStack</strong>.</div>
                     <div class="feed-time">31m ago</div>
                 </div>
             </div>
             <div class="feed-item" data-event-type="video.approved">
-                <div class="feed-avi">α</div>
+                <div class="feed-avi">D</div>
                 <div class="feed-body">
                     <div class="feed-msg"><strong>@GrowthLab</strong> approved <span class="code">T2Q5</span>. Publishing now.</div>
                     <div class="feed-time">45m ago</div>
@@ -519,6 +532,5 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementB
  *    const slug = window.location.pathname.split('/live/')[1];
  */
 </script>
-<script src="/chat-widget.js" defer></script>
 </body>
 </html>
