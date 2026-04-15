@@ -3,266 +3,1327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkOps — Your AI CMO That Never Sleeps</title>
-    <meta name="description" content="DarkOps finds viral trends, writes scripts, creates avatar videos, and publishes — all while you sleep. $750/month. No equity. No content team.">
+    <title>DarkOps — Your AI Twin That Goes Viral While You Sleep</title>
+
+    <!-- SEO + Social -->
+    <meta name="description" content="DarkOps is your AI Twin — it scouts viral trends, writes scripts in your voice, creates avatar videos, and publishes to Instagram while you sleep. Get 3 free viral scripts in 30 seconds.">
+    <meta name="keywords" content="AI twin, AI CMO, viral content, Instagram Reels, AI avatar video, autonomous marketing, DarkOps">
+    <link rel="canonical" href="https://darkops.team/new">
+
+    <!-- Open Graph (Meta Ads link previews) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://darkops.team/new">
+    <meta property="og:title" content="DarkOps — Your AI Twin That Goes Viral While You Sleep">
+    <meta property="og:description" content="Your AI twin scouts viral trends overnight, writes scripts in your voice, creates avatar videos, and publishes — while you sleep. 3 free scripts in 30 seconds.">
+    <meta property="og:site_name" content="DarkOps">
+    <meta property="og:image" content="https://darkops.team/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DarkOps — Your AI Twin That Goes Viral While You Sleep">
+    <meta name="twitter:description" content="Your AI twin that goes viral while you sleep. 3 free viral scripts in 30 seconds.">
+    <meta name="twitter:image" content="https://darkops.team/og-image.png">
+
+    <!-- Mobile browser chrome -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- =====================================================
-         THRIVECART SETUP — REPLACE THESE 2 VALUES:
-         1. YOUR_SUBDOMAIN = your ThriveCart subdomain
-         2. YOUR_PRODUCT_ID = your product ID number
-         Find product ID next to your product on the ThriveCart dashboard
-         ===================================================== -->
-    <script async src="//YOUR_SUBDOMAIN.thrivecart.com/embed/v1/thrivecart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#000;--t1:#fff;--t2:#999;--t3:#555;--green:#00ff88;--green-d:rgba(0,255,136,.12);--green-g:rgba(0,255,136,.25);--border:#1a1a1a;--card:#0a0a0a}
-        html{font-size:16px;-webkit-font-smoothing:antialiased}
-        body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;line-height:1.6}
-        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 24px}
+        ::selection {
+            background: rgba(0, 255, 136, 0.2);
+            color: #ffffff;
+        }
 
-        /* Nav */
-        nav{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        nav .logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
-        nav a{color:var(--t2);font-size:13px;text-decoration:none;font-weight:500;transition:color .2s}
-        nav a:hover{color:var(--t1)}
+        :root {
+            --bg: #000000;
+            --bg-elevated: #0a0a0a;
+            --bg-card: #080808;
+            --text-primary: #ffffff;
+            --text-secondary: #999999;
+            --text-tertiary: #555555;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.12);
+            --accent-glow: rgba(0, 255, 136, 0.25);
+            --border: #1a1a1a;
+            --border-hover: #2a2a2a;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-code: 'Fira Code', monospace;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-        /* Hero */
-        .hero{padding:80px 0 60px;text-align:center}
-        .hero .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--t2);margin-bottom:24px}
-        .hero .badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:p 2s ease-in-out infinite}
-        @keyframes p{0%,100%{opacity:1}50%{opacity:.4}}
-        .hero h1{font-size:clamp(36px,7vw,56px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:20px}
-        .hero h1 em{font-style:normal;color:var(--green)}
-        .hero .sub{font-size:18px;color:var(--t2);max-width:540px;margin:0 auto 32px;line-height:1.6}
-        .hero .sub strong{color:var(--t1);font-weight:600}
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-        /* CTA button */
-        .cta-btn{display:inline-flex;align-items:center;padding:16px 36px;font-family:inherit;font-size:16px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:8px;cursor:pointer;transition:all .2s;text-decoration:none;letter-spacing:-.2px}
-        .cta-btn:hover{background:#00e67a;box-shadow:0 0 30px var(--green-g);transform:translateY(-1px)}
-        .cta-sub{font-size:13px;color:var(--t3);margin-top:12px}
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
 
-        /* Stats bar */
-        .stats{display:flex;justify-content:center;gap:48px;padding:48px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0 0 64px}
-        .stat{text-align:center}
-        .stat-n{font-size:32px;font-weight:800;color:var(--green)}
-        .stat-l{font-size:12px;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+        /* ---- Film grain ---- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* Section */
-        section{padding:48px 0}
-        section h2{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
-        section .section-sub{font-size:15px;color:var(--t2);margin-bottom:32px}
+        /* ---- Hero glow ---- */
+        .hero-glow {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse at center, rgba(0,255,136,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* How it works */
-        .step{display:flex;gap:16px;margin-bottom:28px}
-        .step-num{width:32px;height:32px;border-radius:50%;background:var(--green-d);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
-        .step-content h3{font-size:16px;font-weight:700;margin-bottom:4px}
-        .step-content p{font-size:14px;color:var(--t2);line-height:1.6}
+        /* ---- Layout ---- */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 24px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* Pricing */
-        .pricing{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
-        .price-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;transition:border-color .2s}
-        .price-card:hover{border-color:var(--green)}
-        .price-card.featured{border-color:var(--green);position:relative}
-        .price-card.featured::before{content:'FOUNDING MEMBER';position:absolute;top:-10px;left:24px;font-size:10px;font-weight:700;letter-spacing:1px;color:#000;background:var(--green);padding:2px 10px;border-radius:4px}
-        .price-card .price{font-size:36px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
-        .price-card .price span{font-size:16px;font-weight:400;color:var(--t2)}
-        .price-card .desc{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.5}
-        .price-card ul{list-style:none;margin-bottom:24px}
-        .price-card li{font-size:13px;color:var(--t2);padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-        .price-card li::before{content:'✓';color:var(--green);margin-right:8px;font-weight:700}
-        .price-card li:last-child{border-bottom:none}
-        .price-card .cta-btn{width:100%;justify-content:center;font-size:14px;padding:12px}
+        /* ---- Terminal bar ---- */
+        .terminal-bar {
+            position: relative;
+            z-index: 2;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 24px;
+            font-family: var(--font-code);
+            font-size: 11px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            overflow: hidden;
+            max-height: 80px;
+        }
 
-        /* FAQ */
-        .faq{margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:16px}
-        .faq summary{font-size:15px;font-weight:600;cursor:pointer;padding:8px 0;list-style:none;display:flex;justify-content:space-between;align-items:center}
-        .faq summary::after{content:'+';font-size:20px;color:var(--t3);transition:transform .2s}
-        .faq[open] summary::after{transform:rotate(45deg)}
-        .faq p{font-size:14px;color:var(--t2);line-height:1.7;padding:8px 0 4px}
+        .terminal-bar .ln {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-        /* Footer */
-        footer{border-top:1px solid var(--border);padding:32px 0;margin-top:48px}
-        footer p{font-size:12px;color:var(--t3);text-align:center}
-        footer a{color:var(--t3);text-decoration:none}
+        .terminal-bar .ln::before {
+            content: '\203A';
+            margin-right: 8px;
+            opacity: 0.5;
+        }
 
-        @media(max-width:640px){
-            .hero{padding:48px 0 40px}
-            .stats{gap:24px}
-            .stat-n{font-size:24px}
-            .pricing{grid-template-columns:1fr}
+        .terminal-bar .ln.on {
+            color: var(--accent);
+        }
+
+        .terminal-bar .ln.on::before {
+            opacity: 1;
+        }
+
+        /* ---- Staggered entrance ---- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeUp 0.7s var(--ease-out) forwards;
+        }
+
+        .fade-in.d1 { animation-delay: 0.1s; }
+        .fade-in.d2 { animation-delay: 0.2s; }
+        .fade-in.d3 { animation-delay: 0.35s; }
+        .fade-in.d4 { animation-delay: 0.5s; }
+        .fade-in.d5 { animation-delay: 0.65s; }
+        .fade-in.d6 { animation-delay: 0.8s; }
+        .fade-in.d7 { animation-delay: 0.95s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- Live banner ---- */
+        .live-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: var(--bg-elevated);
+            border: 0px solid #555555;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: border-color 0.3s, color 0.3s, background 0.3s;
+            width: fit-content;
+            margin: 0 auto 40px;
+            align-self: center;
+        }
+
+        .live-banner:hover {
+            border-color: #333333;
+            color: var(--text-primary);
+            background: #090909;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .live-banner-arrow {
+            color: var(--text-tertiary);
+            transition: transform 0.3s var(--ease-out), color 0.3s;
+        }
+
+        .live-banner:hover .live-banner-arrow {
+            transform: translateX(3px);
+            color: var(--accent);
+        }
+
+        /* ---- Hero ---- */
+        .hero { flex: 1; }
+
+        .hero-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+        }
+
+        /* ---- Logo — entire word, dark fade, Ops is NOT green ---- */
+        .logo {
+            display: inline-block;
+            font-family: var(--font-body);
+            font-weight: 900;
+            font-size: clamp(48px, 10vw, 72px);
+            letter-spacing: -2px;
+            line-height: 1;
+            text-decoration: none;
+            user-select: none;
+            background: linear-gradient(180deg, #ffffff 40%, #555555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: filter 0.3s ease;
+        }
+
+        .logo:hover {
+            filter: brightness(1.2);
+        }
+
+        .signin-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .signin-link:hover { color: var(--text-primary); }
+
+        /* ---- Tagline ---- */
+        .tagline {
+            font-size: clamp(15px, 3.2vw, 19px);
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            letter-spacing: -0.2px;
+            line-height: 1.5;
+        }
+
+        .tagline em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        /* ---- Description ---- */
+        .description {
+            font-size: 15px;
+            line-height: 1.75;
+            color: var(--text-tertiary);
+            max-width: 520px;
+            margin-bottom: 32px;
+        }
+
+        /* ---- Handle input ---- */
+        .handle-form { margin-bottom: 32px; }
+
+        .handle-input-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            max-width: 520px;
+            animation: idleGlow 3s ease-in-out infinite;
+        }
+
+        /* Subtle idle glow — draws eye to the primary action */
+        @keyframes idleGlow {
+            0%, 100% { box-shadow: 0 0 0px transparent; }
+            50% { box-shadow: 0 0 20px rgba(0,255,136,0.06), 0 0 4px rgba(0,255,136,0.04); }
+        }
+
+        .handle-input-wrap:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent), 0 0 24px rgba(0,255,136,0.08);
+            animation: none;
+        }
+
+        .handle-at {
+            font-family: var(--font-code);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            padding: 0 2px 0 16px;
+            user-select: none;
+            transition: color 0.3s;
+        }
+
+        .handle-input-wrap:focus-within .handle-at { color: var(--accent); }
+
+        .handle-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--font-code);
+            font-size: 16px;
+            color: var(--text-primary);
+            padding: 13px 8px;
+            min-width: 0;
+        }
+
+        .handle-input::placeholder { color: var(--text-tertiary); }
+
+        .handle-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 13px 24px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 700;
+            color: #000;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            white-space: nowrap;
+            letter-spacing: -0.2px;
+            flex-shrink: 0;
+        }
+
+        .handle-submit:hover {
+            background: #00e67a;
+            box-shadow: 0 0 20px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(-1px);
+        }
+
+        .handle-submit:active { transform: translateY(0); }
+
+        .cta-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cta-sub a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .cta-sub a:hover { opacity: 0.75; }
+
+        /* ---- Stats ---- */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 36px;
+            max-width: 520px;
+        }
+
+        .stat {
+            background: var(--bg-card);
+            padding: 20px 8px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .stat:hover { background: #0d0d0d; }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-value .green { color: var(--accent); }
+
+        .stat-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+        }
+
+        /* ---- Pipeline ---- */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 48px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .pipeline::-webkit-scrollbar { display: none; }
+
+        .pipeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-width: 100px;
+        }
+
+        .pipeline-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .pipeline-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--text-secondary);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.3s;
+        }
+
+        .pipeline-step:hover .pipeline-icon {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0,255,136,0.08);
+        }
+
+        .pipeline-step:hover .pipeline-icon svg { stroke: var(--accent); }
+
+        .pipeline-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-tertiary);
+        }
+
+        .pipeline-arrow {
+            color: #333333;
+            font-size: 18px;
+            padding: 0 12px;
+            user-select: none;
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            padding: 40px 0 32px;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text-primary); }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: 14px;
+            opacity: 0.5;
+        }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px 32px 32px;
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            transform: translateY(24px) scale(0.96);
+            transition: transform 0.4s var(--ease-spring);
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 0 60px rgba(0,255,136,0.06), 0 24px 48px rgba(0,0,0,0.4);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-tertiary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, color 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            border-color: var(--text-tertiary);
+            color: var(--text-primary);
+        }
+
+        .modal-handle {
+            font-family: var(--font-code);
+            font-size: 14px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .modal-field { margin-bottom: 16px; }
+
+        .modal-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+
+        .modal-field input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .modal-field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .modal-field input::placeholder { color: var(--text-tertiary); }
+
+        .modal-submit {
+            width: 100%;
+            padding: 15px 24px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 700;
+            color: #000;
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            margin-top: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .modal-submit:hover {
+            background: #00e67a;
+            box-shadow: 0 0 28px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .modal-submit:active { transform: translateY(0); }
+
+        .modal-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal-fine {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-align: center;
+            margin-top: 16px;
+            opacity: 0.6;
+        }
+
+        /* ---- Error ---- */
+        .error-shake { animation: shake 0.35s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+
+        .input-error {
+            border-color: #ff4444 !important;
+            box-shadow: 0 0 0 1px #ff4444 !important;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 520px) {
+            .container { padding: 0 16px; }
+            .terminal-bar { padding: 8px 16px; font-size: 10px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .stat { padding: 16px 8px; }
+            .stat-value { font-size: 22px; }
+            .pipeline-step { min-width: 80px; }
+            .pipeline-icon { width: 40px; height: 40px; border-radius: 12px; }
+            .pipeline-icon svg { width: 18px; height: 18px; }
+            .pipeline-arrow { padding: 0 6px; font-size: 14px; }
+            .handle-submit { padding: 13px 16px; font-size: 13px; }
+            .modal { padding: 32px 20px 24px; border-radius: 16px; }
+            .live-banner { font-size: 12px; padding: 8px 16px; }
+        }
+
+        @media (max-width: 380px) {
+            .handle-submit .btn-label { display: none; }
+            .handle-submit .btn-arrow { display: inline; }
+        }
+
+        @media (min-width: 381px) {
+            .handle-submit .btn-arrow { display: none; }
+        }
+
+        /* ============================================
+           CHAT BUBBLE + PANEL
+           ============================================ */
+        .chat-bubble {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 900;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+        }
+
+        .chat-bubble svg {
+            width: 24px;
+            height: 24px;
+            stroke: #999999;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.3s;
+        }
+
+        .chat-bubble:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0,255,136,0.15);
+        }
+
+        .chat-bubble:hover svg {
+            stroke: var(--accent);
+        }
+
+        .chat-bubble:active {
+            transform: scale(0.93);
+        }
+
+        .chat-bubble.open {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+        }
+
+        /* Chat panel */
+        .chat-panel {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 901;
+            width: 380px;
+            max-height: 480px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px) scale(0.95);
+            transform-origin: bottom right;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.35s var(--ease-spring);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+        }
+
+        .chat-panel.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chat-panel-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--accent-glow);
+            flex-shrink: 0;
+        }
+
+        .chat-panel-title {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .chat-panel-close {
+            margin-left: auto;
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s, color 0.2s;
+            line-height: 1;
+        }
+
+        .chat-panel-close:hover {
+            border-color: var(--text-tertiary);
+            color: var(--text-primary);
+        }
+
+        .chat-panel-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-msg {
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid rgba(0, 255, 136, 0.12);
+            border-radius: 14px;
+            padding: 16px 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .chat-msg strong {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .chat-panel-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .chat-panel-input input {
+            flex: 1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-panel-input input::placeholder { color: var(--text-tertiary); }
+
+        .chat-panel-input input:focus { border-color: var(--accent); }
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--accent);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-send:hover {
+            background: #00e67a;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .chat-send svg {
+            width: 20px;
+            height: 20px;
+            stroke: #000;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Chat responsive */
+        @media (max-width: 440px) {
+            .chat-panel {
+                right: 12px;
+                left: 12px;
+                bottom: 12px;
+                width: auto;
+                max-height: calc(100dvh - 80px);
+            }
+            .chat-bubble {
+                bottom: 16px;
+                right: 16px;
+                width: 50px;
+                height: 50px;
+            }
+            .chat-bubble svg { width: 20px; height: 20px; }
         }
     </style>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
-<nav>
-    <div class="logo">DarkOps</div>
-    <a href="/live">Watch it live</a>
-</nav>
+    <div class="hero-glow" aria-hidden="true"></div>
 
-<div class="wrap">
+    <!-- Terminal bar -->
+    <div class="terminal-bar" id="term" aria-hidden="true">
+        <div class="ln">Scanning #marketing for viral talking-head reels...</div>
+        <div class="ln">Found 12 reels (original audio, 1000+ likes, 15-90s)</div>
+        <div class="ln">Transcribing GR-4821 via transcription engine... score: 87</div>
+        <div class="ln on">Rewriting script for @nextgen brand voice...</div>
+    </div>
 
-<!-- Hero -->
-<section class="hero">
-    <div class="badge"><span class="dot"></span>Now accepting founding members</div>
-    <h1>Your AI CMO that <em>never sleeps</em></h1>
-    <p class="sub">DarkOps finds viral trends at 2AM, writes scripts in your brand voice, creates avatar videos, and publishes to Instagram — <strong>all while you sleep.</strong></p>
+    <div class="container">
 
-    <!-- THRIVECART TRIGGER — replace YOUR_SUBDOMAIN and YOUR_PRODUCT_ID -->
-    <a href="javascript:;" class="cta-btn thrivecart-button" data-thrivecart-account="YOUR_SUBDOMAIN" data-thrivecart-product="YOUR_PRODUCT_ID">Get DarkOps →</a>
-    <p class="cta-sub">From $497/month · No contracts · Cancel anytime</p>
-</section>
+        <!-- Live banner -->
+        <a class="live-banner fade-in d1" href="/live">
+            <span class="live-dot"></span>
+            <span>Watch DarkOps work live</span>
+            <span class="live-banner-arrow">&rarr;</span>
+        </a>
 
-<!-- Stats -->
-<div class="stats">
-    <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Always on</div></div>
-    <div class="stat"><div class="stat-n">2AM</div><div class="stat-l">Nightly scout</div></div>
-    <div class="stat"><div class="stat-n">95%</div><div class="stat-l">Hands-off</div></div>
-    <div class="stat"><div class="stat-n">$0</div><div class="stat-l">Equity</div></div>
-</div>
+        <section class="hero">
 
-<!-- How it works -->
-<section>
-    <h2>How it works</h2>
-    <p class="section-sub">DarkOps runs your content engine in 4 steps. You just approve.</p>
+            <div class="hero-header fade-in d2">
+                <a class="logo" href="/">DarkOps</a>
+                <a class="signin-link" href="/login">Sign in</a>
+            </div>
 
-    <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-content">
-            <h3>Scout</h3>
-            <p>Every night at 2AM, DarkOps scans Instagram for viral talking-head reels in your niche. Filters for original audio, 1,000+ engagement, and speech content. Ranks by viral potential.</p>
+            <p class="tagline fade-in d3">3 viral scripts. Written by your <em>AI Twin</em>. Ready in 30 seconds.</p>
+
+            <p class="description fade-in d3">
+                10 autonomous agents scout viral trends overnight, write scripts in your voice,
+                generate avatar videos, and publish to Instagram — before you wake up.
+            </p>
+
+            <!-- Handle input -->
+            <div class="handle-form fade-in d4" id="handleForm">
+                <div class="handle-input-wrap" id="handleWrap">
+                    <span class="handle-at">@</span>
+                    <input
+                        type="text"
+                        class="handle-input"
+                        id="handleInput"
+                        placeholder="yourinstagram"
+                        autocomplete="off"
+                        autocapitalize="none"
+                        autocorrect="off"
+                        spellcheck="false"
+                        enterkeyhint="go"
+                    >
+                    <button class="handle-submit" id="handleBtn" type="button">
+                        <span class="btn-label">Get 3 Free Scripts &rarr;</span>
+                        <span class="btn-arrow">&rarr;</span>
+                    </button>
+                </div>
+                <p class="cta-sub">
+                    100% free &middot; No card required &middot;
+                    <a href="/live">or watch it work live &rarr;</a>
+                </p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats fade-in d5">
+                <div class="stat">
+                    <div class="stat-value"><span class="green" data-count="10">0</span></div>
+                    <div class="stat-label">AI Agents</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value"><span data-count="30">0</span>+</div>
+                    <div class="stat-label">Videos / Mo</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">~$<span data-count="16">0</span></div>
+                    <div class="stat-label">Per Video</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value"><span data-count="0">0</span></div>
+                    <div class="stat-label">Cameras</div>
+                </div>
+            </div>
+
+            <!-- Pipeline -->
+            <div class="pipeline fade-in d6">
+                <div class="pipeline-step">
+                    <div class="pipeline-icon">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><path d="M8 11h6"/><path d="M11 8v6"/></svg>
+                    </div>
+                    <span class="pipeline-label">Scout</span>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step">
+                    <div class="pipeline-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    </div>
+                    <span class="pipeline-label">Rewrite</span>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step">
+                    <div class="pipeline-icon">
+                        <svg viewBox="0 0 24 24"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+                    </div>
+                    <span class="pipeline-label">Generate</span>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step">
+                    <div class="pipeline-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                    </div>
+                    <span class="pipeline-label">Publish</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="fade-in d7">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/live">Live Demo</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+            <p class="footer-copy">&copy; 2026 DarkOps &middot; New Empire AI</p>
+        </footer>
+    </div>
+
+    <!-- ============================================
+         CHAT BUBBLE + PANEL
+         ============================================ -->
+    <div class="chat-bubble" id="chatBubble" aria-label="Talk to DarkOps Commander">
+        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-panel-header">
+            <span class="chat-panel-dot"></span>
+            <span class="chat-panel-title">Talk to DarkOps Commander</span>
+            <button class="chat-panel-close" id="chatClose" aria-label="Close chat">&times;</button>
+        </div>
+        <div class="chat-panel-body">
+            <div class="chat-msg">
+                Hey &mdash; I'm <strong>DarkOps</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.
+            </div>
+        </div>
+        <div class="chat-panel-input">
+            <input type="text" id="chatInput" placeholder="Ask DarkOps anything..." autocomplete="off">
+            <button class="chat-send" id="chatSend" aria-label="Send message">
+                <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
         </div>
     </div>
-    <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-content">
-            <h3>Rewrite</h3>
-            <p>The best scripts get rewritten for your brand voice, your audience, and your CTA. Same viral hook structure, completely original content.</p>
+
+    <!-- ============================================
+         NAME / EMAIL MODAL
+         ============================================ -->
+    <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-label="Get your free scripts">
+        <div class="modal">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <div class="modal-handle" id="modalHandle">@handle</div>
+            <h2>3 viral scripts incoming.</h2>
+            <p class="modal-desc">
+                Your AI Twin is scanning your niche right now.
+                Where should we send the scripts?
+            </p>
+            <div class="modal-field">
+                <label for="nameInput">Your name</label>
+                <input type="text" id="nameInput" placeholder="First name" autocomplete="given-name">
+            </div>
+            <div class="modal-field">
+                <label for="emailInput">Email</label>
+                <input type="email" id="emailInput" placeholder="you@company.com" autocomplete="email" inputmode="email">
+            </div>
+            <button class="modal-submit" id="modalSubmit" type="button">
+                Deploy My AI Twin &rarr;
+            </button>
+            <p class="modal-fine">Free &middot; No card required &middot; Scripts in ~30 seconds</p>
         </div>
     </div>
-    <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-content">
-            <h3>Create</h3>
-            <p>AI avatar videos are generated in 1080x1920 vertical format with branded overlays, synced captions, and your visual identity. Professional quality, zero cameras.</p>
-        </div>
-    </div>
-    <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-content">
-            <h3>Publish</h3>
-            <p>You approve in Slack with one word. DarkOps publishes to Instagram Reels automatically. TikTok and YouTube Shorts coming soon.</p>
-        </div>
-    </div>
-</section>
 
-<!-- The pitch -->
-<section>
-    <h2>A CMO costs $250K/year</h2>
-    <p class="section-sub">An agency costs $15K/month. A content team costs headcount and equity. DarkOps costs a fraction and works 24/7.</p>
+    <script>
+    (function() {
+        'use strict';
 
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px">
-        <p style="font-size:15px;color:var(--t2);line-height:1.8">A reel went viral in your niche yesterday. Your competitor used it. They rewrote it for their audience, published an avatar video, and got 40K views.</p>
-        <p style="font-size:15px;color:var(--t2);line-height:1.8;margin-top:12px">You didn't even see it.</p>
-        <p style="font-size:15px;color:var(--t1);line-height:1.8;margin-top:12px;font-weight:600">DarkOps would have caught it at 2AM, rewritten it by 2:15AM, and had a video ready for your approval by morning.</p>
-    </div>
-</section>
+        /* ---- Terminal cycling (OPSEC-clean) ---- */
+        var lines = [
+            'Scanning #contentmarketing for viral reels...',
+            'Found 11 reels \u00B7 original audio \u00B7 15-90s window',
+            'Transcribing GR-4838 via transcription engine... 47s',
+            'Viral score: 91 \u00B7 hook type: challenge',
+            'Task created \u2192 GR-4838 \u2192 Scout list',
+            'Creator triggered: GR-4821 \u2192 promoted',
+            'Reading brand voice config for @nextgen...',
+            'Script rewrite complete \u2192 delivered for review',
+            'Approved \u2192 avatar engine generating...',
+            'AI twin rendering \u2192 1080\u00D71920 vertical',
+            'Avatar engine processing (2m 14s)',
+            'Avatar engine complete \u2713',
+            'Compositing overlays \u2192 captions + lower-third',
+            'Rendering final \u2192 branded 1080\u00D71920',
+            'GR-4821-final.mp4 \u2192 delivered for approval',
+            'Approved \u2192 publishing to Instagram Reels',
+            'Published \u2713 \u2192 GR-4821 live',
+            'Sentinel tracking view velocity...',
+            'GR-4839 \u2192 score: 74 \u2192 task created',
+            'Scanning #agencylife for viral reels...',
+            'Found 6 talking-head reels (original audio)',
+            'Transcribing GR-4841... viral score: 83',
+            'Overnight scout complete \u2192 3 ops queued for briefing',
+            'Morning briefing deployed \u2192 3 ranked opportunities',
+        ];
 
-<!-- Pricing -->
-<section>
-    <h2>Pricing</h2>
-    <p class="section-sub">Simple. No setup fees. No contracts. Cancel anytime.</p>
+        var termEl = document.getElementById('term');
+        var lineIdx = 0;
 
-    <div class="pricing">
-        <div class="price-card featured">
-            <div class="price">$497<span>/mo</span></div>
-            <div class="desc">Founding member pricing. Limited to 10 spots.</div>
-            <ul>
-                <li>Nightly trend scouting (2AM)</li>
-                <li>Unlimited ad-hoc reel processing</li>
-                <li>Brand voice script rewriting</li>
-                <li>AI avatar video creation</li>
-                <li>Branded overlays + captions</li>
-                <li>Instagram Reels publishing</li>
-                <li>Dedicated Slack channel</li>
-                <li>ClickUp pipeline dashboard</li>
-            </ul>
-            <a href="javascript:;" class="cta-btn thrivecart-button" data-thrivecart-account="YOUR_SUBDOMAIN" data-thrivecart-product="YOUR_PRODUCT_ID">Claim Founding Spot →</a>
-        </div>
-        <div class="price-card">
-            <div class="price">$750<span>/mo</span></div>
-            <div class="desc">Full service. Everything in Founding + strategy.</div>
-            <ul>
-                <li>Everything in Founding Member</li>
-                <li>Weekly strategy call (30 min)</li>
-                <li>Custom hashtag strategy</li>
-                <li>Multi-platform publishing</li>
-                <li>Priority support</li>
-                <li>Meta Ads integration (coming soon)</li>
-            </ul>
-            <a href="javascript:;" class="cta-btn thrivecart-button" data-thrivecart-account="YOUR_SUBDOMAIN" data-thrivecart-product="YOUR_PRODUCT_ID" style="background:#fff;color:#000">Get Full Service →</a>
-        </div>
-    </div>
-</section>
+        setInterval(function() {
+            var lns = termEl.querySelectorAll('.ln');
+            for (var i = 0; i < lns.length; i++) lns[i].classList.remove('on');
+            if (lns.length >= 4) lns[0].remove();
+            var el = document.createElement('div');
+            el.className = 'ln on';
+            el.textContent = lines[lineIdx % lines.length];
+            termEl.appendChild(el);
+            lineIdx++;
+        }, 3200);
 
-<!-- FAQ -->
-<section>
-    <h2>Questions</h2>
-    <p class="section-sub"></p>
+        /* ---- Count-up animation ---- */
+        function animateCounters() {
+            var els = document.querySelectorAll('[data-count]');
+            for (var i = 0; i < els.length; i++) {
+                (function(el) {
+                    var target = parseInt(el.getAttribute('data-count'), 10);
+                    if (target === 0) { el.textContent = '0'; return; }
+                    var duration = 1200;
+                    var start = performance.now();
+                    function tick(now) {
+                        var p = Math.min((now - start) / duration, 1);
+                        var ease = 1 - Math.pow(1 - p, 3);
+                        el.textContent = Math.round(target * ease);
+                        if (p < 1) requestAnimationFrame(tick);
+                    }
+                    requestAnimationFrame(tick);
+                })(els[i]);
+            }
+        }
 
-    <details class="faq">
-        <summary>What exactly does DarkOps do?</summary>
-        <p>DarkOps is an AI agent that runs as your fractional CMO. Every night at 2AM, it scans Instagram for viral talking-head reels in your niche, transcribes and scores them, rewrites the best scripts for your brand voice, generates AI avatar videos, and publishes to your Instagram. You control everything from Slack on your phone.</p>
-    </details>
-    <details class="faq">
-        <summary>Do I need to be on camera?</summary>
-        <p>No. DarkOps generates avatar videos using AI. You can use a stock avatar, upload a photo to create a custom avatar, or use your own footage. Zero cameras required.</p>
-    </details>
-    <details class="faq">
-        <summary>How much time does this take me?</summary>
-        <p>About 5 minutes per day. You review scripts and approve videos in Slack. That's it. DarkOps handles discovery, writing, video creation, and publishing.</p>
-    </details>
-    <details class="faq">
-        <summary>What platforms does it publish to?</summary>
-        <p>Instagram Reels at launch. TikTok, YouTube Shorts, and Facebook Reels are coming in the next update.</p>
-    </details>
-    <details class="faq">
-        <summary>Can I cancel anytime?</summary>
-        <p>Yes. No contracts, no setup fees. Cancel from your billing dashboard anytime and your service stops at the end of the billing period.</p>
-    </details>
-    <details class="faq">
-        <summary>What do I need to get started?</summary>
-        <p>A Slack workspace, a ClickUp account (free tier works), and an Instagram business account. We handle everything else during onboarding.</p>
-    </details>
-    <details class="faq">
-        <summary>Is the content original?</summary>
-        <p>Yes. DarkOps discovers viral hook structures and rewrites them entirely for your brand voice, audience, and CTA. The scripts are original — only the proven hook pattern is borrowed.</p>
-    </details>
-</section>
+        var statsEl = document.querySelector('.stats');
+        if (statsEl && 'IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function(entries) {
+                if (entries[0].isIntersecting) {
+                    setTimeout(animateCounters, 600);
+                    obs.disconnect();
+                }
+            }, { threshold: 0.5 });
+            obs.observe(statsEl);
+        } else {
+            setTimeout(animateCounters, 1000);
+        }
 
-<!-- Final CTA -->
-<section style="text-align:center;padding:64px 0">
-    <h2>Stop watching competitors go viral.</h2>
-    <p style="color:var(--t2);font-size:16px;margin:12px 0 28px">Get an AI CMO that finds alpha and creates alpha. 24/7.</p>
-    <a href="javascript:;" class="cta-btn thrivecart-button" data-thrivecart-account="YOUR_SUBDOMAIN" data-thrivecart-product="YOUR_PRODUCT_ID">Get DarkOps →</a>
-    <p class="cta-sub">Founding member pricing: $497/month · 10 spots remaining</p>
-</section>
+        /* ---- Handle input ---- */
+        var handleInput = document.getElementById('handleInput');
+        var handleWrap = document.getElementById('handleWrap');
+        var handleBtn = document.getElementById('handleBtn');
 
-</div>
+        // Desktop autofocus — don't trigger mobile keyboard
+        if (!('ontouchstart' in window) && window.innerWidth > 768) {
+            setTimeout(function() { handleInput.focus(); }, 800);
+        }
 
-<footer><div class="wrap">
-    <p><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · © 2026 DarkOps · New Empire AI</p>
-</div></footer>
+        handleInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); openModal(); }
+        });
+        handleBtn.addEventListener('click', openModal);
 
+        /* ---- Modal ---- */
+        var modalEl = document.getElementById('modal');
+        var modalCloseBtn = modalEl.querySelector('.modal-close');
+        var nameInput = document.getElementById('nameInput');
+        var emailInput = document.getElementById('emailInput');
+        var modalSubmit = document.getElementById('modalSubmit');
+
+        function openModal() {
+            var handle = handleInput.value.trim().replace(/^@/, '');
+            if (!handle || handle.length < 2) {
+                handleWrap.classList.add('error-shake');
+                handleInput.classList.add('input-error');
+                handleInput.focus();
+                setTimeout(function() {
+                    handleWrap.classList.remove('error-shake');
+                    handleInput.classList.remove('input-error');
+                }, 500);
+                return;
+            }
+            document.getElementById('modalHandle').textContent = '@' + handle;
+            modalEl.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(function() { nameInput.focus(); }, 350);
+        }
+
+        function closeModal() {
+            modalEl.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalEl.addEventListener('click', function(e) { if (e.target === modalEl) closeModal(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalEl.classList.contains('active')) closeModal();
+        });
+
+        /* ---- Submit ---- */
+        modalSubmit.addEventListener('click', submitAnalysis);
+        nameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); emailInput.focus(); }
+        });
+        emailInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); submitAnalysis(); }
+        });
+
+        function submitAnalysis() {
+            var handle = handleInput.value.trim().replace(/^@/, '');
+            var name = nameInput.value.trim();
+            var email = emailInput.value.trim();
+
+            if (!name) {
+                nameInput.classList.add('input-error');
+                nameInput.parentElement.classList.add('error-shake');
+                nameInput.focus();
+                setTimeout(function() {
+                    nameInput.classList.remove('input-error');
+                    nameInput.parentElement.classList.remove('error-shake');
+                }, 800);
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailInput.classList.add('input-error');
+                emailInput.parentElement.classList.add('error-shake');
+                emailInput.focus();
+                setTimeout(function() {
+                    emailInput.classList.remove('input-error');
+                    emailInput.parentElement.classList.remove('error-shake');
+                }, 800);
+                return;
+            }
+
+            modalSubmit.disabled = true;
+            modalSubmit.innerHTML = 'Deploying<span class="deploying-dots"></span>';
+
+            // Animate dots
+            var dotCount = 0;
+            var dotInterval = setInterval(function() {
+                dotCount = (dotCount + 1) % 4;
+                var dots = modalSubmit.querySelector('.deploying-dots');
+                if (dots) dots.textContent = '.'.repeat(dotCount);
+            }, 400);
+
+            var params = new URLSearchParams({
+                handle: handle,
+                name: name,
+                email: email
+            });
+            window.location.href = '/report?' + params.toString();
+        }
+
+        /* ---- Chat bubble ---- */
+        var chatBubble = document.getElementById('chatBubble');
+        var chatPanel = document.getElementById('chatPanel');
+        var chatClose = document.getElementById('chatClose');
+        var chatInput = document.getElementById('chatInput');
+
+        chatBubble.addEventListener('click', function() {
+            chatBubble.classList.add('open');
+            chatPanel.classList.add('open');
+            setTimeout(function() { chatInput.focus(); }, 350);
+        });
+
+        chatClose.addEventListener('click', function() {
+            chatPanel.classList.remove('open');
+            chatBubble.classList.remove('open');
+        });
+
+        // Close chat on Escape (only if modal isn't open)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && chatPanel.classList.contains('open') && !modalEl.classList.contains('active')) {
+                chatPanel.classList.remove('open');
+                chatBubble.classList.remove('open');
+            }
+        });
+
+    })();
+    </script>
 </body>
 </html>

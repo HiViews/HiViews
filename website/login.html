@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — DarkOps</title>
+
+    <!-- SEO + Social -->
+    <meta name="description" content="Sign in to DarkOps — your AI Twin that scouts viral trends, writes scripts, creates avatar videos, and publishes to Instagram while you sleep.">
+    <meta name="keywords" content="AI twin, DarkOps, sign in, login, AI CMO">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://darkops.team/login">
+    <meta property="og:title" content="Sign In — DarkOps">
+    <meta property="og:site_name" content="DarkOps">
+
+    <!-- Mobile browser chrome -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        ::selection {
+            background: rgba(0, 255, 136, 0.2);
+            color: #ffffff;
+        }
+
+        :root {
+            --bg: #000000;
+            --bg-elevated: #0a0a0a;
+            --bg-card: #080808;
+            --text-primary: #ffffff;
+            --text-secondary: #999999;
+            --text-tertiary: #555555;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.12);
+            --accent-glow: rgba(0, 255, 136, 0.25);
+            --border: #1a1a1a;
+            --border-hover: #2a2a2a;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-code: 'Fira Code', monospace;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---- Film grain ---- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ---- Hero glow ---- */
+        .hero-glow {
+            position: fixed;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 500px;
+            background: radial-gradient(ellipse at center, rgba(0,255,136,0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ---- Staggered entrance ---- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(14px);
+            animation: fadeUp 0.6s var(--ease-out) forwards;
+        }
+
+        .d1 { animation-delay: 0.05s; }
+        .d2 { animation-delay: 0.15s; }
+        .d3 { animation-delay: 0.25s; }
+        .d4 { animation-delay: 0.35s; }
+        .d5 { animation-delay: 0.45s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- Sign-in card ---- */
+        .signin-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 400px;
+            padding: 0 24px;
+        }
+
+        /* ---- Logo — entire word, dark fade, Ops is NOT green ---- */
+        .logo {
+            display: block;
+            font-family: var(--font-body);
+            font-weight: 900;
+            font-size: 42px;
+            letter-spacing: -1.5px;
+            line-height: 1;
+            text-decoration: none;
+            user-select: none;
+            background: linear-gradient(180deg, #ffffff 40%, #555555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 8px;
+            transition: filter 0.3s ease;
+        }
+
+        .logo:hover {
+            filter: brightness(1.2);
+        }
+
+        .signin-sub {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-tertiary);
+            margin-bottom: 40px;
+        }
+
+        /* ---- Form ---- */
+        .signin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .form-field {
+            margin-bottom: 18px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+
+        .form-field input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+
+        .form-field input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: var(--text-primary);
+        }
+
+        /* ---- Submit button ---- */
+        .signin-btn {
+            width: 100%;
+            padding: 15px 24px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 700;
+            color: #000;
+            background: var(--accent);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+            letter-spacing: -0.2px;
+        }
+
+        .signin-btn:hover {
+            background: #00e67a;
+            box-shadow: 0 0 28px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .signin-btn:active { transform: translateY(0); }
+
+        .signin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ---- Divider ---- */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* ---- Magic link button ---- */
+        .magic-btn {
+            width: 100%;
+            padding: 14px 24px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            letter-spacing: -0.1px;
+        }
+
+        .magic-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+        }
+
+        /* ---- Error message ---- */
+        .signin-error {
+            display: none;
+            background: rgba(255, 68, 68, 0.08);
+            border: 1px solid rgba(255, 68, 68, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #ff6666;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .signin-error.visible {
+            display: block;
+        }
+
+        .input-error {
+            border-color: #ff4444 !important;
+            box-shadow: 0 0 0 1px #ff4444 !important;
+        }
+
+        .error-shake { animation: shake 0.35s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+
+        /* ---- Footer ---- */
+        .signin-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .signin-footer p {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .signin-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .signin-footer a:hover {
+            opacity: 0.75;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s;
+            margin-top: 20px;
+        }
+
+        .back-link:hover { color: var(--text-primary); }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 480px) {
+            .signin-card { padding: 0 16px; }
+            .logo { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow" aria-hidden="true"></div>
+
+    <div class="signin-card">
+
+        <!-- Logo -->
+        <a class="logo fade-in d1" href="/">DarkOps</a>
+        <p class="signin-sub fade-in d1">Sign in to your AI Twin command center</p>
+
+        <!-- Error (hidden by default — shown via JS) -->
+        <div class="signin-error" id="signinError"></div>
+
+        <!-- Form -->
+        <div class="signin-form fade-in d2">
+            <div class="form-field">
+                <label for="emailField">Email</label>
+                <input type="email" id="emailField" placeholder="you@company.com" autocomplete="email" inputmode="email">
+            </div>
+
+            <div class="form-field">
+                <label for="passwordField">Password</label>
+                <input type="password" id="passwordField" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+
+            <div class="form-row">
+                <div></div>
+                <a class="forgot-link" href="/forgot">Forgot password?</a>
+            </div>
+
+            <button class="signin-btn" id="signinBtn" type="button">
+                Sign In &rarr;
+            </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider fade-in d3"><span>or</span></div>
+
+        <!-- Magic link -->
+        <button class="magic-btn fade-in d3" id="magicBtn" type="button">
+            Send me a magic link instead
+        </button>
+
+        <!-- Footer -->
+        <div class="signin-footer fade-in d4">
+            <p>Don't have an account? <a href="/new">Get 3 free viral scripts</a></p>
+            <a class="back-link" href="/">&larr; Back to DarkOps</a>
+        </div>
+
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var emailField = document.getElementById('emailField');
+        var passwordField = document.getElementById('passwordField');
+        var signinBtn = document.getElementById('signinBtn');
+        var magicBtn = document.getElementById('magicBtn');
+        var errorEl = document.getElementById('signinError');
+
+        // Auto-focus email on desktop
+        if (!('ontouchstart' in window) && window.innerWidth > 768) {
+            setTimeout(function() { emailField.focus(); }, 300);
+        }
+
+        // Enter key flow: email → password → submit
+        emailField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); passwordField.focus(); }
+        });
+        passwordField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); handleSignIn(); }
+        });
+
+        signinBtn.addEventListener('click', handleSignIn);
+
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.classList.add('visible');
+        }
+
+        function hideError() {
+            errorEl.classList.remove('visible');
+        }
+
+        function handleSignIn() {
+            hideError();
+            var email = emailField.value.trim();
+            var password = passwordField.value;
+
+            // Validate email
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailField.classList.add('input-error');
+                emailField.parentElement.classList.add('error-shake');
+                emailField.focus();
+                setTimeout(function() {
+                    emailField.classList.remove('input-error');
+                    emailField.parentElement.classList.remove('error-shake');
+                }, 800);
+                return;
+            }
+
+            // Validate password
+            if (!password) {
+                passwordField.classList.add('input-error');
+                passwordField.parentElement.classList.add('error-shake');
+                passwordField.focus();
+                setTimeout(function() {
+                    passwordField.classList.remove('input-error');
+                    passwordField.parentElement.classList.remove('error-shake');
+                }, 800);
+                return;
+            }
+
+            // Disable button
+            signinBtn.disabled = true;
+            signinBtn.textContent = 'Signing in...';
+
+            // ============================================
+            // TODO: INSERT AUTH LOGIC HERE
+            // Example with Supabase:
+            //
+            // const { data, error } = await supabase.auth.signInWithPassword({
+            //     email: email,
+            //     password: password
+            // });
+            //
+            // if (error) {
+            //     showError(error.message);
+            //     signinBtn.disabled = false;
+            //     signinBtn.innerHTML = 'Sign In &rarr;';
+            //     return;
+            // }
+            //
+            // window.location.href = '/portal/dashboard';
+            // ============================================
+
+            // Placeholder: simulate auth delay then show error
+            setTimeout(function() {
+                showError('Auth not connected yet. Provide login code to activate.');
+                signinBtn.disabled = false;
+                signinBtn.innerHTML = 'Sign In &rarr;';
+            }, 1200);
+        }
+
+        // Magic link handler
+        magicBtn.addEventListener('click', function() {
+            var email = emailField.value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailField.classList.add('input-error');
+                emailField.parentElement.classList.add('error-shake');
+                emailField.focus();
+                setTimeout(function() {
+                    emailField.classList.remove('input-error');
+                    emailField.parentElement.classList.remove('error-shake');
+                }, 800);
+                return;
+            }
+
+            magicBtn.disabled = true;
+            magicBtn.textContent = 'Sending...';
+
+            // ============================================
+            // TODO: INSERT MAGIC LINK LOGIC HERE
+            // Example with Supabase:
+            //
+            // const { error } = await supabase.auth.signInWithOtp({
+            //     email: email
+            // });
+            //
+            // if (error) {
+            //     showError(error.message);
+            //     magicBtn.disabled = false;
+            //     magicBtn.textContent = 'Send me a magic link instead';
+            //     return;
+            // }
+            //
+            // magicBtn.textContent = 'Check your email ✓';
+            // ============================================
+
+            // Placeholder
+            setTimeout(function() {
+                showError('Magic link not connected yet. Provide login code to activate.');
+                magicBtn.disabled = false;
+                magicBtn.textContent = 'Send me a magic link instead';
+            }, 1200);
+        });
+
+    })();
+    </script>
+</body>
+</html>
