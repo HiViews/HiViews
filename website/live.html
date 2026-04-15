@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -30,7 +32,7 @@
         .hdr{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--border)}
         .hdr-l{display:flex;align-items:center;gap:12px}
         .hdr h1{font-size:24px;font-weight:800;letter-spacing:-.5px}
-        .hdr h1 a{color:inherit;text-decoration:none}
+        .hdr h1 a{text-decoration:none;background:linear-gradient(180deg,#ffffff 40%,#555555 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--border);border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--t2)}
         .badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:p 2s ease-in-out infinite;box-shadow:0 0 6px var(--green-g)}
         @keyframes p{0%,100%{opacity:1}50%{opacity:.4}}
@@ -133,23 +135,17 @@
         .stat-n{font-size:22px;font-weight:800}
         .stat-l{font-size:9px;color:var(--t3);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
 
-        /* Web Chat Panel — PROMINENT */
-        .chat-panel{background:var(--bg3);border:1px solid rgba(255,255,255,.25);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 20px rgba(255,255,255,.06),0 0 40px rgba(255,255,255,.03)}
-        .chat-panel-hdr{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03)}
-        .chat-panel-hdr .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:p 2s ease-in-out infinite;box-shadow:0 0 6px var(--green-g)}
-        .chat-panel-hdr span{font-size:12px;font-weight:700}
-        .chat-messages{padding:14px;flex:1;min-height:140px;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
-        .chat-msg{max-width:90%;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.5}
-        .chat-msg.bot{background:var(--green-d);color:var(--t2);align-self:flex-start;border-bottom-left-radius:3px}
-        .chat-msg.bot strong{color:var(--green)}
-        .chat-msg.user{background:rgba(255,255,255,.06);color:var(--t1);align-self:flex-end;border-bottom-right-radius:3px}
-        .chat-input-wrap{padding:12px 14px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:8px}
-        .chat-input{flex:1;background:var(--bg);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;font-family:var(--f);font-size:12px;color:var(--t1);outline:none}
-        .chat-input::placeholder{color:var(--t3)}
-        .chat-input:focus{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,136,.1)}
-        .chat-send{background:var(--green);border:none;border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-        .chat-send:hover{opacity:.85;box-shadow:0 0 12px var(--green-g)}
-        .chat-send svg{width:14px;height:14px}
+        /* Web Chat CTA Card */
+        .chat-cta{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .3s}
+        .chat-cta:hover{border-color:var(--green)}
+        .chat-cta-hdr{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.02)}
+        .chat-cta-hdr .dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:p 2s ease-in-out infinite;box-shadow:0 0 6px var(--green-g)}
+        .chat-cta-hdr span{font-size:12px;font-weight:700}
+        .chat-cta-body{padding:16px 14px}
+        .chat-cta-msg{font-size:12px;color:var(--t2);line-height:1.6;background:var(--green-d);border:1px solid rgba(0,255,136,.1);border-radius:12px;border-bottom-left-radius:3px;padding:12px 14px;margin-bottom:14px}
+        .chat-cta-msg strong{color:var(--green)}
+        .chat-cta-btn{display:block;width:100%;padding:12px;font-family:var(--f);font-size:13px;font-weight:700;color:#000;background:var(--green);border:none;border-radius:8px;cursor:pointer;transition:all .2s;text-align:center}
+        .chat-cta-btn:hover{background:#00e67a;box-shadow:0 0 16px var(--green-g)}
 
         /* Offer Modal */
         .offer-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
@@ -159,8 +155,7 @@
         .offer-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:8px;width:32px;height:32px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .2s}
         .offer-close:hover{background:rgba(255,255,255,.15)}
         .offer-top{padding:32px 28px 20px;text-align:center}
-        .offer-logo{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:6px}
-        .offer-logo span{color:var(--green)}
+        .offer-logo{font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:6px;background:linear-gradient(180deg,#ffffff 40%,#555555 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block}
         .offer-dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-left:8px;vertical-align:middle;animation:p 2s ease-in-out infinite}
         .offer-headline{font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;line-height:1.2}
         .offer-sub{font-size:13px;color:var(--t2);line-height:1.6}
@@ -204,7 +199,7 @@
 <div class="term" id="term">
     <div class="ln">Scanning #marketing for viral talking-head reels...</div>
     <div class="ln">Found 9 reels (original audio, 1000+ likes, 15-90s)</div>
-    <div class="ln">Transcribing A7K2 via Whisper API... viral score: 87</div>
+    <div class="ln">Transcribing A7K2 via transcription engine... viral score: 87</div>
     <div class="ln on">Rewriting script for @Nextgen brand voice...</div>
 </div>
 
@@ -393,20 +388,15 @@
         </div>
     </div>
 
-    <!-- OpenClaw Web Chat -->
-    <div class="chat-panel" id="chatPanel">
-        <div class="chat-panel-hdr">
+    <!-- Chat CTA — opens the real widget -->
+    <div class="chat-cta" id="chatCta">
+        <div class="chat-cta-hdr">
             <span class="dot"></span>
             <span>Talk to DarkOps</span>
         </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="chat-msg bot">Hey — I'm <strong>DarkOps</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.</div>
-        </div>
-        <div class="chat-input-wrap">
-            <input class="chat-input" id="chatInput" type="text" placeholder="Ask DarkOps anything..." onkeydown="if(event.key==='Enter')sendChat()">
-            <button class="chat-send" onclick="sendChat()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
+        <div class="chat-cta-body">
+            <div class="chat-cta-msg">Hey — I'm <strong>DarkOps</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.</div>
+            <button class="chat-cta-btn" onclick="openChatWidget()">Start a conversation &rarr;</button>
         </div>
     </div>
 </div>
@@ -418,7 +408,7 @@
     <div class="offer-modal">
         <button class="offer-close" onclick="document.getElementById('offerModal').classList.remove('open')">&times;</button>
         <div class="offer-top">
-            <div class="offer-logo">Dark<span>Ops</span> <span class="offer-dot"></span></div>
+            <div class="offer-logo">DarkOps</div><span class="offer-dot"></span>
             <div class="offer-headline">Your 24/7 Viral Video Engine</div>
             <div class="offer-sub">Finds viral trends. Rewrites scripts in your voice. Creates AI avatar videos. Publishes to Instagram — while you sleep.</div>
         </div>
@@ -449,7 +439,7 @@
 
 <script>
 /* Terminal */
-const tl=['Scanning #contentmarketing for viral reels...','Found 11 reels · filtering uses_original_audio...','Transcribing N3S7 via Whisper API... 47s','Viral score: 91 · hook: "The agency model is dead..."','Writing to ClickUp → Viral Reels → analyzed','Creator triggered: A7K2 → promoted','Reading brand-voice.md for Nextgen...','Script rewrite complete → Telegram for review','Customer approved → avatar generating...','Generating avatar video → stock-male','Avatar engine... processing (2m 14s)','Avatar engine... complete ✓','Downloading MP4 → compositing overlays','Rendering 1080x1920 · captions + overlays','A7K2-final.mp4 → Telegram for approval','Approved → Metricool → Instagram Reels','Published ✓ → A7K2 complete','Ad-hoc: reel URL in Telegram','P6Y2 → Score: 74 → ClickUp posted','Scanning #agencylife for viral reels...'];
+const tl=['Scanning #contentmarketing for viral reels...','Found 11 reels · filtering uses_original_audio...','Transcribing N3S7 via transcription engine... 47s','Viral score: 91 · hook: "The agency model is dead..."','Writing to ClickUp → Viral Reels → analyzed','Creator triggered: A7K2 → promoted','Reading brand voice config for Nextgen...','Script rewrite complete → Telegram for review','Customer approved → avatar generating...','Generating avatar video → AI twin rendering','Avatar engine... processing (2m 14s)','Avatar engine... complete ✓','Downloading MP4 → compositing overlays','Rendering 1080x1920 · captions + overlays','A7K2-final.mp4 → Telegram for approval','Approved → Metricool → Instagram Reels','Published ✓ → A7K2 complete','Ad-hoc: reel URL in Telegram','P6Y2 → Score: 74 → ClickUp posted','Scanning #agencylife for viral reels...'];
 const term=document.getElementById('term');let ti=0;
 setInterval(()=>{const ls=term.querySelectorAll('.ln');ls.forEach(l=>l.classList.remove('on'));if(ls.length>=4)ls[0].remove();const n=document.createElement('div');n.className='ln on';n.textContent=tl[ti%tl.length];term.appendChild(n);ti++},3200);
 
@@ -489,26 +479,19 @@ setInterval(()=>{gi=(gi+1)%gs.length;const s=gs[gi];gImg.classList.remove('loade
 /* Live timers */
 setInterval(()=>{document.querySelectorAll('.tt').forEach(t=>{const m=t.textContent.match(/(\d+)m (\d+)s/);if(m){let min=+m[1],sec=+m[2]+1;if(sec>=60){sec=0;min++}t.textContent=`Running for ${min}m ${String(sec).padStart(2,'0')}s`}})},1000);
 
-/* Chat — placeholder for OpenClaw WebSocket */
-function sendChat(){
-    const input=document.getElementById('chatInput');
-    const msg=input.value.trim();
-    if(!msg)return;
-    const c=document.getElementById('chatMessages');
-    const u=document.createElement('div');
-    u.className='chat-msg user';
-    u.textContent=msg;
-    c.appendChild(u);
-    input.value='';
-    c.scrollTop=c.scrollHeight;
-    // TODO: Replace with OpenClaw WebSocket / API call
-    setTimeout(()=>{
-        const b=document.createElement('div');
-        b.className='chat-msg bot';
-        b.innerHTML="I'm being connected to my brain right now. Soon I'll answer that live. In the meantime — <a href='/checkout' style='color:var(--green)'>get started here</a>.";
-        c.appendChild(b);
-        c.scrollTop=c.scrollHeight;
-    },1200);
+/* Open the real chat widget */
+function openChatWidget(){
+    // Try to find and click the chat widget bubble injected by chat-widget.js
+    var bubble=document.querySelector('[data-chat-widget-bubble]')||document.querySelector('.chat-widget-bubble')||document.querySelector('#chat-widget-bubble');
+    if(bubble){bubble.click();return}
+    // Fallback: try any chat bubble in the bottom-right corner
+    var all=document.querySelectorAll('div[style*="fixed"],button[style*="fixed"]');
+    for(var i=0;i<all.length;i++){
+        var r=all[i].getBoundingClientRect();
+        if(r.bottom>window.innerHeight-100&&r.right>window.innerWidth-100&&r.width<80){all[i].click();return}
+    }
+    // Last resort: scroll to bottom where the widget lives
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 }
 
 /* Offer modal escape */
@@ -536,5 +519,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementB
  *    const slug = window.location.pathname.split('/live/')[1];
  */
 </script>
+<script src="/chat-widget.js" defer></script>
 </body>
 </html>
