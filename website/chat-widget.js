@@ -18,25 +18,25 @@
   var wrapper = document.createElement('div');
   wrapper.innerHTML = [
     '<div id="do-chat-toggle" style="position:fixed;bottom:24px;right:24px;z-index:9999;cursor:pointer;">',
-    '  <div style="width:56px;height:56px;border-radius:50%;background:#00ff88;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,255,136,0.3);transition:transform 0.2s;">',
-    '    <svg width="24" height="24" fill="none" stroke="#000" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+    '  <div style="width:64px;height:64px;border-radius:50%;background:transparent;border:2px solid #00ff88;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,255,136,0.15);transition:all 0.2s;">',
+    '    <svg width="26" height="26" fill="none" stroke="#00ff88" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
     '  </div>',
     '</div>',
-    '<div id="do-chat-panel" style="display:none;position:fixed;bottom:24px;right:24px;width:380px;max-height:520px;z-index:10000;border-radius:16px;overflow:hidden;background:#111;border:1px solid #222;box-shadow:0 8px 40px rgba(0,0,0,0.5);font-family:Inter,-apple-system,sans-serif;flex-direction:column;">',
-    '  <div style="background:#00ff88;color:#000;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14px;">',
-    '    <span>\u25CF Talk to DarkOps Commander</span>',
-    '    <span id="do-chat-close" style="cursor:pointer;font-size:20px;line-height:1;padding:0 4px;">\u00D7</span>',
+    '<div id="do-chat-panel" style="display:none;position:fixed;bottom:24px;right:24px;width:380px;max-height:520px;z-index:10000;border-radius:16px;overflow:hidden;background:#0a0a0a;border:1px solid #1a1a1a;box-shadow:0 8px 40px rgba(0,0,0,0.6);font-family:Inter,-apple-system,sans-serif;flex-direction:column;">',
+    '  <div style="background:#111;color:#fff;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14px;border-bottom:1px solid #1a1a1a;">',
+    '    <span><span style="color:#00ff88;">\u25CF</span> Talk to DarkOps Commander</span>',
+    '    <span id="do-chat-close" style="cursor:pointer;font-size:14px;line-height:1;padding:4px 8px;background:#1a1a1a;border-radius:6px;color:#888;">\u00D7</span>',
     '  </div>',
-    '  <div id="do-chat-msgs" style="padding:16px;height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">',
-    '    <div style="background:#1a3a2a;color:#ccc;padding:12px 16px;border-radius:12px;font-size:14px;line-height:1.5;max-width:85%;">',
-    '      Hey \u2014 I\'m <strong style="color:#00ff88">DarkOps Commander</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.',
+    '  <div id="do-chat-msgs" style="padding:16px;height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#0a0a0a;">',
+    '    <div style="background:#111;border:1px solid #1a1a1a;color:#bbb;padding:14px 18px;border-radius:14px;font-size:14px;line-height:1.6;max-width:85%;">',
+    '      Hey \u2014 I\'m <strong style="color:#00ff88">DarkOps</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.',
     '    </div>',
     '  </div>',
-    '  <div style="padding:12px;border-top:1px solid #222;display:flex;gap:8px;">',
+    '  <div style="padding:12px;border-top:1px solid #1a1a1a;display:flex;gap:8px;background:#0a0a0a;">',
     '    <input id="do-chat-input" type="text" placeholder="Type a message..."',
-    '      style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#fff;font-size:14px;outline:none;font-family:Inter,-apple-system,sans-serif;" />',
-    '    <button id="do-chat-send" style="width:44px;height:44px;border-radius:8px;background:#00ff88;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
-    '      <svg width="18" height="18" fill="none" stroke="#000" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>',
+    '      style="flex:1;background:#0a0a0a;border:1px solid #00ff88;border-radius:10px;padding:12px 16px;color:#fff;font-size:14px;outline:none;font-family:Inter,-apple-system,sans-serif;" />',
+    '    <button id="do-chat-send" style="width:46px;height:46px;border-radius:10px;background:#00ff88;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">',
+    '      <svg width="18" height="18" fill="none" stroke="#000" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>',
     '    </button>',
     '  </div>',
     '</div>'
@@ -47,11 +47,15 @@
   var style = document.createElement('style');
   style.textContent = [
     '@keyframes doBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}',
-    '#do-chat-toggle:hover > div{transform:scale(1.08);}',
-    '#do-chat-input::placeholder{color:#666;}',
-    '#do-chat-input:focus{border-color:#00ff88;}',
+    '#do-chat-toggle:hover > div{transform:scale(1.08);box-shadow:0 0 30px rgba(0,255,136,0.25);}',
+    '#do-chat-input::placeholder{color:#555;}',
+    '#do-chat-input:focus{border-color:#00ff88;box-shadow:0 0 8px rgba(0,255,136,0.15);}',
     '#do-chat-send:hover{background:#00e67a;}',
     '#do-chat-send:active{transform:scale(0.95);}',
+    '#do-chat-close:hover{color:#fff;background:#222;}',
+    '#do-chat-msgs::-webkit-scrollbar{width:4px;}',
+    '#do-chat-msgs::-webkit-scrollbar-track{background:transparent;}',
+    '#do-chat-msgs::-webkit-scrollbar-thumb{background:#222;border-radius:4px;}',
     '@media(max-width:440px){',
     '  #do-chat-panel{width:calc(100vw - 16px);right:8px;bottom:8px;max-height:70vh;}',
     '  #do-chat-toggle{bottom:16px;right:16px;}',
@@ -84,9 +88,9 @@
   function appendMsg(role, text) {
     var div = document.createElement('div');
     if (role === 'user') {
-      div.style.cssText = 'background:#00ff88;color:#000;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.5;max-width:80%;align-self:flex-end;word-wrap:break-word;';
+      div.style.cssText = 'background:#00ff88;color:#000;padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.6;max-width:80%;align-self:flex-end;word-wrap:break-word;font-weight:500;';
     } else {
-      div.style.cssText = 'background:#1a3a2a;color:#ccc;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.5;max-width:85%;word-wrap:break-word;';
+      div.style.cssText = 'background:#111;border:1px solid #1a1a1a;color:#bbb;padding:14px 18px;border-radius:14px;font-size:14px;line-height:1.6;max-width:85%;word-wrap:break-word;';
     }
     div.textContent = text;
     msgs.appendChild(div);
@@ -96,7 +100,7 @@
   function showTyping() {
     var div = document.createElement('div');
     div.id = 'do-typing';
-    div.style.cssText = 'background:#1a3a2a;padding:12px 16px;border-radius:12px;max-width:60px;display:flex;gap:4px;';
+    div.style.cssText = 'background:#111;border:1px solid #1a1a1a;padding:14px 18px;border-radius:14px;max-width:70px;display:flex;gap:5px;';
     div.innerHTML = '<span style="width:7px;height:7px;background:#00ff88;border-radius:50%;animation:doBounce 1.2s infinite;"></span>'
       + '<span style="width:7px;height:7px;background:#00ff88;border-radius:50%;animation:doBounce 1.2s 0.2s infinite;"></span>'
       + '<span style="width:7px;height:7px;background:#00ff88;border-radius:50%;animation:doBounce 1.2s 0.4s infinite;"></span>';
