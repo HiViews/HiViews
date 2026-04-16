@@ -524,30 +524,31 @@
             magicBtn.disabled = true;
             magicBtn.textContent = 'Sending...';
 
-            // ============================================
-            // TODO: INSERT MAGIC LINK LOGIC HERE
-            // Example with Supabase:
-            //
-            // const { error } = await supabase.auth.signInWithOtp({
-            //     email: email
-            // });
-            //
-            // if (error) {
-            //     showError(error.message);
-            //     magicBtn.disabled = false;
-            //     magicBtn.textContent = 'Send me a magic link instead';
-            //     return;
-            // }
-            //
-            // magicBtn.textContent = 'Check your email ✓';
-            // ============================================
+            var SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
+            var SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+            var redirectTo = window.location.origin + '/portal/dashboard';
 
-            // Placeholder
-            setTimeout(function() {
-                showError('Magic link not connected yet. Provide login code to activate.');
+            fetch(SB_URL + '/auth/v1/otp?redirect_to=' + encodeURIComponent(redirectTo), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SB_KEY,
+                    'Authorization': 'Bearer ' + SB_KEY
+                },
+                body: JSON.stringify({ email: email, create_user: true })
+            }).then(function(r) {
+                if (!r.ok) {
+                    return r.json().then(function(j) {
+                        throw new Error(j.msg || j.error_description || j.error || 'Send failed. Try again.');
+                    });
+                }
+                hideError();
+                magicBtn.textContent = 'Check your email ✓';
+            }).catch(function(err) {
+                showError(err.message || 'Send failed. Try again.');
                 magicBtn.disabled = false;
                 magicBtn.textContent = 'Send me a magic link instead';
-            }, 1200);
+            });
         });
 
     })();

@@ -495,10 +495,37 @@ document.getElementById('captureModal').addEventListener('click',function(e){if(
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeAuth();closeCapture();closeVideo()}});
 
 function handleAuth(){
-    const e=document.getElementById('authEmail').value.trim();
-    if(!e){alert('Please enter your email.');return}
-    closeAuth();
-    alert('Check your email for a sign-in link.');
+    const email=document.getElementById('authEmail').value.trim();
+    if(!email){alert('Please enter your email.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email.');return}
+
+    const btn=document.querySelector('#authModal .modal-go');
+    const orig=btn.textContent;
+    btn.disabled=true;
+    btn.textContent='Sending...';
+
+    const SB_URL='https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY='sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const redirectTo=window.location.origin+'/portal/dashboard';
+
+    fetch(SB_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'apikey':SB_KEY,
+            'Authorization':'Bearer '+SB_KEY
+        },
+        body:JSON.stringify({email:email,create_user:true})
+    }).then(function(r){
+        if(!r.ok){return r.json().then(function(j){throw new Error(j.msg||j.error_description||j.error||'Sign-in failed. Try again.')})}
+        closeAuth();
+        alert('Check your email for a sign-in link.');
+    }).catch(function(err){
+        alert(err.message||'Sign-in failed. Try again.');
+    }).finally(function(){
+        btn.disabled=false;
+        btn.textContent=orig;
+    });
 }
 </script>
 </body>

@@ -168,10 +168,10 @@
     <div class="modal">
         <button class="modal-close" onclick="closeModal()">×</button>
         <h2>Get HiViews</h2>
-        <p>Enter your name and email. We'll get you set up within 24 hours.</p>
+        <p>Enter your name and email. We'll send you a login link.</p>
         <input type="text" placeholder="Your name" id="signupName">
         <input type="email" placeholder="Your email" id="signupEmail">
-        <button class="modal-submit" onclick="handleSignup()">Start now →</button>
+        <button class="modal-submit" onclick="handleSignup()">Send my login link →</button>
     </div>
 </div>
 
@@ -196,13 +196,34 @@ document.getElementById('signupModal').addEventListener('click',function(e){if(e
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
 
 function handleSignup(){
-    const n=document.getElementById('signupName').value.trim();
-    const e=document.getElementById('signupEmail').value.trim();
-    if(!n||!e){alert('Please enter your name and email.');return}
-    // TODO: Send to GHL, ThriveCart, or email list
-    // Example: fetch('/api/signup', {method:'POST', body:JSON.stringify({name:n,email:e})})
-    closeModal();
-    alert('Thanks '+n+'! We\'ll reach out at '+e+' within 24 hours.');
+    const name=document.getElementById('signupName').value.trim();
+    const email=document.getElementById('signupEmail').value.trim();
+    if(!name||!email){alert('Please enter your name and email.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Please enter a valid email.');return}
+
+    const btn=document.querySelector('#signupModal .modal-submit');
+    const orig=btn.textContent;
+    btn.disabled=true;
+    btn.textContent='Sending...';
+
+    const SB_URL='https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY='sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const redirectTo=window.location.origin+'/portal/dashboard';
+
+    fetch(SB_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY},
+        body:JSON.stringify({email:email,create_user:true,data:{name:name}})
+    }).then(function(r){
+        if(!r.ok){return r.json().then(function(j){throw new Error(j.msg||j.error_description||j.error||'Sign-in failed. Try again.')})}
+        closeModal();
+        alert('Check your email for your login link.');
+    }).catch(function(err){
+        alert(err.message||'Sign-in failed. Try again.');
+    }).finally(function(){
+        btn.disabled=false;
+        btn.textContent=orig;
+    });
 }
 </script>
 </body>
