@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkOps — Your Viral Content Analysis</title>
+    <title>HiViews — Your Viral Content Analysis</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@
 <body>
 
 <nav>
-    <a class="logo" href="/">DarkOps</a>
+    <a class="logo" href="/">HiViews</a>
     <a class="back" href="/">New analysis</a>
 </nav>
 
@@ -201,7 +201,7 @@
             <div class="score-big low" id="scoreNum">0</div>
             <div class="score-out-of">out of 100</div>
             <p class="score-msg" id="scoreMsg"></p>
-            <p class="score-compare">DarkOps clients average <span>72</span> after 30 days</p>
+            <p class="score-compare">HiViews clients average <span>72</span> after 30 days</p>
         </div>
 
         <!-- Stats -->
@@ -229,16 +229,16 @@
 
         <!-- CTA -->
         <div class="report-cta">
-            <h3>These scripts took DarkOps 8 seconds to write.</h3>
+            <h3>These scripts took HiViews 8 seconds to write.</h3>
             <p>Imagine 30 of these per month &mdash; scripted, filmed with your AI avatar, edited with captions and branding, and posted to Instagram. While you sleep.</p>
-            <a class="cta" href="javascript:;" onclick="document.getElementById('offerModal').classList.add('open')">Start DarkOps &rarr;</a>
+            <a class="cta" href="javascript:;" onclick="document.getElementById('offerModal').classList.add('open')">Start HiViews &rarr;</a>
             <p class="price">$499/month &middot; ~$16/video &middot; Cancel anytime</p>
         </div>
 
     </div>
 </div>
 
-<footer><p><a href="/">DarkOps</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; &copy; 2026 New Empire AI</p></footer>
+<footer><p><a href="/">HiViews</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a> &middot; &copy; 2026 New Empire AI</p></footer>
 
 <!-- Offer Modal -->
 <div class="offer-overlay" id="offerModal" onclick="if(event.target===this)this.classList.remove('open')">
@@ -255,7 +255,7 @@
             <div class="offer-feat"><div class="offer-feat-icon">02</div><div class="offer-feat-text">Nightly Trend Scouting<small>Scans Instagram at 2AM for viral talking-head reels</small></div></div>
             <div class="offer-feat"><div class="offer-feat-icon">03</div><div class="offer-feat-text">Brand Voice Script Rewriting<small>Viral hooks rewritten for your audience and CTA</small></div></div>
             <div class="offer-feat"><div class="offer-feat-icon">04</div><div class="offer-feat-text">30 AI Avatar Videos / Month<small>1080×1920 vertical with branded overlays + captions</small></div></div>
-            <div class="offer-feat"><div class="offer-feat-icon">05</div><div class="offer-feat-text">Auto-Publish to Instagram Reels<small>You approve with one message — DarkOps publishes</small></div></div>
+            <div class="offer-feat"><div class="offer-feat-icon">05</div><div class="offer-feat-text">Auto-Publish to Instagram Reels<small>You approve with one message — HiViews publishes</small></div></div>
             <div class="offer-feat"><div class="offer-feat-icon">06</div><div class="offer-feat-text">Talk to Commander via Telegram<small>Voice notes supported — your direct line to the team</small></div></div>
         </div>
         <div class="offer-bottom">
@@ -271,7 +271,7 @@
 </div>
 
 <script>
-const API_URL = 'https://provision.darkops.team/api/analyze';
+const API_URL = 'https://provision.hiviews.ai/api/analyze';
 
 // Get params from URL
 const params = new URLSearchParams(window.location.search);
@@ -366,7 +366,7 @@ function renderReport(data) {
     } else if (score < 70) {
         msgEl.textContent = "Solid foundation. You're active, but there's room to accelerate with more reels and trend-driven content.";
     } else {
-        msgEl.textContent = "Strong profile. You're already doing many things right. DarkOps would amplify what's working and fill in the gaps.";
+        msgEl.textContent = "Strong profile. You're already doing many things right. HiViews would amplify what's working and fill in the gaps.";
     }
 
     // Stats

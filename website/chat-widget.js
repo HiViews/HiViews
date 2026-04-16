@@ -1,7 +1,7 @@
-// ── DarkOps Commander — Website Chat Widget ──────────────────
+// ── HiViews Commander — Website Chat Widget ──────────────────
 // Self-contained. Drop on any page with:
 //   <script src="/chat-widget.js" defer></script>
-// Zero dependencies. Calls provision.darkops.team/api/chat.
+// Zero dependencies. Calls provision.hiviews.ai/api/chat.
 
 (function() {
   'use strict';
@@ -12,7 +12,7 @@
   if (excludePaths.some(function(p) { return window.location.pathname.startsWith(p); })) return;
 
   // ── Config ──
-  var API = 'https://provision.darkops.team/api/chat';
+  var API = 'https://provision.hiviews.ai/api/chat';
 
   // ── Inject HTML ──
   var wrapper = document.createElement('div');
@@ -24,12 +24,12 @@
     '</div>',
     '<div id="do-chat-panel" style="display:none;position:fixed;bottom:24px;right:24px;width:380px;max-height:520px;z-index:10000;border-radius:16px;overflow:hidden;background:#0a0a0a;border:1px solid #1a1a1a;box-shadow:0 8px 40px rgba(0,0,0,0.6);font-family:Inter,-apple-system,sans-serif;flex-direction:column;">',
     '  <div style="background:#111;color:#fff;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;font-size:14px;border-bottom:1px solid #1a1a1a;">',
-    '    <span><span style="color:#00ff88;">\u25CF</span> Talk to DarkOps Commander</span>',
+    '    <span><span style="color:#00ff88;">\u25CF</span> Talk to HiViews Commander</span>',
     '    <span id="do-chat-close" style="cursor:pointer;font-size:14px;line-height:1;padding:4px 8px;background:#1a1a1a;border-radius:6px;color:#888;">\u00D7</span>',
     '  </div>',
     '  <div id="do-chat-msgs" style="padding:16px;height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#0a0a0a;">',
     '    <div style="background:#111;border:1px solid #1a1a1a;color:#bbb;padding:14px 18px;border-radius:14px;font-size:14px;line-height:1.6;max-width:85%;">',
-    '      Hey \u2014 I\'m <strong style="color:#00ff88">DarkOps</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.',
+    '      Hey \u2014 I\'m <strong style="color:#00ff88">HiViews</strong>. I find viral trends, create avatar videos, and publish while you sleep. Ask me anything.',
     '    </div>',
     '  </div>',
     '  <div style="padding:12px;border-top:1px solid #1a1a1a;display:flex;gap:8px;background:#0a0a0a;">',
@@ -166,7 +166,7 @@
     } catch (err) {
       hideTyping();
       appendMsg('assistant', "Something went sideways \u2014 try again in a sec. Or drop your handle in the free analysis for instant scripts.");
-      console.error('[DarkOps Chat]', err);
+      console.error('[HiViews Chat]', err);
     }
 
     sendBtn.disabled = false;

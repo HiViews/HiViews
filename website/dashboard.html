@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkOps — Dashboard</title>
+    <title>HiViews — Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -86,7 +86,7 @@
 
 <nav>
     <div style="display:flex;align-items:center">
-        <a class="logo" href="/">DarkOps</a>
+        <a class="logo" href="/">HiViews</a>
         <span class="badge"><span class="dot"></span>LIVE</span>
     </div>
     <div class="nav-r"><a href="/">Home</a></div>
@@ -141,7 +141,7 @@
                     <div class="check-body">
                         <h4>Complete your brand questionnaire</h4>
                         <p>Tell us your brand's tone, target audience, key phrases, topics to avoid, and call-to-action style. Fill out the form or just message your brand details to your agent in Telegram.</p>
-                        <a class="action" id="brandFormLink" href="https://darkops.team/onboarding" target="_blank">Fill out form →</a>
+                        <a class="action" id="brandFormLink" href="https://hiviews.ai/onboarding" target="_blank">Fill out form →</a>
                     </div>
                 </div>
                 <div class="check-item" id="step-telegram">
@@ -163,7 +163,7 @@
                     <div class="check-box">4</div>
                     <div class="check-body">
                         <h4>Connect your Instagram</h4>
-                        <p>Connect your Instagram business account via Metricool so DarkOps can publish your videos. Your agent will walk you through it.</p>
+                        <p>Connect your Instagram business account via Metricool so HiViews can publish your videos. Your agent will walk you through it.</p>
                     </div>
                 </div>
                 <div class="check-item" id="step-scout">
@@ -206,13 +206,13 @@ if (!CID || CID === 'dashboard') {
 }
 
 const EV = {
-    'customer.provision_started': ['🚀','Setting up your DarkOps engine...','Your personal AI agent is being built. Takes about 90 seconds.','active'],
+    'customer.provision_started': ['🚀','Setting up your HiViews engine...','Your personal AI agent is being built. Takes about 90 seconds.','active'],
     'droplet.creating':          ['🖥️','Spinning up your dedicated server...','Your own private server — not shared with anyone.','active'],
     'droplet.ready':             ['✅','Server is live!','Your dedicated server is online.','done'],
     'telegram.bot_created':      ['💬','Telegram bot is ready!','This is how you\'ll talk to your AI agent.','done'],
     'clickup.structure_created': ['📋','Content workspace created!','Alpha Scout and Alpha Video boards are set up.','done'],
     'droplet.configured':        ['⚙️','Agent installed and configured.','Your AI knows your brand, tier, and channels.','done'],
-    'customer.provisioned':      ['🎉','You\'re live! Welcome to DarkOps.','Everything is set up. Follow the steps below.','done'],
+    'customer.provisioned':      ['🎉','You\'re live! Welcome to HiViews.','Everything is set up. Follow the steps below.','done'],
     'customer.provision_failed': ['⚠️','Setup hit a snag.','Our team has been notified. Your purchase is secure.','fail'],
     'scout.started':    ['🔍','Scout scanning your hashtags...','Looking for viral trends in your niche.','active'],
     'scout.completed':  ['🔥','Scout report ready!','Check Telegram for trending content.','done'],
@@ -264,7 +264,7 @@ function showCustomer(c) {
     else { bl.textContent = 'Setting up...'; bl.removeAttribute('href'); }
 
     const dl = document.getElementById('dashLink');
-    dl.href = location.href; dl.textContent = 'darkops.team/dashboard/' + CID;
+    dl.href = location.href; dl.textContent = 'hiviews.ai/dashboard/' + CID;
 
     const st = document.getElementById('statusText');
     if (c.status === 'active') { st.innerHTML = '<span style="color:var(--green)">● Active</span>'; polling = false; }
@@ -301,7 +301,7 @@ function showEventsOnly() {
     document.getElementById('welcomeMsg').textContent = 'Dashboard: ' + CID;
     document.getElementById('cidText').textContent = CID;
     document.getElementById('dashLink').href = location.href;
-    document.getElementById('dashLink').textContent = 'darkops.team/dashboard/' + CID;
+    document.getElementById('dashLink').textContent = 'hiviews.ai/dashboard/' + CID;
 }
 
 async function init() {

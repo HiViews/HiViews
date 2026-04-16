@@ -1,4 +1,4 @@
-// DarkOps — Vercel Edge Middleware
+// HiViews — Vercel Edge Middleware
 // Injects global head tags + chat widget into every HTML page.
 // New pages get everything automatically. Zero manual tags.
 
