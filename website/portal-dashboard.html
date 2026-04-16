@@ -116,7 +116,7 @@
         <div class="details">
             <div class="detail">
                 <div class="detail-label">Telegram Bot</div>
-                <div class="detail-val"><a id="botLink" href="#" target="_blank">Setting up...</a></div>
+                <div class="detail-val"><a id="botLink" href="#" target="_blank" aria-disabled="true" style="pointer-events:none;opacity:0.6">Setting up...</a></div>
             </div>
             <div class="detail">
                 <div class="detail-label">Dashboard</div>
@@ -149,7 +149,7 @@
                     <div class="check-body">
                         <h4>Open your Telegram bot</h4>
                         <p>Tap the link and press Start. This is your direct line to your AI agent. Say "hello" — your agent will introduce itself.</p>
-                        <a class="action" id="stepBotLink" href="#" target="_blank">Open in Telegram →</a>
+                        <a class="action" id="stepBotLink" href="#" target="_blank" aria-disabled="true" style="pointer-events:none;opacity:0.6">Setting up...</a>
                     </div>
                 </div>
                 <div class="check-item" id="step-hashtags">
@@ -290,11 +290,30 @@ function showCustomer(c) {
     const b = document.getElementById('tierBadge');
     b.textContent = t[0]; b.className = 'tier ' + t[1];
 
+    // Populate Telegram links ONLY when we have a real bot username.
+    // Both links start disabled (pointer-events:none) so a user can't click
+    // through to "#" and end up on a dead URL like /portal/dashboard#.
     const bot = c.telegram_bot_username;
     const bl = document.getElementById('botLink');
     const sl = document.getElementById('stepBotLink');
-    if (bot) { bl.href = 'https://t.me/' + bot; bl.textContent = '@' + bot; sl.href = 'https://t.me/' + bot; }
-    else { bl.textContent = 'Setting up...'; bl.removeAttribute('href'); }
+    const enable = (el, href, text) => {
+        el.href = href;
+        el.textContent = text;
+        el.style.pointerEvents = '';
+        el.style.opacity = '';
+        el.removeAttribute('aria-disabled');
+    };
+    if (bot) {
+        const href = 'https://t.me/' + bot;
+        enable(bl, href, '@' + bot);
+        enable(sl, href, 'Open in Telegram →');
+    } else if (c.status === 'failed') {
+        bl.textContent = 'Setup failed — contact support';
+        sl.textContent = 'Setup failed — contact support';
+    } else {
+        bl.textContent = 'Setting up...';
+        sl.textContent = 'Setting up...';
+    }
 
     const dl = document.getElementById('dashLink');
     dl.href = location.href; dl.textContent = 'hiviews.ai/dashboard/' + CID;
