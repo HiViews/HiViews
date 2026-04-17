@@ -4,101 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiViews — Sign In</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#000;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center}
-        .card{max-width:420px;width:100%;padding:40px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:16px}
-        h1{font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-.5px}
-        p.sub{font-size:14px;color:#888;margin-bottom:24px}
-        label{display:block;font-size:13px;font-weight:600;color:#ccc;margin-bottom:6px}
-        input{width:100%;padding:12px 16px;background:#111;border:1px solid #222;border-radius:8px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:16px;outline:none}
-        input:focus{border-color:#00ff88}
-        button{width:100%;padding:14px;background:#00ff88;color:#000;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer}
-        button:hover{opacity:.9}
-        button:disabled{opacity:.4;cursor:not-allowed}
-        .error{color:#ff4444;font-size:13px;margin-bottom:12px;display:none}
-        .forgot{text-align:center;margin-top:16px}
-        .forgot a{color:#00ff88;font-size:13px;text-decoration:none}
-        .forgot a:hover{text-decoration:underline}
+        body{background:#000;color:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;min-height:100dvh;display:flex;align-items:center;justify-content:center;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+        .wrap{position:relative;z-index:1;width:100%;max-width:440px;padding:20px}
+        .card{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:16px;padding:40px 32px}
+        .brand{text-align:center;margin-bottom:24px}
+        .brand .word{font-size:24px;font-weight:800;letter-spacing:-.5px}
+        .brand .word .hi{color:#00ff88}
+        h1{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px;text-align:center}
+        p.sub{font-size:14px;color:#888;margin-bottom:28px;text-align:center;line-height:1.5}
+        label{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.5);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+        input{width:100%;padding:12px 14px;background:rgba(255,255,255,.03);border:0.5px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:15px;font-family:inherit;outline:none;transition:border-color .15s}
+        input:focus{border-color:rgba(0,255,136,.5)}
+        button.primary{width:100%;padding:13px 18px;background:#00ff88;color:#000;font-size:14px;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:background .15s,opacity .15s;margin-top:16px}
+        button.primary:hover:not(:disabled){background:#33ff9f}
+        button.primary:disabled{opacity:.5;cursor:not-allowed}
+        .caption{text-align:center;font-size:12px;color:rgba(255,255,255,.35);margin-top:16px;font-family:'Fira Code',ui-monospace,monospace}
+        .error{background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.25);color:#ff8888;font-size:13px;padding:10px 12px;border-radius:8px;margin-bottom:16px;display:none}
+        .error.show{display:block}
+        .success-state{display:none;text-align:center}
+        .success-state.show{display:block}
+        .check{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:rgba(0,255,136,.08);border:0.5px solid rgba(0,255,136,.3);margin:0 auto 20px;color:#00ff88;font-size:28px}
+        .success-state h2{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+        .success-state p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:16px}
+        .success-state .email{color:#fff;font-family:'Fira Code',ui-monospace,monospace;font-size:13px}
+        .resend{background:transparent;border:0.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:10px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+        .resend:hover:not(:disabled){border-color:rgba(0,255,136,.4);color:#00ff88}
+        .foot{text-align:center;margin-top:24px;font-size:12px;color:rgba(255,255,255,.4)}
+        .foot a{color:rgba(255,255,255,.6);text-decoration:none}
+        .foot a:hover{color:#00ff88}
     </style>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
-<div class="card">
-    <h1>Sign in to HiViews</h1>
-    <p class="sub">Access your dashboard, videos, and content pipeline.</p>
+<div class="wrap">
+    <div class="card">
+        <div class="brand">
+            <a href="/" style="text-decoration:none;color:#fff"><span class="word"><span class="hi">Hi</span>Views</span></a>
+        </div>
 
-    <div class="error" id="errorMsg"></div>
+        <!-- ── State 1: email form ────────────────────────────────── -->
+        <div id="formState">
+            <h1>Sign in</h1>
+            <p class="sub">Enter your email. We'll send you a one-click login link.</p>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" placeholder="you@example.com" autofocus>
+            <div class="error" id="errorMsg"></div>
 
-    <label for="password">Password</label>
-    <input type="password" id="password" placeholder="Your password">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email" inputmode="email" autofocus>
 
-    <button id="loginBtn" onclick="signIn()">Sign In &rarr;</button>
+            <button class="primary" id="loginBtn" type="button">Send my login link &rarr;</button>
 
-    <div class="forgot">
-        <a href="/reset-password">Forgot your password?</a>
+            <p class="caption">no password · one-click sign-in</p>
+        </div>
+
+        <!-- ── State 2: check your email ──────────────────────────── -->
+        <div class="success-state" id="successState">
+            <div class="check">✓</div>
+            <h2>Check your email</h2>
+            <p>We sent a login link to <span class="email" id="sentEmail"></span>. Click it to sign in — no password needed.</p>
+            <p style="font-size:12px;color:rgba(255,255,255,.4)">Can take up to a minute to arrive. Check spam if you don't see it.</p>
+            <button class="resend" id="resendBtn" type="button">Resend link</button>
+        </div>
+    </div>
+
+    <div class="foot">
+        New here? <a href="/">Start with a free script analysis →</a>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+(function(){
+    'use strict';
+    const SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
-async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        window.location.href = '/portal/dashboard';
+    const emailInput = document.getElementById('email');
+    const loginBtn   = document.getElementById('loginBtn');
+    const errorEl    = document.getElementById('errorMsg');
+    const formState  = document.getElementById('formState');
+    const successState = document.getElementById('successState');
+    const sentEmail  = document.getElementById('sentEmail');
+    const resendBtn  = document.getElementById('resendBtn');
+
+    // If already signed in, skip to dashboard.
+    (async function checkSession(){
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) window.location.replace('/portal/dashboard');
+    })();
+
+    function showError(msg){
+        errorEl.textContent = msg;
+        errorEl.classList.add('show');
     }
-}
-
-async function signIn() {
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('errorMsg');
-    const btn = document.getElementById('loginBtn');
-
-    errorEl.style.display = 'none';
-
-    if (!email || !password) {
-        errorEl.textContent = 'Enter your email and password.';
-        errorEl.style.display = 'block';
-        return;
+    function hideError(){
+        errorEl.classList.remove('show');
+    }
+    function isValidEmail(s){
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
     }
 
-    btn.disabled = true;
-    btn.textContent = 'Signing in...';
+    async function sendLink(){
+        hideError();
+        const email = emailInput.value.trim();
+        if (!email) {
+            showError('Enter your email.');
+            emailInput.focus();
+            return;
+        }
+        if (!isValidEmail(email)) {
+            showError('That doesn\u2019t look like a valid email.');
+            emailInput.focus();
+            return;
+        }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Sending\u2026';
+
+        const { error } = await sb.auth.signInWithOtp({
+            email: email,
+            options: {
+                emailRedirectTo: 'https://www.hiviews.ai/portal/dashboard',
+                shouldCreateUser: false,  // Only existing customers on /sign-in
+            },
+        });
+
+        if (error) {
+            // Surface Supabase message. Common cases:
+            //   - "Signups not allowed for otp" (user doesn't exist; tell them to purchase)
+            //   - "For security purposes, you can only request this after X seconds"
+            let msg = error.message || 'Couldn\u2019t send link. Try again in a moment.';
+            if (/Signups not allowed/i.test(msg) || /not found/i.test(msg) || /does not exist/i.test(msg)) {
+                msg = 'No account found for that email. If you haven\u2019t purchased yet, start at hiviews.ai.';
+            }
+            showError(msg);
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = 'Send my login link \u2192';
+            return;
+        }
+
+        // Success — swap to "check your email" state.
+        sentEmail.textContent = email;
+        formState.style.display = 'none';
+        successState.classList.add('show');
+    }
+
+    loginBtn.addEventListener('click', sendLink);
+    emailInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); sendLink(); }
     });
 
-    if (error) {
-        errorEl.textContent = error.message || 'Invalid email or password.';
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Sign In \u2192';
-        return;
-    }
-
-    window.location.href = '/portal/dashboard';
-}
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') signIn();
-});
-
-checkSession();
+    // Resend button on success state
+    resendBtn.addEventListener('click', async function(){
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Sending\u2026';
+        const email = sentEmail.textContent.trim();
+        const { error } = await sb.auth.signInWithOtp({
+            email: email,
+            options: {
+                emailRedirectTo: 'https://www.hiviews.ai/portal/dashboard',
+                shouldCreateUser: false,
+            },
+        });
+        if (error && /you can only request this after/i.test(error.message || '')) {
+            resendBtn.textContent = error.message;
+        } else if (error) {
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Try again';
+        } else {
+            resendBtn.textContent = 'Sent \u2713';
+            setTimeout(() => { resendBtn.disabled = false; resendBtn.textContent = 'Resend link'; }, 3000);
+        }
+    });
+})();
 </script>
 </body>
 </html>
