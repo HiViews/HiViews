@@ -401,6 +401,17 @@
 </div>
 
 <script>
+// Supabase magic-link hash catcher — if a signed-in user lands on the homepage
+// (because Supabase's allowlist fallback dumped them here instead of
+// /portal/dashboard), forward them to the dashboard with the auth hash intact
+// so the portal picks up the session seamlessly.
+(function(){
+    var h = window.location.hash || '';
+    if (h.indexOf('access_token=') !== -1 && h.indexOf('type=magiclink') !== -1) {
+        window.location.replace('/portal/dashboard' + h);
+    }
+})();
+
 // Terminal cycling
 const tl=['Scanning #contentmarketing for viral reels...','Found 11 reels · filtering original audio...','Transcribing A7K2 via Whisper... viral score: 91','Writing to ClickUp → Viral Scripts → analyzed','Rewriting A7K2 for Nextgen brand voice...','Script rewrite complete → review','Customer approved → avatar generating...','Avatar engine processing (2m 14s)','Avatar engine complete ✓','Compositing 1080x1920 · captions + overlays','A7K2-final.mp4 → approved','Published ✓ → Instagram Reels','Scanning #agencylife for viral reels...','Found 6 talking-head reels (original audio)','B3M9 → Score: 74 → captured','Overnight scout report → delivered'];
 const term=document.getElementById('term');let ti=0;
