@@ -232,6 +232,85 @@
             else{setSaved('Default avatar updated');setTimeout(()=>setSaved(''),1600)}
         },[customerId]);
 
+        // Digital Twin training-video upload (Dominate+). Creates an avatars
+        // row with type='digital_twin' + status='pending', signs a short-lived
+        // URL so HeyGen can fetch the video, then fires /api/train-avatar.
+        // Realtime surfaces status progression (pending → training → ready).
+        const [twinUploading,setTwinUploading]=useState(false);
+        const twinInput=useRef(null);
+        const uploadTwin=useCallback(async(file)=>{
+            if(!file||!customerId||!session)return;
+            if(customerPlan!=='dominate'&&customerPlan!=='special_ops'){
+                setError('Video-trained avatars require the Dominate plan. Upgrade at hiviews.ai/pricing.');return;
+            }
+            if(!file.type.startsWith('video/')){
+                setError('Please upload a video file (mp4, mov, webm).');return;
+            }
+            // HeyGen requires 15s-600s. Can't reliably measure duration without
+            // loading the file into a <video> element — keep size as a rough
+            // guard and let HeyGen return the real error if it's too short.
+            if(file.size<1*1024*1024){
+                setError('Video is too small — need at least ~15 seconds of footage.');return;
+            }
+            if(file.size>500*1024*1024){
+                setError('Video too large (max 500 MB). A 60-second 1080p clip is plenty.');return;
+            }
+            setTwinUploading(true);
+            setError(null);
+            try{
+                // 1. Upload to Storage.
+                const ts=Date.now();
+                const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+                const path=`${customerId}/training-videos/${ts}-${safe}`;
+                const {error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false});
+                if(upErr)throw new Error('Upload failed: '+upErr.message);
+
+                // 2. Sign it so HeyGen can fetch (1 hour — HeyGen pulls immediately).
+                const {data:signed,error:signErr}=await sb.storage.from(BUCKET).createSignedUrl(path,60*60);
+                if(signErr||!signed?.signedUrl)throw new Error('Could not generate signed URL');
+
+                // 3. Create the avatars row in 'pending' so the UI shows something
+                //    immediately — the endpoint will flip to 'training' once it
+                //    triggers the droplet.
+                const defaultName=(session.user.user_metadata?.name)||'My trained avatar';
+                const {data:row,error:insErr}=await sb.from('avatars').insert({
+                    customer_id:customerId,
+                    name:defaultName,
+                    type:'digital_twin',
+                    status:'pending',
+                    source_files:[path],
+                }).select().single();
+                if(insErr)throw new Error('Could not create avatar row: '+insErr.message);
+
+                // 4. Fire the training job.
+                const r=await fetch('https://provision.hiviews.ai/api/train-avatar',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body:JSON.stringify({
+                        customer_id:customerId,
+                        avatar_id:row.id,
+                        video_url:signed.signedUrl,
+                        name:defaultName,
+                    }),
+                });
+                if(r.status===402){
+                    const j=await r.json().catch(()=>({}));
+                    setError(j.message||'Video-trained avatars require the Dominate plan.');
+                    // Clean up the pending row we optimistically created.
+                    await sb.from('avatars').delete().eq('id',row.id);
+                    return;
+                }
+                if(!r.ok){
+                    const j=await r.json().catch(()=>({}));
+                    await sb.from('avatars').delete().eq('id',row.id);
+                    throw new Error('Trigger failed: '+(j.error||r.status));
+                }
+                setSaved('Training started — takes 15-45 minutes. You can close this page.');
+                setTimeout(()=>setSaved(''),3500);
+            }catch(e){setError(e.message||String(e))}
+            finally{setTwinUploading(false);if(twinInput.current)twinInput.current.value=''}
+        },[customerId,customerPlan,session]);
+
         // Voice clone upload: writes audio to Storage, fires /api/voice-clone.
         // Server-side plan gate returns 402 for Launch plan customers.
         const uploadVoice=useCallback(async(avatar,file)=>{
@@ -301,6 +380,35 @@
 
                 error&&h('div',{className:'bg-orange-500/10 border border-orange-500/30 rounded-lg px-4 py-2 text-xs text-orange-300'},error),
 
+                // Dominate-only: "train from video" tile — much better mouth sync
+                // + motion than the photo path below. Renders above the photo
+                // drop-zone so it's the obvious first choice.
+                (customerPlan==='dominate'||customerPlan==='special_ops') && h('div',{
+                    className:'rounded-xl p-5 cursor-pointer border border-hv-green/30 bg-gradient-to-br from-hv-green/[0.06] to-transparent hover:border-hv-green/60 transition',
+                    onClick:()=>!twinUploading&&twinInput.current?.click(),
+                },
+                    h('div',{className:'flex items-start gap-3'},
+                        h('div',{className:'text-2xl'},'🎬'),
+                        h('div',{className:'flex-1 min-w-0'},
+                            h('div',{className:'flex items-center gap-2 mb-1'},
+                                h('span',{className:'text-sm font-semibold'},twinUploading?'Uploading training video…':'Train a pro avatar from video'),
+                                h('span',{className:'font-mono text-[9px] text-hv-green bg-hv-green/10 border border-hv-green/30 px-1.5 py-0.5 rounded'},'DOMINATE'),
+                            ),
+                            h('div',{className:'text-xs text-white/50 leading-relaxed'},
+                                'Upload a 30–60 second clip of yourself talking to camera. HeyGen trains a custom model that captures your expressions and motion. Sharper lip-sync and far more natural than photo avatars. Training takes 15–45 minutes.'),
+                        ),
+                    ),
+                    h('input',{ref:twinInput,type:'file',accept:'video/mp4,video/quicktime,video/webm',className:'hidden',onChange:e=>uploadTwin(e.target.files?.[0])}),
+                ),
+
+                (customerPlan!=='dominate'&&customerPlan!=='special_ops') && h('div',{
+                    className:'rounded-xl p-4 border border-white/10 bg-white/[0.02] text-xs text-white/50',
+                },
+                    h('span',{className:'font-semibold text-white/70'},'🔒 Video-trained avatars — Dominate plan'),
+                    h('div',{className:'mt-1'},'Photo avatars have rough mouth movement. Upgrade to train a pro avatar from a 30-60s video clip — HeyGen trains a model that nails your expressions and motion.'),
+                    h('a',{href:'/pricing',className:'inline-block mt-2 text-hv-green underline'},'See pricing →'),
+                ),
+
                 h('div',{
                     className:['drop-zone p-6 text-center cursor-pointer',dragActive?'active':''].join(' '),
                     onClick:()=>fileInput.current?.click(),
@@ -309,8 +417,8 @@
                     onDrop:e=>{e.preventDefault();setDragActive(false);handleFiles(e.dataTransfer.files)},
                 },
                     h('div',{className:'text-3xl mb-2'},'📸'),
-                    h('div',{className:'text-sm font-semibold mb-1'},uploading?'Uploading…':'Upload a photo or video'),
-                    h('div',{className:'text-xs text-white/40'},'A clear selfie works best. Your agent creates a trained avatar from it.'),
+                    h('div',{className:'text-sm font-semibold mb-1'},uploading?'Uploading…':'Upload a photo avatar'),
+                    h('div',{className:'text-xs text-white/40'},'Fast path — a clear selfie is all you need. Lower quality mouth motion than a trained avatar.'),
                     h('input',{ref:fileInput,type:'file',accept:'image/*,video/*',multiple:true,className:'hidden',onChange:e=>handleFiles(e.target.files)}),
                 ),
 

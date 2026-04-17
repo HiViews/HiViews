@@ -3,7 +3,7 @@
   "short_name": "HiViews",
   "description": "Your AI CMO — scout, scripts, videos, publishing.",
   "start_url": "/portal/dashboard",
-  "scope": "/portal/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",

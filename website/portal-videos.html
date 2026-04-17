@@ -147,6 +147,19 @@
     };
 
     function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+    // raw_video_url / thumbnail_url stored as bucket-relative paths for private
+    // client-uploads bucket. Anything that starts with http(s) is passed through.
+    const signCache = new Map();
+    async function resolveMedia(path){
+        if(!path) return null;
+        if(/^https?:\/\//i.test(path)) return path;
+        if(signCache.has(path)) return signCache.get(path);
+        const {data} = await sb.storage.from('client-uploads').createSignedUrl(path, 3600);
+        const url = data?.signedUrl || null;
+        if(url) signCache.set(path, url);
+        return url;
+    }
     function ago(iso){const s=Math.max(1,Math.floor((Date.now()-new Date(iso).getTime())/1000));if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return new Date(iso).toLocaleDateString()}
     function statusClass(s){return 'st-' + (s||'').replace(/[^a-z_]/gi,'')}
     function toast(msg,opts={}){toastEl.textContent=msg;toastEl.classList.toggle('err',!!opts.err);toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),opts.ms||1800)}
@@ -175,7 +188,8 @@
         main.innerHTML = list.map(t => {
             const s = STATUS[t.status] || {label:t.status, actionable:false};
             const preview = (t.script_text||'').split('\n')[0] || '(no script)';
-            const videoUrl = t.final_video_url || t.raw_video_url;
+            const videoRef = t.final_video_url || t.raw_video_url;
+            const poster = t.thumbnail_url || '';
             return `
               <div class="card" data-id="${t.id}">
                 <div class="card-head">
@@ -187,7 +201,7 @@
                   <span class="row-time">${ago(t.updated_at||t.created_at)}</span>
                 </div>
                 <p class="preview">${esc(preview)}</p>
-                ${videoUrl ? `<video controls preload="metadata" playsinline src="${esc(videoUrl)}"></video>` : ''}
+                ${videoRef ? `<video controls preload="metadata" playsinline data-ref="${esc(videoRef)}" data-poster-ref="${esc(poster)}"></video>` : ''}
                 ${t.post_url ? `<a class="post-link" href="${esc(t.post_url)}" target="_blank">View on Instagram →</a>` : ''}
                 ${s.actionable ? `
                   <div class="actions">
@@ -196,6 +210,18 @@
                   </div>` : ''}
               </div>`;
         }).join('');
+
+        // Hydrate private-bucket media (signed URLs) after DOM is in.
+        main.querySelectorAll('video[data-ref]').forEach(async (v) => {
+            const ref = v.dataset.ref;
+            const posterRef = v.dataset.posterRef;
+            const [src, poster] = await Promise.all([
+                resolveMedia(ref),
+                posterRef ? resolveMedia(posterRef) : Promise.resolve(null),
+            ]);
+            if (src) v.src = src;
+            if (poster) v.poster = poster;
+        });
     }
 
     chipsEl.addEventListener('click', e=>{

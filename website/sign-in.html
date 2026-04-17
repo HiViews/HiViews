@@ -37,6 +37,11 @@
         .success-state .email{color:#fff;font-family:'Fira Code',ui-monospace,monospace;font-size:13px}
         .resend{background:transparent;border:0.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:10px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
         .resend:hover:not(:disabled){border-color:rgba(0,255,136,.4);color:#00ff88}
+        .code-block{margin:20px 0 8px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}
+        .code-block label{text-align:center;margin-bottom:10px}
+        .code-input{width:100%;padding:14px;background:rgba(255,255,255,.03);border:0.5px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-size:22px;font-family:'Fira Code',ui-monospace,monospace;text-align:center;letter-spacing:.4em;outline:none}
+        .code-input:focus{border-color:rgba(0,255,136,.5)}
+        .code-hint{font-size:11px!important;color:rgba(255,255,255,.35)!important;margin-top:8px!important;margin-bottom:0!important}
         .foot{text-align:center;margin-top:24px;font-size:12px;color:rgba(255,255,255,.4)}
         .foot a{color:rgba(255,255,255,.6);text-decoration:none}
         .foot a:hover{color:#00ff88}
@@ -69,9 +74,18 @@
         <div class="success-state" id="successState">
             <div class="check">✓</div>
             <h2>Check your email</h2>
-            <p>We sent a login link to <span class="email" id="sentEmail"></span>. Click it to sign in — no password needed.</p>
-            <p style="font-size:12px;color:rgba(255,255,255,.4)">Can take up to a minute to arrive. Check spam if you don't see it.</p>
-            <button class="resend" id="resendBtn" type="button">Resend link</button>
+            <p>We sent a login link + code to <span class="email" id="sentEmail"></span>.</p>
+
+            <div class="error" id="codeError" style="text-align:left"></div>
+
+            <div class="code-block">
+                <label for="code">Enter the 6-digit code</label>
+                <input type="text" id="code" class="code-input" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
+                <button class="primary" id="verifyBtn" type="button" style="margin-top:12px">Sign in &rarr;</button>
+                <p class="code-hint">Typing the code keeps you signed in right here (works in the PWA). Or click the link in your email.</p>
+            </div>
+
+            <button class="resend" id="resendBtn" type="button" style="margin-top:16px">Resend</button>
         </div>
     </div>
 
@@ -95,6 +109,9 @@
     const successState = document.getElementById('successState');
     const sentEmail  = document.getElementById('sentEmail');
     const resendBtn  = document.getElementById('resendBtn');
+    const codeInput  = document.getElementById('code');
+    const verifyBtn  = document.getElementById('verifyBtn');
+    const codeError  = document.getElementById('codeError');
 
     // If already signed in, skip to dashboard.
     (async function checkSession(){
@@ -156,11 +173,49 @@
         sentEmail.textContent = email;
         formState.style.display = 'none';
         successState.classList.add('show');
+        setTimeout(() => codeInput && codeInput.focus(), 100);
+    }
+
+    async function verifyCode(){
+        codeError.classList.remove('show');
+        const email = sentEmail.textContent.trim();
+        const token = (codeInput.value || '').replace(/\s/g, '');
+        if (!/^\d{6}$/.test(token)){
+            codeError.textContent = 'Enter the 6-digit code from your email.';
+            codeError.classList.add('show');
+            codeInput.focus();
+            return;
+        }
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Verifying\u2026';
+        const { data, error } = await sb.auth.verifyOtp({ email, token, type: 'email' });
+        if (error){
+            codeError.textContent = /expired|invalid/i.test(error.message || '')
+                ? 'That code is invalid or expired. Request a new one.'
+                : (error.message || 'Couldn\u2019t verify that code.');
+            codeError.classList.add('show');
+            verifyBtn.disabled = false;
+            verifyBtn.innerHTML = 'Sign in \u2192';
+            return;
+        }
+        // Session now lives in this browser/PWA context.
+        window.location.replace('/portal/dashboard');
     }
 
     loginBtn.addEventListener('click', sendLink);
     emailInput.addEventListener('keydown', function(e){
         if (e.key === 'Enter') { e.preventDefault(); sendLink(); }
+    });
+
+    verifyBtn.addEventListener('click', verifyCode);
+    codeInput.addEventListener('input', function(){
+        // strip non-digits, auto-submit on 6 digits
+        const cleaned = (codeInput.value || '').replace(/\D/g, '').slice(0, 6);
+        if (cleaned !== codeInput.value) codeInput.value = cleaned;
+        if (cleaned.length === 6) verifyCode();
+    });
+    codeInput.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); verifyCode(); }
     });
 
     // Resend button on success state
