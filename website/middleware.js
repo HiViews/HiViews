@@ -1,14 +1,38 @@
 // HiViews — Vercel Edge Middleware
-// Injects global head tags + chat widget into every HTML page.
+// Injects global head tags + chat widget + Google Tag Manager into every HTML page.
 // New pages get everything automatically. Zero manual tags.
 
-// ── Global <head> injections (favicon, meta, etc.) ──
+// ── Google Tag Manager container ID ──
+// Loaded on every HTML page (including /portal/dashboard) so we capture the
+// full funnel from ad → purchase → dashboard engagement. To replace the
+// container, change this one constant.
+const GTM_ID = 'GTM-NSPVHQDJ';
+
+// GTM <script> — injected as the FIRST child of <head> (GTM requires "as
+// high as possible" so it fires before other tags and captures pageview
+// timing correctly).
+const GTM_HEAD = `<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');</script>
+<!-- End Google Tag Manager -->`;
+
+// GTM <noscript> iframe — injected IMMEDIATELY after the <body> opening tag
+// so users with JS disabled still trigger a pageview.
+const GTM_BODY = `<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->`;
+
+// ── Global <head> injections (favicon, meta) — inserted before </head> ──
 const HEAD_INJECT = [
   '<link rel="icon" href="/favicon.ico" type="image/x-icon">',
   '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
 ].join('\n');
 
-// ── Pages excluded from chat widget (favicon still injected) ──
+// ── Pages excluded from chat widget (favicon + GTM still inject) ──
 const CHAT_EXCLUDE = ['/login', '/sign-in', '/set-password', '/reset-password'];
 
 export default async function middleware(request) {
@@ -28,7 +52,15 @@ export default async function middleware(request) {
   // Read the HTML body
   let html = await response.text();
 
-  // Inject head tags (favicon, apple-touch-icon) — ALL pages
+  // Inject GTM <script> as early in <head> as possible. The `<head>` opening
+  // tag matches even if it carries attributes (rare but possible).
+  // Regex is case-insensitive; only the first match is replaced.
+  html = html.replace(/<head([^>]*)>/i, `<head$1>\n${GTM_HEAD}`);
+
+  // Inject GTM <noscript> immediately after opening <body> tag.
+  html = html.replace(/<body([^>]*)>/i, `<body$1>\n${GTM_BODY}`);
+
+  // Inject favicon / meta right before </head> — ALL pages
   if (html.includes('</head>')) {
     html = html.replace('</head>', HEAD_INJECT + '\n</head>');
   }
