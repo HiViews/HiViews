@@ -106,6 +106,66 @@
         .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#00ff88;color:#000;padding:10px 20px;border-radius:100px;font:600 13px/1 'Inter',sans-serif;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
         .toast.show{opacity:1;transform:translate(-50%,-6px)}
         .toast.err{background:#f87171;color:#fff}
+
+        /* ── Video detail popup (every video has its own URL) ── */
+        .popup-backdrop{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center}
+        .popup-backdrop.open{display:flex;animation:popFade .15s ease}
+        @keyframes popFade{from{opacity:0}to{opacity:1}}
+        .popup{background:#0a0a0a;border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;width:100%;max-width:100%;max-height:92dvh;display:flex;flex-direction:column;position:relative;animation:popSlide .2s cubic-bezier(.22,1,.36,1);overflow:hidden}
+        @keyframes popSlide{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @media (min-width:640px){
+            .popup-backdrop{align-items:center}
+            .popup{max-width:640px;max-height:90vh;border-radius:16px}
+            .popup-handle{display:none}
+        }
+        .popup-handle{width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:10px auto 4px;flex-shrink:0}
+        .popup-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.5);border:0;color:#fff;font-size:18px;cursor:pointer;padding:6px 10px;border-radius:6px;line-height:1;z-index:3;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+        .popup-close:hover{background:rgba(0,0,0,.75)}
+        .popup-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+
+        /* Portrait video player — fills the popup's top portion. `controls`
+           native player so audio works and users can scrub. Black letterbox
+           sides on wide screens (9:16 inside 640px). */
+        .popup-video-wrap{position:relative;background:#000;width:100%;aspect-ratio:9/16;max-height:70vh}
+        @media (min-width:640px){.popup-video-wrap{aspect-ratio:auto;max-height:60vh;min-height:360px}}
+        .popup-video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+        .popup-novideo{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;font:500 13px/1.4 'Inter',sans-serif;color:rgba(255,255,255,.4);padding:40px 20px;text-align:center}
+        .popup-novideo .icon{font-size:40px;opacity:.4}
+
+        .popup-detail{padding:18px 20px 22px}
+        .popup-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:500 12px/1 'Fira Code',ui-monospace,monospace;color:rgba(255,255,255,.55)}
+        .popup-id .code{color:#00ff88}
+        .popup-id .sep{color:rgba(255,255,255,.25)}
+        .popup-status-pill{font:600 9px/1 'Fira Code',ui-monospace,monospace;letter-spacing:.04em;text-transform:uppercase;padding:4px 7px;border-radius:100px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15)}
+        .st-rendering,.st-compositing{color:#ff8a00}
+        .st-raw_delivered,.st-final_delivered{color:#00ff88}
+        .st-approved,.st-published{color:#60a5fa}
+        .st-failed{color:#f87171}
+        .st-rejected,.st-archived{color:rgba(255,255,255,.35)}
+
+        .popup-title{font:700 17px/1.3 'Inter',sans-serif;color:#fff;margin-top:10px;letter-spacing:-.2px}
+        .popup-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font:500 10px/1 'Fira Code',ui-monospace,monospace;color:rgba(255,255,255,.4)}
+
+        .popup-script-label{font:600 10px/1 'Fira Code',ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.35);margin:18px 0 8px}
+        .popup-script{font-size:14px;color:rgba(255,255,255,.85);line-height:1.65;white-space:pre-wrap;word-break:break-word;padding:14px;background:rgba(255,255,255,.02);border-radius:10px;border:1px solid rgba(255,255,255,.05)}
+        .popup-script em{color:rgba(255,255,255,.3);font-style:italic}
+
+        .popup-divider{height:1px;background:rgba(255,255,255,.06);margin:18px 0 14px}
+
+        .popup-actions{display:flex;gap:8px;flex-wrap:wrap}
+        .popup-act{flex:1;min-width:100px;padding:13px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.75);font:600 13px/1 'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .12s;min-height:46px}
+        .popup-act:hover:not(:disabled){border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.03)}
+        .popup-act:disabled{opacity:.5;cursor:not-allowed}
+        .popup-act.approve{background:#00ff88;color:#000;border-color:#00ff88}
+        .popup-act.approve:hover:not(:disabled){background:#33ff9f}
+        .popup-act.publish{background:#60a5fa;color:#000;border-color:#60a5fa}
+        .popup-act.publish:hover:not(:disabled){background:#7cb5fc}
+        .popup-act.rewrite{background:rgba(255,138,0,.12);color:#ff8a00;border-color:rgba(255,138,0,.3)}
+        .popup-act.rewrite:hover:not(:disabled){background:rgba(255,138,0,.2)}
+
+        .popup-secondary{display:flex;gap:14px;margin-top:12px;border-top:1px solid rgba(255,255,255,.05);padding-top:12px}
+        .popup-link{background:none;border:0;color:rgba(255,255,255,.4);font:500 12px/1 'Inter',sans-serif;cursor:pointer;padding:6px 0;display:flex;align-items:center;gap:5px;transition:color .12s}
+        .popup-link:hover{color:#00ff88}
         .err{background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.3);color:#ff8888;padding:10px 14px;border-radius:10px;font-size:13px;margin:12px 16px}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -141,6 +201,15 @@
     </ul>
 </nav>
 
+<!-- Video detail popup — every video has its own URL -->
+<div class="popup-backdrop" id="popupBackdrop">
+    <div class="popup" id="popup" role="dialog" aria-modal="true">
+        <div class="popup-handle"></div>
+        <button class="popup-close" id="popupClose" aria-label="Close">✕</button>
+        <div class="popup-body" id="popupBody"><!-- populated by JS --></div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -151,10 +220,38 @@
     const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
     let session = null, customerId = null, filter = 'all', tasks = [], loaded = false;
+    let activePopupId = null;  // video_task id currently shown in the detail popup
     const main = document.getElementById('main');
     const chipsEl = document.getElementById('chips');
     const countEl = document.getElementById('count');
     const toastEl = document.getElementById('toast');
+    const popupBackdrop = document.getElementById('popupBackdrop');
+    const popupBody     = document.getElementById('popupBody');
+    const popupCloseBtn = document.getElementById('popupClose');
+
+    // Parse the content code out of /portal/videos/A7K2 (or legacy #A7K2).
+    function codeFromURL(){
+        const m = window.location.pathname.match(/^\/portal\/videos\/([A-Z0-9]{2,6})\/?$/i);
+        if (m) return m[1].toUpperCase();
+        const hash = (window.location.hash || '').replace('#','').trim();
+        return hash || null;
+    }
+
+    // Splits a script at the first line of `---`. Mirrors the same rule as
+    // skills/shared/script_utils.py on the droplet — everything above the
+    // dashes is what the avatar actually speaks, everything below is
+    // metadata (source URL / views / viral score) that never renders into
+    // the finished video.
+    function splitScriptMeta(text){
+        if (!text) return { spoken: '', meta: '' };
+        const m = text.match(/^[ \t]*-{3,}[ \t]*$/m);
+        if (!m) return { spoken: text.trim(), meta: '' };
+        const i = m.index;
+        return {
+            spoken: text.slice(0, i).replace(/\n{3,}/g,'\n\n').trim(),
+            meta:   text.slice(i + m[0].length).trim(),
+        };
+    }
 
     // Status → swipe/button config. Only raw_delivered and final_delivered
     // expose actionable buttons per the spec.
@@ -307,23 +404,9 @@
         v.pause();
         try { v.currentTime = 0; } catch(_) {}
     });
-    // Mobile: tap the tile to toggle play/fullscreen.
-    main.addEventListener('click', e => {
-        const tile = e.target.closest('.tile'); if (!tile) return;
-        // Don't hijack clicks on the action row (handled below).
-        if (e.target.closest('[data-act]')) return;
-        const v = tile.querySelector('video[src]'); if (!v) return;
-        if (tile.classList.contains('playing')) {
-            v.pause(); tile.classList.remove('playing');
-        } else {
-            tile.classList.add('playing');
-            v.play().catch(()=>{});
-            // Open fullscreen on mobile for a real preview
-            if (v.requestFullscreen && window.matchMedia('(max-width: 639px)').matches) {
-                v.requestFullscreen().catch(()=>{});
-            }
-        }
-    });
+    // Tile clicks are handled by the capture-phase listener below that
+    // opens the detail popup. No separate tap-to-play on the grid —
+    // the popup has native <video controls> + audio as the real playback.
 
     main.addEventListener('click', async e=>{
         const btn = e.target.closest('[data-act]'); if(!btn) return;
@@ -340,6 +423,180 @@
                   : 'Archived ✓';
         toast(msg, {ms:1600});
     });
+
+    // ── Video detail popup ───────────────────────────────────────────
+    function popupURL(code){ return window.location.origin + '/portal/videos/' + code; }
+
+    function actionsForPopup(status){
+        // Same state machine as the grid tiles — keep them in sync.
+        if (status === 'raw_delivered')   return [
+            {kind:'approve', next:'final_delivered', label:'▶ Approve'},
+            {kind:'rewrite', next:'scripted',        label:'↺ Rewrite'},
+            {kind:'archive', next:'archived',        label:'✕ Archive'}];
+        if (status === 'final_delivered') return [
+            {kind:'publish', next:'approved',        label:'🚀 Publish'},
+            {kind:'rewrite', next:'scripted',        label:'↺ Rewrite'},
+            {kind:'archive', next:'archived',        label:'✕ Archive'}];
+        if (status === 'failed')          return [
+            {kind:'rewrite', next:'scripted',        label:'↺ Retry'},
+            {kind:'archive', next:'archived',        label:'✕ Archive'}];
+        return [{kind:'archive', next:'archived',    label:'✕ Archive'}];
+    }
+
+    async function renderPopup(task){
+        const code       = task.task_code || '';
+        const status     = task.status || 'scripted';
+        const s          = STATUS[status] || { label: status };
+        const processing = status === 'rendering' || status === 'compositing';
+        const videoRef   = task.final_video_url || task.raw_video_url;
+        const posterRef  = task.thumbnail_url || '';
+        const { spoken, meta } = splitScriptMeta(task.script_text || '');
+        const title      = (spoken.split(/[\.\?!\n]/)[0] || '(untitled)').slice(0,80);
+        const actions    = actionsForPopup(status);
+
+        popupBody.innerHTML = `
+            <div class="popup-video-wrap">
+                ${videoRef ? `
+                    <video class="popup-video" controls playsinline preload="metadata"
+                           data-ref="${esc(videoRef)}" data-poster-ref="${esc(posterRef)}"></video>
+                ` : `
+                    <div class="popup-novideo">
+                        <div class="icon">${processing ? '⟳' : '🎬'}</div>
+                        <div>${processing ? 'Rendering — check back in a few minutes.' : 'No video file yet.'}</div>
+                    </div>
+                `}
+            </div>
+            <div class="popup-detail">
+                <div class="popup-id">
+                    <span class="code">${esc(code)}</span>
+                    <span class="sep">·</span>
+                    <span class="popup-status-pill ${statusClass(status)}">${esc(s.label)}</span>
+                    ${task.avatar_name ? `<span class="sep">·</span><span>🎭 ${esc(task.avatar_name)}</span>` : ''}
+                </div>
+                <div class="popup-title">${esc(title)}</div>
+                <div class="popup-meta">
+                    <span>${ago(task.updated_at || task.created_at)}</span>
+                    ${task.duration_seconds ? `<span>·</span><span>${task.duration_seconds}s</span>` : ''}
+                    ${task.platform ? `<span>·</span><span>${esc(task.platform)}</span>` : ''}
+                </div>
+
+                <div class="popup-script-label">Spoken script</div>
+                <div class="popup-script">${spoken ? esc(spoken) : '<em>(no script attached to this task)</em>'}</div>
+
+                <div class="popup-divider"></div>
+                <div class="popup-actions">
+                    ${actions.map(a => `
+                        <button class="popup-act ${a.kind==='approve'?'approve':''}${a.kind==='publish'?' publish':''}${a.kind==='rewrite'?' rewrite':''}"
+                                data-popup-act="${a.kind}" data-id="${task.id}" data-next="${a.next}">${a.label}</button>
+                    `).join('')}
+                </div>
+                <div class="popup-secondary">
+                    ${task.post_url ? `<a class="popup-link" href="${esc(task.post_url)}" target="_blank" rel="noopener">↗ View on Instagram</a>` : ''}
+                    <button class="popup-link" data-popup-act="share" data-id="${task.id}">🔗 Copy link</button>
+                </div>
+            </div>`;
+
+        // Hydrate signed URLs for the player
+        const v = popupBody.querySelector('video.popup-video');
+        if (v) {
+            const [src, poster] = await Promise.all([
+                resolveMedia(v.dataset.ref),
+                v.dataset.posterRef ? resolveMedia(v.dataset.posterRef) : Promise.resolve(null),
+            ]);
+            if (src)    v.src = src;
+            if (poster) v.poster = poster;
+            // Controls visible + not muted — full playback experience.
+            v.muted = false;
+            // Safari on iOS requires user-gesture for audio; controls handle that.
+        }
+    }
+
+    async function openPopup(taskIdOrCode, opts = {}){
+        const key = typeof taskIdOrCode === 'string' ? taskIdOrCode.toUpperCase() : taskIdOrCode;
+        const task = tasks.find(t => t.id === key || (t.task_code || '').toUpperCase() === String(key).toUpperCase());
+        if (!task) return false;
+
+        activePopupId = task.id;
+        await renderPopup(task);
+        popupBackdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        if (!opts.skipHistory) {
+            const target = '/portal/videos/' + (task.task_code || '');
+            if (window.location.pathname + window.location.hash !== target) {
+                history.pushState({ popup: task.task_code }, '', target);
+            }
+        }
+        return true;
+    }
+
+    function closePopup(opts = {}){
+        if (!activePopupId) return;
+        activePopupId = null;
+        // Pause & release the player so audio doesn't keep going behind the backdrop
+        const v = popupBody.querySelector('video.popup-video');
+        if (v) { try { v.pause(); } catch(_) {} }
+        popupBackdrop.classList.remove('open');
+        document.body.style.overflow = '';
+        if (!opts.skipHistory) {
+            if (window.location.pathname !== '/portal/videos' || window.location.hash) {
+                history.pushState(null, '', '/portal/videos');
+            }
+        }
+    }
+
+    popupBackdrop.addEventListener('click', e => {
+        if (e.target === popupBackdrop) closePopup();
+    });
+    popupCloseBtn.addEventListener('click', () => closePopup());
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && activePopupId) closePopup();
+    });
+    window.addEventListener('popstate', () => {
+        const code = codeFromURL();
+        if (code)                openPopup(code, { skipHistory: true });
+        else if (activePopupId)  closePopup({ skipHistory: true });
+    });
+
+    // Popup action handler
+    popupBody.addEventListener('click', async e => {
+        const btn = e.target.closest('[data-popup-act]'); if (!btn) return;
+        const act = btn.dataset.popupAct;
+        const id  = Number(btn.dataset.id);
+        const task = tasks.find(t => t.id === id); if (!task) return;
+
+        if (act === 'share') {
+            const url = popupURL(task.task_code || '');
+            try { await navigator.clipboard.writeText(url); toast('Link copied', {ms:1400}); }
+            catch { toast('Could not copy link', {err:true, ms:2000}); }
+            return;
+        }
+
+        btn.disabled = true;
+        const next = btn.dataset.next;
+        const {error} = await sb.from('video_tasks').update({status: next}).eq('id', id);
+        if (error) { toast('Update failed: '+error.message, {err:true,ms:3000}); btn.disabled = false; return; }
+
+        const msg = act === 'approve' ? 'Approved — on to final ✓'
+                  : act === 'publish' ? 'Publishing 🚀'
+                  : act === 'rewrite' ? 'Sent back for rewrite ↺'
+                  : 'Archived ✓';
+        toast(msg, {ms:1600});
+        closePopup();
+    });
+
+    // Grid-tile clicks: open the popup instead of toggling inline playback.
+    // (Hover autoplay on the tile itself still happens via the existing
+    //  mouseover/mouseout listeners; mobile tap opens the popup.)
+    main.addEventListener('click', e => {
+        const tile = e.target.closest('.tile');
+        if (!tile) return;
+        if (e.target.closest('[data-act]')) return; // action row is separate
+        const card = tile.closest('.card');
+        if (!card) return;
+        const id = Number(card.dataset.id);
+        if (id) openPopup(id);
+    }, true); // capture phase so this wins over the older tap-to-play handler
 
     (async function boot(){
         const {data:{session:s}} = await sb.auth.getSession();
@@ -363,6 +620,18 @@
             tasks = data||[];
             loaded = true;
             renderList();
+
+            // If the detail popup is open, refresh its content so live
+            // rewrites / status flips update the popup in place. Don't
+            // re-render while a <video> is actively playing to avoid
+            // yanking the player out from under the client.
+            if (activePopupId) {
+                const still = tasks.find(t => t.id === activePopupId);
+                if (!still) { closePopup(); return; }
+                const v = popupBody.querySelector('video.popup-video');
+                const playing = v && !v.paused && !v.ended;
+                if (!playing) renderPopup(still);
+            }
         }
         await load();
         sb.channel(`videos-${customerId}`)
@@ -370,6 +639,15 @@
               {event:'*',schema:'public',table:'video_tasks',filter:`customer_id=eq.${customerId}`},
               ()=>load())
           .subscribe();
+
+        // Deeplink: /portal/videos/A7K2 opens that video in the popup.
+        const bootCode = codeFromURL();
+        if (bootCode) {
+            setTimeout(async () => {
+                const opened = await openPopup(bootCode, { skipHistory: true });
+                if (!opened) history.replaceState(null, '', '/portal/videos');
+            }, 60);
+        }
     })();
 
     if ('serviceWorker' in navigator && location.protocol === 'https:') {

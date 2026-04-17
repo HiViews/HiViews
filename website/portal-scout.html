@@ -170,6 +170,19 @@
         .popup-script em{color:rgba(255,255,255,.3);font-style:italic}
         .popup-vibe{font-style:italic;font-size:13px;color:rgba(255,255,255,.4);margin-top:14px;padding:10px 14px;background:rgba(255,255,255,.02);border-radius:8px;border-left:2px solid rgba(0,255,136,.3);line-height:1.5}
 
+        /* Metadata trailer — anything after the `---` cutoff. Dim + small,
+           clearly marked "not spoken by the avatar" so the client knows
+           the distinction. */
+        .popup-meta-card{margin-top:18px;padding:12px 14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:8px}
+        .popup-meta-card summary{cursor:pointer;font:600 11px/1 'Fira Code',ui-monospace,monospace;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;list-style:none;display:flex;align-items:center;gap:6px}
+        .popup-meta-card summary::-webkit-details-marker{display:none}
+        .popup-meta-card summary::before{content:'▸';font-family:'Inter',sans-serif;transition:transform .15s;display:inline-block}
+        .popup-meta-card[open] summary::before{transform:rotate(90deg)}
+        .popup-meta-card summary:hover{color:rgba(255,255,255,.6)}
+        .popup-meta-card pre{margin-top:10px;font:500 12px/1.55 'Fira Code',ui-monospace,monospace;color:rgba(255,255,255,.5);white-space:pre-wrap;word-break:break-word}
+        .popup-meta-card a{color:#00ff88;text-decoration:none}
+        .popup-meta-card a:hover{text-decoration:underline}
+
         .popup-actions{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
         .popup-act{flex:1;min-width:90px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.75);font:600 13px/1 'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .12s;min-height:44px}
         .popup-act:hover:not(:disabled){border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.03)}
@@ -337,9 +350,11 @@
 
     function titleFor(t){
         if(t.title && t.title.trim()) return t.title.trim();
-        const s = (t.script_text||'').trim();
-        if(!s) return '(untitled)';
-        const first = s.split(/[\.\?!]/)[0] || s;
+        // Fall back to the first sentence of the SPOKEN portion — never pull
+        // a title from the metadata trailer (Source: / Views: / etc).
+        const { spoken } = splitScriptMeta(t.script_text||'');
+        if(!spoken) return '(untitled)';
+        const first = spoken.split(/[\.\?!]/)[0] || spoken;
         return first.length > 80 ? first.slice(0,77)+'…' : first;
     }
 
@@ -369,7 +384,12 @@
             const expanded = t.id === expandedId;
             const editing  = t.id === editingId;
             const title = titleFor(t);
+            // Raw script_text (full, including any metadata trailer) is what
+            // the editor saves and what the popup's split display parses.
+            // `preview` is just the spoken slice, used for the two-line row
+            // preview so the inbox doesn't show "Source: https://..." lines.
             const script = t.script_text || '';
+            const preview = splitScriptMeta(script).spoken;
             const isRewriting = t.status === 'rewriting';
             const vCount = versionCounts[t.id] || 0;
             const versionsBadge = vCount > 1
@@ -387,7 +407,7 @@
                       <span class="row-time">${ago(t.updated_at || t.created_at)}</span>
                     </span>
                   </div>
-                  <div class="row-line2">${esc(script) || '<em style="color:rgba(255,255,255,.3)">(no script text yet — tap Rewrite)</em>'}</div>
+                  <div class="row-line2">${esc(preview) || '<em style="color:rgba(255,255,255,.3)">(no script text yet — tap Rewrite)</em>'}</div>
                   <div class="row-edit">
                     <textarea data-editbox="${t.id}" placeholder="Script…">${esc(script)}</textarea>
                     <div class="row-edit-actions">
@@ -664,13 +684,35 @@
         return window.location.origin + '/portal/scout/' + code;
     }
 
+    // Splits a script at the first line of `---` (three or more dashes).
+    // Everything above is what the avatar will speak. Everything below is
+    // metadata for humans / the pipeline — sources, stats, links.
+    // Keep this in lockstep with skills/shared/script_utils.py on the
+    // droplet so the portal display matches what the avatar actually says.
+    function splitScriptMeta(text){
+        if (!text) return { spoken: '', meta: '' };
+        const m = text.match(/^[ \t]*-{3,}[ \t]*$/m);
+        if (!m) return { spoken: text.trim(), meta: '' };
+        const i = m.index;
+        return {
+            spoken: text.slice(0, i).replace(/\n{3,}/g,'\n\n').trim(),
+            meta:   text.slice(i + m[0].length).trim(),
+        };
+    }
+
+    // Linkify bare URLs in the metadata block so "Source: https://..." is clickable.
+    function linkifyMeta(text){
+        return esc(text).replace(/(https?:\/\/[^\s<]+)/g,
+            '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    }
+
     function renderPopup(task){
         const code      = task.task_code || '';
         const hookType  = (task.hook_type || 'hook').toUpperCase();
         const score     = task.score || 0;
         const status    = task.status || 'discovered';
         const isRewriting = status === 'rewriting';
-        const script    = task.script_text || '';
+        const { spoken, meta } = splitScriptMeta(task.script_text || '');
         const note      = task.avatar_note || '';
         const title     = titleFor(task);
         const niche     = task.niche || '';
@@ -693,8 +735,13 @@
                 </div>
             </div>
             <div class="popup-divider"></div>
-            <div class="popup-script">${script ? esc(script) : '<em>(no script text yet — tap Rewrite to generate one in your brand voice)</em>'}</div>
+            <div class="popup-script">${spoken ? esc(spoken) : '<em>(no script text yet — tap Rewrite to generate one in your brand voice)</em>'}</div>
             ${note ? `<div class="popup-vibe">${esc(note)}</div>` : ''}
+            ${meta ? `
+                <details class="popup-meta-card">
+                    <summary>Source &amp; stats · not spoken by the avatar</summary>
+                    <pre>${linkifyMeta(meta)}</pre>
+                </details>` : ''}
             <div class="popup-divider"></div>
             <div class="popup-actions">
                 <button class="popup-act" data-popup-act="rewrite" data-id="${task.id}" ${isRewriting ? 'disabled' : ''}>
