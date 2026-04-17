@@ -12,201 +12,409 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = { theme: { extend: { colors: { 'hv-green':'#00ff88','hv-orange':'#ff8a00' }, fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['"Fira Code"','ui-monospace','monospace'] } } } }
-    </script>
     <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         html,body{background:#000}
         body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;min-height:100dvh}
         body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-        .pulse-green{animation:pulse 2s ease-in-out infinite}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-        input[type="text"],input[type="email"],textarea,select{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.12);color:#fff;border-radius:8px;padding:10px 12px;font-size:14px;width:100%;font-family:inherit}
-        input:focus,textarea:focus,select:focus{outline:0;border-color:rgba(0,255,136,0.5)}
-        textarea{min-height:72px;resize:vertical}
-        label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5);margin-bottom:6px;font-weight:500}
-        .chip{display:inline-flex;align-items:center;gap:4px;background:rgba(0,255,136,0.08);border:0.5px solid rgba(0,255,136,0.3);color:#00ff88;padding:3px 10px;border-radius:100px;font-size:12px;font-family:ui-monospace,monospace}
-        .chip button{background:none;border:0;color:#00ff88;cursor:pointer;padding:0;margin-left:2px;opacity:0.6}
-        .chip button:hover{opacity:1}
-        .saved-toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#00ff88;color:#000;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:60;animation:slideUp 0.3s ease-out}
-        @keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+
+        /* Header ─────────────────────────────────────────────── */
+        .hdr{position:sticky;top:0;z-index:40;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.1);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .hdr h1{font-size:18px;font-weight:700;letter-spacing:-.3px}
+        .hdr-right{display:flex;align-items:center;gap:10px}
+        .status{font-family:'Fira Code',ui-monospace,monospace;font-size:11px;white-space:nowrap}
+        .status.saved{color:#00ff88}
+        .status.dirty{color:#ff8a00}
+        .status.saving{color:#ff8a00}
+        .status.idle{color:rgba(255,255,255,.3)}
+        .save-btn{background:#00ff88;color:#000;border:0;padding:10px 18px;border-radius:8px;font:600 14px/1 'Inter',sans-serif;cursor:pointer;transition:all .15s}
+        .save-btn:hover:not(:disabled){background:#33ff9f}
+        .save-btn:disabled{background:rgba(0,255,136,.25);color:rgba(0,0,0,.6);cursor:not-allowed}
+
+        /* Layout ─────────────────────────────────────────────── */
+        .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px 96px}
+        .card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;margin-bottom:14px}
+        .card h2{font-size:14px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .card h2 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#00ff88}
+
+        /* Form fields ────────────────────────────────────────── */
+        .field{margin-bottom:14px}
+        .field:last-child{margin-bottom:0}
+        label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:6px;font-weight:500}
+        input[type="text"],input[type="email"],textarea{display:block;width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:11px 13px;font:400 15px/1.4 'Inter',sans-serif;outline:0}
+        input:focus,textarea:focus{border-color:rgba(0,255,136,.55);background:rgba(0,255,136,.03)}
+        textarea{min-height:76px;resize:vertical;line-height:1.5}
+        .hint{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;line-height:1.5}
+
+        /* Chips ──────────────────────────────────────────────── */
+        .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+        .chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);padding:9px 16px;border-radius:100px;font:500 13px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s;user-select:none;min-height:38px;display:inline-flex;align-items:center}
+        .chip:hover{border-color:rgba(255,255,255,.3);color:#fff}
+        .chip.on{background:#00ff88;color:#000;border-color:#00ff88;font-weight:600}
+        .chip.on:hover{background:#33ff9f;border-color:#33ff9f}
+
+        /* Hashtag editor ─────────────────────────────────────── */
+        .tag-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:40px;padding:12px;background:rgba(0,0,0,.35);border:1px dashed rgba(255,255,255,.1);border-radius:10px}
+        .tag-list.empty{align-items:center;justify-content:center}
+        .tag-list.empty::before{content:'No hashtags yet — add your first below';color:rgba(255,255,255,.3);font-size:12px;font-style:italic}
+        .tag-list:not(.empty)::before{display:none}
+        .tag{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.35);color:#00ff88;padding:5px 12px;border-radius:100px;font:500 13px/1 'Fira Code',ui-monospace,monospace;display:inline-flex;align-items:center;gap:6px}
+        .tag button{background:transparent;border:0;color:#00ff88;opacity:.55;cursor:pointer;padding:0;font-size:15px;line-height:1}
+        .tag button:hover{opacity:1}
+        .tag-input-row{display:flex;gap:8px;margin-top:12px}
+        .tag-input-row input{flex:1}
+        .tag-add{background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);color:#00ff88;padding:11px 18px;border-radius:8px;font:600 14px/1 'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:all .12s}
+        .tag-add:hover{background:rgba(0,255,136,.2)}
+
+        /* Nav ────────────────────────────────────────────────── */
+        .bottomnav{position:fixed;bottom:0;inset-inline:0;z-index:50;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.1);padding-bottom:env(safe-area-inset-bottom)}
+        .bottomnav ul{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);height:56px}
+        .bottomnav li{display:flex}
+        .bottomnav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;text-decoration:none;font:500 10px/1 'Inter',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5)}
+        .bottomnav a:hover{color:#fff}
+        .bottomnav a.on{color:#00ff88}
+        .bottomnav a .icon{font-size:18px}
+
+        /* Save toast ─────────────────────────────────────────── */
+        .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#00ff88;color:#000;padding:10px 20px;border-radius:100px;font:600 13px/1 'Inter',sans-serif;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+        .toast.show{opacity:1;transform:translate(-50%,-6px)}
+        .err{background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.3);color:#ff8888;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px}
+
+        /* Loading ────────────────────────────────────────────── */
+        .loading{min-height:60vh;display:flex;align-items:center;justify-content:center}
+        .spin{width:24px;height:24px;border:2px solid rgba(255,255,255,.1);border-top-color:#00ff88;border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        @media(max-width:480px){
+            .hdr h1{font-size:16px}
+            .save-btn{padding:9px 14px;font-size:13px}
+            .status{display:none}
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script type="importmap">
-      {"imports":{"react":"https://esm.sh/react@18.3.1","react-dom":"https://esm.sh/react-dom@18.3.1","react-dom/client":"https://esm.sh/react-dom@18.3.1/client"}}
-    </script>
 </head>
 <body>
-<div id="root" class="relative z-10"></div>
-<script type="module">
-    import React,{useEffect,useState,useCallback,useRef} from 'react';
-    import {createRoot} from 'react-dom/client';
-    const h=React.createElement;
 
-    const SB_URL='https://rkudnkbpnfxpxglaklqs.supabase.co';
-    const SB_KEY='sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
-    const sb=window.supabase.createClient(SB_URL,SB_KEY);
+<!-- Header with prominent Save button -->
+<header class="hdr">
+    <h1>Brand</h1>
+    <div class="hdr-right">
+        <span class="status idle" id="status">No changes</span>
+        <button class="save-btn" id="saveBtn" type="button" disabled>Save</button>
+    </div>
+</header>
 
-    const TONES=['confident','direct','warm','playful','analytical','bold','empathetic'];
-    const ENERGIES=['low','medium','high'];
-    const FORMALITIES=['conversational','professional','casual'];
+<main class="wrap" id="main">
+    <div class="loading"><div class="spin"></div></div>
+</main>
 
-    function Nav(){
-        const tabs=[
-            {id:'dashboard',label:'Home',icon:'🏠',href:'/portal/dashboard'},
-            {id:'brand',label:'Brand',icon:'📝',href:'/portal/brand'},
-            {id:'avatars',label:'Avtr',icon:'🎭',href:'/portal/avatars'},
-            {id:'scout',label:'Scout',icon:'🔍',href:'/portal/scout'},
-            {id:'videos',label:'Video',icon:'🎬',href:'/portal/videos'},
-        ];
-        return h('nav',{className:'fixed bottom-0 inset-x-0 z-50 bg-black/90 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]'},
-            h('ul',{className:'grid grid-cols-5 h-14'},
-                tabs.map(t=>h('li',{key:t.id,className:'flex'},
-                    h('a',{href:t.href,className:['flex flex-col items-center justify-center gap-0.5 w-full text-[10px] uppercase tracking-wider',t.id==='brand'?'text-hv-green':'text-white/50'].join(' ')},
-                        h('span',{className:'text-lg leading-none'},t.icon),
-                        h('span',null,t.label))))));
+<nav class="bottomnav">
+    <ul>
+        <li><a href="/portal/dashboard"><span class="icon">🏠</span>Home</a></li>
+        <li><a href="/portal/brand" class="on"><span class="icon">📝</span>Brand</a></li>
+        <li><a href="/portal/avatars"><span class="icon">🎭</span>Avtr</a></li>
+        <li><a href="/portal/scout"><span class="icon">🔍</span>Scout</a></li>
+        <li><a href="/portal/videos"><span class="icon">🎬</span>Video</a></li>
+    </ul>
+</nav>
+
+<div class="toast" id="toast">Saved ✓</div>
+
+<script>
+(function(){
+    'use strict';
+
+    // ── Config ────────────────────────────────────────────────────
+    const SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+    const TONES        = ['confident','direct','warm','playful','analytical','bold','empathetic'];
+    const ENERGIES     = ['low','medium','high'];
+    const FORMALITIES  = ['conversational','professional','casual'];
+
+    // ── State ─────────────────────────────────────────────────────
+    let session    = null;
+    let customerId = null;
+    let original   = null;        // last-saved snapshot
+    let draft      = null;        // current edits
+    let dirty      = false;
+
+    const main       = document.getElementById('main');
+    const statusEl   = document.getElementById('status');
+    const saveBtn    = document.getElementById('saveBtn');
+    const toastEl    = document.getElementById('toast');
+
+    // ── Render ────────────────────────────────────────────────────
+    function chipRow(field, options) {
+        return options.map(opt => {
+            const on = (draft[field] || '') === opt;
+            return `<button type="button" class="chip${on ? ' on' : ''}"
+                        data-field="${field}" data-value="${opt}">${opt}</button>`;
+        }).join('');
     }
 
-    function ChipSelect({label,value,options,onChange}){
-        return h('div',null,
-            h('label',null,label),
-            h('div',{className:'flex flex-wrap gap-1.5'},
-                options.map(opt=>h('button',{
-                    key:opt,type:'button',onClick:()=>onChange(opt),
-                    className:['px-3 py-1.5 rounded-full text-[12px] font-medium border transition',value===opt?'bg-hv-green text-black border-hv-green':'border-white/10 text-white/70 hover:border-white/25'].join(' ')
-                },opt))));
+    function tagList(hashtags) {
+        if (!hashtags || hashtags.length === 0) {
+            return `<div class="tag-list empty"></div>`;
+        }
+        const tags = hashtags.map(t =>
+            `<span class="tag">#${t}<button type="button" data-remove="${t}" aria-label="Remove #${t}">×</button></span>`
+        ).join('');
+        return `<div class="tag-list">${tags}</div>`;
     }
 
-    function HashtagEditor({value,onChange}){
-        const [draft,setDraft]=useState('');
-        const add=()=>{
-            const v=draft.trim().replace(/^#/,'');
-            if(!v||(value||[]).includes(v))return;
-            onChange([...(value||[]),v]);
-            setDraft('');
-        };
-        const remove=t=>onChange((value||[]).filter(x=>x!==t));
-        return h('div',null,
-            h('label',null,'Hashtags'),
-            h('div',{className:'flex flex-wrap gap-1.5 mb-2'},
-                (value||[]).map(t=>h('span',{key:t,className:'chip'},'#'+t,h('button',{onClick:()=>remove(t),type:'button'},'×')))),
-            h('div',{className:'flex gap-2'},
-                h('input',{type:'text',placeholder:'#marketing',value:draft,onChange:e=>setDraft(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();add()}}}),
-                h('button',{type:'button',onClick:add,className:'px-4 py-2 bg-hv-green text-black rounded-md text-sm font-semibold whitespace-nowrap'},'Add')));
+    function render() {
+        if (!draft) {
+            main.innerHTML = '<div class="loading"><div class="spin"></div></div>';
+            return;
+        }
+        main.innerHTML = `
+            <div class="card">
+                <h2><span class="dot"></span>Identity</h2>
+                <div class="field">
+                    <label for="f_brand_name">Brand name</label>
+                    <input type="text" id="f_brand_name" data-field="brand_name" value="${esc(draft.brand_name || '')}" placeholder="e.g. HiViews">
+                </div>
+                <div class="field">
+                    <label for="f_instagram_handle">Instagram handle</label>
+                    <input type="text" id="f_instagram_handle" data-field="instagram_handle" value="${esc(draft.instagram_handle || '')}" placeholder="yourhandle (no @)">
+                </div>
+                <div class="field">
+                    <label for="f_niche">Niche</label>
+                    <input type="text" id="f_niche" data-field="niche" value="${esc(draft.niche || '')}" placeholder="e.g. real estate, fitness coaching, B2B SaaS">
+                    <div class="hint">This is the single most important field — the overnight scout uses it to filter viral trends down to what matters for your audience.</div>
+                </div>
+                <div class="field">
+                    <label for="f_target_audience">Target audience</label>
+                    <input type="text" id="f_target_audience" data-field="target_audience" value="${esc(draft.target_audience || '')}" placeholder="e.g. founders scaling from $1M to $10M ARR">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="dot"></span>Voice</h2>
+                <div class="field">
+                    <label>Tone</label>
+                    <div class="chips" data-chiprow="tone">${chipRow('tone', TONES)}</div>
+                </div>
+                <div class="field">
+                    <label>Energy</label>
+                    <div class="chips" data-chiprow="energy">${chipRow('energy', ENERGIES)}</div>
+                </div>
+                <div class="field">
+                    <label>Formality</label>
+                    <div class="chips" data-chiprow="formality">${chipRow('formality', FORMALITIES)}</div>
+                </div>
+                <div class="field">
+                    <label for="f_key_messages">Key messages</label>
+                    <textarea id="f_key_messages" data-field="key_messages" placeholder="What should every video reinforce about you?">${esc(draft.key_messages || '')}</textarea>
+                </div>
+                <div class="field">
+                    <label for="f_vocabulary_notes">Never use these words or phrases</label>
+                    <textarea id="f_vocabulary_notes" data-field="vocabulary_notes" placeholder="e.g. leverage, synergy, game-changer">${esc(draft.vocabulary_notes || '')}</textarea>
+                </div>
+                <div class="field">
+                    <label for="f_topics_to_avoid">Topics to avoid</label>
+                    <textarea id="f_topics_to_avoid" data-field="topics_to_avoid" placeholder="Anything off-limits for your videos">${esc(draft.topics_to_avoid || '')}</textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><span class="dot"></span>Scout Targets</h2>
+                <label>Hashtags your scout watches nightly</label>
+                ${tagList(draft.hashtags)}
+                <div class="tag-input-row">
+                    <input type="text" id="tagDraft" placeholder="marketing (no # needed)" autocomplete="off">
+                    <button type="button" class="tag-add" id="tagAddBtn">Add</button>
+                </div>
+                <div class="hint">3-5 is ideal. The scout scans these every night for viral trends, transcribes the top ones, and queues scripts for you.</div>
+            </div>
+
+            <p class="hint" style="text-align:center;margin-top:20px">Changes stay here until you hit <strong style="color:#fff">Save</strong> in the top right. Save propagates to your AI agent within seconds.</p>
+        `;
+        wireEvents();
     }
 
-    function App(){
-        const [session,setSession]=useState(null);
-        const [customerId,setCustomerId]=useState(null);
-        const [brand,setBrand]=useState(null);
-        const [saved,setSaved]=useState(false);
-        const [saving,setSaving]=useState(false);
-        const [error,setError]=useState(null);
-        const saveTimer=useRef(null);
+    function esc(s){
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    }
 
-        useEffect(()=>{(async()=>{
-            const {data:{session:s}}=await sb.auth.getSession();
-            if(!s){window.location.replace('/sign-in');return}
-            setSession(s);
-            const cid=s.user.user_metadata?.customer_id;
-            if(cid){setCustomerId(cid);return}
-            const {data:c}=await sb.from('customers').select('id').eq('email',s.user.email).maybeSingle();
-            if(c?.id)setCustomerId(c.id);else setError('No customer record for your account.');
-        })()},[]);
-
-        useEffect(()=>{
-            if(!customerId)return;
-            (async()=>{
-                const {data,error}=await sb.from('brand_config').select('*').eq('customer_id',customerId).maybeSingle();
-                if(error&&error.code!=='PGRST116'){
-                    setError(error.code==='PGRST205'?'Portal tables not deployed yet.':error.message);return;
-                }
-                // If no row yet, give the form sensible defaults
-                setBrand(data||{
-                    customer_id:customerId,tone:'confident',energy:'high',formality:'conversational',
-                    hashtags:[],primary_color:'#00ff88',
+    // ── Event wiring (delegation on #main so re-renders don't
+    //    break handlers) ───────────────────────────────────────────
+    function wireEvents() {
+        // Field inputs — update draft as they type
+        main.querySelectorAll('[data-field]').forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.addEventListener('input', () => {
+                    draft[el.dataset.field] = el.value;
+                    markDirty();
                 });
-            })();
-        },[customerId]);
-
-        // Debounced upsert to Supabase. On commit, also propagate to the Droplet.
-        const commit=useCallback(async(patch)=>{
-            if(!customerId)return;
-            setSaving(true);
-            const row={customer_id:customerId,...brand,...patch};
-            // RLS allows updating own row; upsert on PK-unique customer_id.
-            const {error}=await sb.from('brand_config').upsert(row,{onConflict:'customer_id'});
-            if(error){setError(error.message);setSaving(false);return}
-            // Propagate to Droplet via provisioning server.
-            if(session){
-                fetch('https://provision.hiviews.ai/api/brand-save',{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
-                    body:JSON.stringify({customer_id:customerId}),
-                }).catch(()=>{});
             }
-            setBrand(row);setSaved(true);setSaving(false);
-            clearTimeout(saveTimer.current);
-            saveTimer.current=setTimeout(()=>setSaved(false),1600);
-        },[brand,customerId,session]);
+        });
 
-        const update=k=>v=>commit({[k]:v});
+        // Chip rows — click to select (exclusive within row)
+        main.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const field = chip.dataset.field;
+                const value = chip.dataset.value;
+                if (draft[field] === value) return;
+                draft[field] = value;
+                // Update the chips visually without full re-render
+                chip.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+                chip.classList.add('on');
+                markDirty();
+            });
+        });
 
-        if(error&&!brand)return h('div',{className:'p-8 text-red-400 text-sm'},error);
-        if(!brand)return h('div',{className:'min-h-[60vh] flex items-center justify-center'},h('div',{className:'w-6 h-6 border-2 border-white/10 border-t-hv-green rounded-full animate-spin'}));
+        // Tag add
+        const tagDraftEl = document.getElementById('tagDraft');
+        const tagAddBtn  = document.getElementById('tagAddBtn');
+        function addTag() {
+            const raw = (tagDraftEl.value || '').trim().replace(/^#+/, '').replace(/\s+/g,'');
+            if (!raw) return;
+            const lower = raw.toLowerCase();
+            const list = Array.isArray(draft.hashtags) ? [...draft.hashtags] : [];
+            if (list.some(t => t.toLowerCase() === lower)) {
+                tagDraftEl.value = '';
+                return;
+            }
+            list.push(raw);
+            draft.hashtags = list;
+            tagDraftEl.value = '';
+            markDirty();
+            render();  // re-render tag list
+            document.getElementById('tagDraft').focus();
+        }
+        tagAddBtn.addEventListener('click', addTag);
+        tagDraftEl.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); addTag(); }
+        });
 
-        return h(React.Fragment,null,
-            h('header',{className:'sticky top-0 z-40 bg-black/90 backdrop-blur border-b border-white/10 px-4 py-3'},
-                h('div',{className:'flex items-center justify-between'},
-                    h('h1',{className:'text-lg font-bold tracking-tight'},'Brand'),
-                    saving
-                        ?h('span',{className:'text-[10px] font-mono text-hv-orange'},'Saving…')
-                        :h('span',{className:'flex items-center gap-1.5 text-[10px] font-mono text-white/40'},
-                            h('span',{className:'w-1.5 h-1.5 bg-hv-green rounded-full pulse-green'}),'LIVE'))),
-
-            h('main',{className:'max-w-2xl mx-auto px-4 py-6 pb-24 space-y-6'},
-
-                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
-                    h('h2',{className:'text-sm font-semibold text-white/80'},'Identity'),
-                    h('div',null,h('label',null,'Brand name'),
-                        h('input',{type:'text',defaultValue:brand.brand_name||'',onBlur:e=>update('brand_name')(e.target.value)})),
-                    h('div',null,h('label',null,'Instagram handle'),
-                        h('input',{type:'text',placeholder:'@yourhandle',defaultValue:brand.instagram_handle||'',onBlur:e=>update('instagram_handle')(e.target.value.replace(/^@/,''))})),
-                    h('div',null,h('label',null,'Niche'),
-                        h('input',{type:'text',placeholder:'e.g. real estate, fitness coaching',defaultValue:brand.niche||'',onBlur:e=>update('niche')(e.target.value)})),
-                    h('div',null,h('label',null,'Target audience'),
-                        h('input',{type:'text',placeholder:'e.g. founders scaling from $1M to $10M',defaultValue:brand.target_audience||'',onBlur:e=>update('target_audience')(e.target.value)})),
-                ),
-
-                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
-                    h('h2',{className:'text-sm font-semibold text-white/80'},'Voice'),
-                    h(ChipSelect,{label:'Tone',value:brand.tone||'confident',options:TONES,onChange:update('tone')}),
-                    h(ChipSelect,{label:'Energy',value:brand.energy||'high',options:ENERGIES,onChange:update('energy')}),
-                    h(ChipSelect,{label:'Formality',value:brand.formality||'conversational',options:FORMALITIES,onChange:update('formality')}),
-                    h('div',null,h('label',null,'Never use these words or phrases'),
-                        h('textarea',{placeholder:"e.g. 'leverage', 'synergy', 'game-changer'",defaultValue:brand.vocabulary_notes||'',onBlur:e=>update('vocabulary_notes')(e.target.value)})),
-                    h('div',null,h('label',null,'Key messages (your brand position)'),
-                        h('textarea',{placeholder:'What do you want every video to reinforce?',defaultValue:brand.key_messages||'',onBlur:e=>update('key_messages')(e.target.value)})),
-                    h('div',null,h('label',null,'Topics to avoid'),
-                        h('textarea',{placeholder:'Subjects off-limits for your videos',defaultValue:brand.topics_to_avoid||'',onBlur:e=>update('topics_to_avoid')(e.target.value)})),
-                ),
-
-                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
-                    h('h2',{className:'text-sm font-semibold text-white/80'},'Scout Targets'),
-                    h(HashtagEditor,{value:brand.hashtags,onChange:update('hashtags')}),
-                    h('p',{className:'text-xs text-white/40'},'Your 2 AM scout scans these hashtags every night for viral trends to rewrite in your voice. 3-5 is ideal.'),
-                ),
-
-                h('p',{className:'text-xs text-white/40 text-center'},'Changes save automatically on blur. Agent picks up new voice on next response.'),
-            ),
-            saved&&h('div',{className:'saved-toast'},'Saved ✓'),
-            h(Nav));
+        // Tag remove (×)
+        main.querySelectorAll('[data-remove]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const name = btn.dataset.remove;
+                draft.hashtags = (draft.hashtags || []).filter(t => t !== name);
+                markDirty();
+                render();
+            });
+        });
     }
-    createRoot(document.getElementById('root')).render(h(App));
+
+    // ── State helpers ─────────────────────────────────────────────
+    function markDirty() {
+        dirty = JSON.stringify(draft) !== JSON.stringify(original);
+        saveBtn.disabled = !dirty;
+        if (dirty) {
+            statusEl.textContent = 'Unsaved changes';
+            statusEl.className = 'status dirty';
+        } else {
+            statusEl.textContent = 'All saved';
+            statusEl.className = 'status saved';
+        }
+    }
+
+    function toast(msg, ms = 1800) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), ms);
+    }
+
+    // ── Save flow ─────────────────────────────────────────────────
+    async function save() {
+        if (!dirty || !customerId) return;
+        statusEl.textContent = 'Saving…';
+        statusEl.className = 'status saving';
+        saveBtn.disabled = true;
+
+        const payload = { ...draft, customer_id: customerId };
+        const { error } = await sb.from('brand_config').upsert(payload, { onConflict: 'customer_id' });
+        if (error) {
+            statusEl.textContent = 'Save failed';
+            statusEl.className = 'status dirty';
+            saveBtn.disabled = false;
+            toast('Save failed — ' + (error.message || 'try again'), 3500);
+            return;
+        }
+
+        // Propagate to the customer's Droplet (brand-voice.md + hashtags.md).
+        if (session) {
+            fetch('https://provision.hiviews.ai/api/brand-save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session.access_token,
+                },
+                body: JSON.stringify({ customer_id: customerId }),
+            }).catch(() => {});
+        }
+
+        original = JSON.parse(JSON.stringify(draft));
+        dirty = false;
+        statusEl.textContent = 'All saved';
+        statusEl.className = 'status saved';
+        saveBtn.disabled = true;
+        toast('Saved to HiViews + your agent ✓');
+    }
+
+    saveBtn.addEventListener('click', save);
+
+    // Cmd/Ctrl+S intercept
+    document.addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+            e.preventDefault();
+            if (dirty) save();
+        }
+    });
+
+    // Warn before unload if dirty
+    window.addEventListener('beforeunload', e => {
+        if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    // ── Boot ──────────────────────────────────────────────────────
+    (async function boot(){
+        const { data: { session: s } } = await sb.auth.getSession();
+        if (!s) { window.location.replace('/sign-in'); return; }
+        session = s;
+
+        let cid = s.user.user_metadata?.customer_id;
+        if (!cid) {
+            const { data } = await sb.from('customers').select('id').eq('email', s.user.email).maybeSingle();
+            cid = data?.id;
+        }
+        if (!cid) {
+            main.innerHTML = '<div class="err">No customer record found for your account. Contact support@hiviews.ai.</div>';
+            return;
+        }
+        customerId = cid;
+
+        const { data: row, error } = await sb.from('brand_config').select('*').eq('customer_id', customerId).maybeSingle();
+        if (error && error.code === 'PGRST205') {
+            main.innerHTML = '<div class="err">Portal tables not deployed yet. Try again in a moment.</div>';
+            return;
+        }
+
+        const defaults = {
+            customer_id: customerId,
+            brand_name: '', instagram_handle: '', niche: '', target_audience: '',
+            tone: 'confident', energy: 'high', formality: 'conversational',
+            key_messages: '', vocabulary_notes: '', topics_to_avoid: '',
+            hashtags: [],
+        };
+        original = { ...defaults, ...(row || {}) };
+        draft    = JSON.parse(JSON.stringify(original));
+        render();
+        markDirty();    // initializes status label to "All saved"
+    })();
+
+    // PWA
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
-        window.addEventListener('load', () => { navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {}); });
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {});
+        });
     }
+})();
 </script>
 </body>
 </html>
