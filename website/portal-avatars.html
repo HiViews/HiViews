@@ -69,8 +69,17 @@
         failed:   {label:'Failed',   c:'text-red-400'},
     };
 
-    function AvatarCard({avatar,onSetDefault}){
+    const VOICE_STATUS = {
+        none:    {label:'No voice clone',  c:'text-white/35'},
+        pending: {label:'Cloning voice…',  c:'text-hv-orange'},
+        ready:   {label:'Voice ready',     c:'text-hv-green'},
+        failed:  {label:'Clone failed',    c:'text-red-400'},
+    };
+
+    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, customerPlan}){
         const s=STATUS[avatar.status]||{label:avatar.status,c:'text-white/60'};
+        const vs = VOICE_STATUS[avatar.voice_status||'none'] || VOICE_STATUS.none;
+        const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
         return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start'},
             avatar.thumbnail_url
                 ?h('img',{src:avatar.thumbnail_url,alt:avatar.name,className:'w-14 h-14 rounded-lg object-cover bg-black/40'})
@@ -83,17 +92,42 @@
                 ),
                 h('div',{className:'text-[11px] text-white/40 font-mono'},
                     (avatar.type||'photo')+' · '+((avatar.source_files||[]).length)+' file'+((avatar.source_files||[]).length===1?'':'s')+' · '+ago(avatar.created_at)),
-                !avatar.is_default&&avatar.status==='ready'&&h('button',{
-                    onClick:()=>onSetDefault(avatar.id),
-                    className:'mt-2 text-[11px] text-white/60 hover:text-hv-green underline',
-                },'Set as default')));
+                // Voice status row
+                h('div',{className:'text-[11px] mt-1 flex items-center gap-2 flex-wrap'},
+                    h('span',{className:'font-mono '+vs.c},'🎙 '+vs.label),
+                    avatar.voice_name && h('span',{className:'text-white/35'},'· '+avatar.voice_name),
+                ),
+                h('div',{className:'mt-2 flex gap-3 flex-wrap items-center'},
+                    !avatar.is_default&&avatar.status==='ready'&&h('button',{
+                        onClick:()=>onSetDefault(avatar.id),
+                        className:'text-[11px] text-white/60 hover:text-hv-green underline',
+                    },'Set as default'),
+                    // Voice clone upload trigger (gated by plan)
+                    canClone && avatar.voice_status !== 'pending' && h('label',{
+                        className:'text-[11px] '+(voiceUploading?'text-white/30 cursor-wait':'text-white/60 hover:text-hv-green underline cursor-pointer'),
+                    },
+                        voiceUploading ? 'Uploading voice…' :
+                        (avatar.voice_status === 'ready' ? 'Replace voice sample' : 'Upload voice sample'),
+                        h('input',{
+                            type:'file',accept:'audio/*',className:'hidden',
+                            disabled: voiceUploading,
+                            onChange:e=>onUploadVoice(avatar, e.target.files?.[0]),
+                        }),
+                    ),
+                    !canClone && h('span',{
+                        className:'text-[11px] text-white/30',
+                        title:'Voice cloning is available on Dominate and Special Ops plans.',
+                    },'🔒 Voice clone (Dominate+)'),
+                )));
     }
 
     function App(){
         const [session,setSession]=useState(null);
         const [customerId,setCustomerId]=useState(null);
+        const [customerPlan,setCustomerPlan]=useState('launch');
         const [avatars,setAvatars]=useState(null);
         const [uploading,setUploading]=useState(false);
+        const [voiceUploadingFor,setVoiceUploadingFor]=useState(null);   // avatar.id | null
         const [dragActive,setDragActive]=useState(false);
         const [saved,setSaved]=useState('');
         const [error,setError]=useState(null);
@@ -103,10 +137,17 @@
             const {data:{session:s}}=await sb.auth.getSession();
             if(!s){window.location.replace('/sign-in');return}
             setSession(s);
-            const cid=s.user.user_metadata?.customer_id;
-            if(cid){setCustomerId(cid);return}
-            const {data:c}=await sb.from('customers').select('id').eq('email',s.user.email).maybeSingle();
-            if(c?.id)setCustomerId(c.id);else setError('No customer record for your account.');
+            // Resolve customer_id + fetch their plan (plan gates voice cloning).
+            let cid=s.user.user_metadata?.customer_id;
+            if(!cid){
+                const {data:c}=await sb.from('customers').select('id,plan').eq('email',s.user.email).maybeSingle();
+                if(c?.id){cid=c.id; setCustomerPlan(c.plan||'launch')}
+                else {setError('No customer record for your account.');return}
+            } else {
+                const {data:c}=await sb.from('customers').select('plan').eq('id',cid).maybeSingle();
+                if(c) setCustomerPlan(c.plan||'launch');
+            }
+            setCustomerId(cid);
         })()},[]);
 
         const load=useCallback(async()=>{
@@ -168,6 +209,59 @@
             else{setSaved('Default avatar updated');setTimeout(()=>setSaved(''),1600)}
         },[customerId]);
 
+        // Voice clone upload: writes audio to Storage, fires /api/voice-clone.
+        // Server-side plan gate returns 402 for Launch plan customers.
+        const uploadVoice=useCallback(async(avatar,file)=>{
+            if(!file||!customerId||!session)return;
+            // Basic client-side guardrails — server enforces plan too
+            if(customerPlan!=='dominate'&&customerPlan!=='special_ops'){
+                setError('Voice cloning requires the Dominate plan. Upgrade at hiviews.ai/pricing.');return;
+            }
+            if(!file.type.startsWith('audio/')){
+                setError('Please upload an audio file (mp3, wav, m4a, webm).');return;
+            }
+            if(file.size>25*1024*1024){
+                setError('Audio file too large (max 25 MB).');return;
+            }
+            setVoiceUploadingFor(avatar.id);
+            setError(null);
+            try{
+                const ts=Date.now();
+                const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+                const path=`${customerId}/voices/${ts}-${safe}`;
+                const {error:upErr}=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false});
+                if(upErr)throw new Error('Upload failed: '+upErr.message);
+                const {data:pub}=sb.storage.from(BUCKET).getPublicUrl(path);
+                // Track the source in avatars.source_voice_files.
+                const srcs=[...(avatar.source_voice_files||[]),pub.publicUrl];
+                await sb.from('avatars').update({source_voice_files:srcs}).eq('id',avatar.id);
+                // Fire the clone.
+                const r=await fetch('https://provision.hiviews.ai/api/voice-clone',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body:JSON.stringify({
+                        customer_id:customerId,
+                        avatar_id:avatar.id,
+                        audio_url:pub.publicUrl,
+                        voice_name:avatar.name||'Customer voice',
+                        gender:'male',  // could come from brand_config later
+                    }),
+                });
+                if(r.status===402){
+                    const j=await r.json().catch(()=>({}));
+                    setError(j.message||'Voice cloning requires the Dominate plan.');
+                    return;
+                }
+                if(!r.ok){
+                    const j=await r.json().catch(()=>({}));
+                    throw new Error('Trigger failed: '+(j.error||r.status));
+                }
+                setSaved('Voice uploaded — cloning starts now (takes ~1 minute)');
+                setTimeout(()=>setSaved(''),2400);
+            }catch(e){setError(e.message||String(e))}
+            finally{setVoiceUploadingFor(null)}
+        },[customerId,customerPlan,session]);
+
         if(error&&!avatars)return h('div',{className:'p-8 text-red-400 text-sm'},error);
         if(avatars===null)return h('div',{className:'min-h-[60vh] flex items-center justify-center'},h('div',{className:'w-6 h-6 border-2 border-white/10 border-t-hv-green rounded-full animate-spin'}));
 
@@ -200,7 +294,13 @@
                 avatars.length===0
                     ?h('div',{className:'text-center py-10 text-white/40 text-sm'},'No avatars yet. Upload one above to get started.')
                     :h('div',{className:'space-y-3'},
-                        avatars.map(a=>h(AvatarCard,{key:a.id,avatar:a,onSetDefault:setDefault})))),
+                        avatars.map(a=>h(AvatarCard,{
+                            key:a.id, avatar:a,
+                            onSetDefault:setDefault,
+                            onUploadVoice:uploadVoice,
+                            voiceUploading:voiceUploadingFor===a.id,
+                            customerPlan:customerPlan,
+                        })))),
 
             saved&&h('div',{className:'saved-toast'},saved),
             h(Nav));
