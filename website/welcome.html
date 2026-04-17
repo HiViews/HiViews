@@ -4,99 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiViews — Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#000;--t1:#fff;--t2:#b0b0b0;--t3:#777;--green:#00ff88;--green-d:rgba(0,255,136,.15);--border:#1a1a1a;--f:'Inter',sans-serif}
-        body{background:var(--bg);color:var(--t1);font-family:var(--f);min-height:100vh}
+        :root{
+            --bg:#000;--t1:#fff;--t2:rgba(255,255,255,.65);--t3:rgba(255,255,255,.4);
+            --green:#00ff88;--green-d:rgba(0,255,136,.08);--green-b:rgba(0,255,136,.3);
+            --orange:#ff8a00;
+            --border:rgba(255,255,255,.1);--border-em:rgba(255,255,255,.12);
+            --panel:rgba(255,255,255,.02);--card:rgba(255,255,255,.03);
+            --f:'Inter',system-ui,-apple-system,sans-serif;
+            --fc:'Fira Code',ui-monospace,monospace;
+        }
+        body{background:var(--bg);color:var(--t1);font-family:var(--f);min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-0.005em}
         body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
-        nav{position:relative;z-index:2;padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-        nav .logo{font-size:20px;font-weight:900;letter-spacing:-.5px;color:var(--t1);text-decoration:none}
-        .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:48px 24px}
-        .check{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:var(--green-d);margin:0 auto 24px;font-size:28px}
-        h1{font-size:32px;font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:8px}
-        .sub{font-size:17px;color:var(--t2);text-align:center;line-height:1.6;margin-bottom:48px}
-        .steps{margin-bottom:48px}
-        .step{display:flex;gap:16px;margin-bottom:24px}
-        .step-n{width:32px;height:32px;border-radius:50%;background:var(--green-d);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
-        .step h3{font-size:16px;font-weight:700;margin-bottom:4px}
-        .step p{font-size:15px;color:var(--t2);line-height:1.6}
-        .step a{color:var(--green);text-decoration:none;font-weight:600}
-        .step a:hover{text-decoration:underline}
-        .divider{height:1px;background:var(--border);margin:48px 0}
+        nav{position:relative;z-index:2;padding:20px 32px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto}
+        nav .logo{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--t1);text-decoration:none}
+        .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:56px 24px 48px}
+        .hero-check{display:flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:var(--green-d);border:0.5px solid var(--green-b);margin:0 auto 28px;font-size:30px;color:var(--green);animation:hv-fade-in .5s ease-out backwards}
+        h1{font-size:40px;font-weight:500;letter-spacing:-0.02em;text-align:center;margin-bottom:12px;animation:hv-fade-in .5s ease-out .05s backwards}
+        .sub{font-size:16px;color:var(--t2);text-align:center;line-height:1.55;margin-bottom:40px;animation:hv-fade-in .5s ease-out .1s backwards}
+        .sub .email{color:var(--t1);font-family:var(--fc);font-size:14px}
 
-        /* GHL Calendar Embed Area */
-        .booking{background:#0a0a0a;border:1px solid var(--border);border-radius:12px;padding:32px;text-align:center;margin-bottom:48px}
-        .booking h2{font-size:22px;font-weight:800;margin-bottom:8px}
-        .booking p{font-size:15px;color:var(--t2);margin-bottom:24px}
-        .booking .embed-placeholder{background:#111;border:1px dashed #333;border-radius:8px;padding:48px 24px;color:var(--t3);font-size:14px}
+        /* Email card */
+        .email-card{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:32px;display:flex;align-items:center;gap:14px;animation:hv-fade-in .5s ease-out .15s backwards}
+        .email-card .mail-icon{width:32px;height:32px;border-radius:6px;background:var(--green-d);border:0.5px solid var(--green-b);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .email-card .mail-icon svg{width:16px;height:16px;fill:var(--green)}
+        .email-card .mail-body{flex:1;min-width:0}
+        .email-card .mail-title{font-size:14px;font-weight:500;color:var(--t1);margin-bottom:2px}
+        .email-card .mail-sub{font-size:12px;color:var(--t2);line-height:1.5;font-family:var(--fc)}
+        .email-card .mail-sub.targeted{color:var(--t1)}
+        .resend-btn{background:transparent;border:0.5px solid var(--border-em);color:var(--t2);padding:6px 12px;border-radius:6px;font-size:12px;font-family:inherit;cursor:pointer;transition:all 0.15s ease;white-space:nowrap}
+        .resend-btn:hover:not(:disabled){border-color:var(--green-b);color:var(--green)}
+        .resend-btn:disabled{opacity:.5;cursor:not-allowed}
 
-        footer{border-top:1px solid var(--border);padding:24px;text-align:center}
+        /* Live panel */
+        .panel{background:var(--panel);border:0.5px solid var(--border);border-radius:10px;overflow:hidden;animation:hv-fade-in .5s ease-out .2s backwards}
+        .panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:0.5px solid rgba(255,255,255,.08)}
+        .panel-head-left{display:flex;align-items:center;gap:10px}
+        .pulse{width:8px;height:8px;background:var(--green);border-radius:50%;animation:hv-pulse 2s ease-in-out infinite}
+        .panel-title{font-size:13px;font-weight:500;color:var(--t1)}
+        .panel-eta{font-size:11px;color:var(--t3);font-family:var(--fc)}
+
+        .milestones{padding:8px 0}
+        .m{display:flex;gap:14px;align-items:center;padding:13px 20px;border-left:2px solid transparent}
+        .m.done{border-left-color:var(--green)}
+        .m.active{border-left-color:var(--orange)}
+        .m.pending{opacity:0.5}
+        .m-icon{width:28px;height:28px;border-radius:50%;background:var(--card);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;font-family:var(--fc)}
+        .m.done .m-icon{background:var(--green-d);border-color:var(--green-b);color:var(--green)}
+        .m.active .m-icon{background:rgba(255,138,0,.08);border-color:rgba(255,138,0,.3);color:var(--orange)}
+        .m-body{flex:1;min-width:0}
+        .m-label{font-size:14px;color:var(--t1);font-weight:500}
+        .m.pending .m-label{color:var(--t2);font-weight:400}
+        .m-detail{font-size:11px;color:var(--t3);font-family:var(--fc);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .m.active .m-detail{color:var(--orange)}
+        .m.done .m-detail{color:var(--green)}
+
+        /* Ready state */
+        .ready-cta{display:none;margin-top:32px;animation:hv-fade-in .5s ease-out backwards}
+        .ready-cta.visible{display:block}
+        .ready-btn{display:block;background:var(--green);color:#000;border:0;padding:14px 24px;border-radius:8px;font:500 14px/1 var(--f);text-decoration:none;text-align:center;transition:background 0.15s ease}
+        .ready-btn:hover{background:#33ff9f}
+
+        /* Failure */
+        .fail{display:none;background:rgba(255,68,68,.06);border:0.5px solid rgba(255,68,68,.25);border-radius:10px;padding:16px 20px;margin-top:24px;color:#ff8888;font-size:13px;line-height:1.5}
+        .fail.visible{display:block}
+
+        .help{text-align:center;padding:32px 0 0;font-size:13px;color:var(--t3)}
+        .help a{color:var(--green);text-decoration:none}
+
+        footer{position:relative;z-index:1;border-top:0.5px solid var(--border);padding:24px;text-align:center;margin-top:48px}
         footer p{font-size:12px;color:var(--t3)}
-        @media(max-width:640px){.wrap{padding:32px 20px}h1{font-size:26px}}
+        @media(max-width:640px){.wrap{padding:40px 20px 32px}h1{font-size:30px}}
+
+        @keyframes hv-fade-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes hv-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,.5)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(0,255,136,0)}}
     </style>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
-<nav><a class="logo" href="/">HiViews</a></nav>
+<nav>
+    <a class="logo" href="/">HiViews</a>
+</nav>
 
 <div class="wrap">
-    <div class="check">✓</div>
+    <div class="hero-check">✓</div>
     <h1>You're in.</h1>
-    <p class="sub">Welcome to HiViews. Your AI CMO is being set up right now. Here's what happens next — it takes less than 10 minutes of your time.</p>
+    <p class="sub" id="subText">Your AI CMO is spinning up now. Check your email for a one-click login link.</p>
 
-    <div class="steps">
-        <div class="step">
-            <div class="step-n">1</div>
-            <div>
-                <h3>Fill out your brand questionnaire</h3>
-                <p>Tell us about your brand voice, audience, and the hashtags you want to monitor. Takes 5 minutes.</p>
-                <p style="margin-top:8px"><a href="YOUR_GOOGLE_FORM_URL" target="_blank">Complete questionnaire →</a></p>
-            </div>
+    <!-- Email confirmation card -->
+    <div class="email-card">
+        <div class="mail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+        <div class="mail-body">
+            <div class="mail-title">Login link sent</div>
+            <div class="mail-sub" id="emailTarget">Check your inbox for the magic link.</div>
         </div>
-        <div class="step">
-            <div class="step-n">2</div>
-            <div>
-                <h3>Book your onboarding call</h3>
-                <p>A quick 15-minute call to confirm your brand voice, choose your avatar, and set your hashtags. We handle everything after that.</p>
-            </div>
-        </div>
-        <div class="step">
-            <div class="step-n">3</div>
-            <div>
-                <h3>Connect on Telegram</h3>
-                <p>After your onboarding call, we'll send you a Telegram link. Click it, press Start, and you're connected to HiViews. That's it — 30 seconds.</p>
-            </div>
-        </div>
-        <div class="step">
-            <div class="step-n">4</div>
-            <div>
-                <h3>Wake up to your first scout report</h3>
-                <p>HiViews scans your niche at 2AM every night. By morning, you'll have viral scripts ready to review. Type "promote" to start your first video.</p>
-            </div>
-        </div>
+        <button class="resend-btn" id="resendBtn" type="button">Resend</button>
     </div>
 
-    <!-- GHL BOOKING CALENDAR EMBED -->
-    <div class="booking">
-        <h2>Book Your Onboarding Call</h2>
-        <p>Pick a time that works. We'll get your AI CMO configured and running.</p>
-        <div class="embed-placeholder">
-            <!-- REPLACE THIS DIV WITH YOUR GHL CALENDAR EMBED CODE -->
-            <!-- Example: -->
-            <!-- <iframe src="https://api.leadconnectorhq.com/widget/booking/YOUR_CALENDAR_ID" style="width:100%;border:none;overflow:hidden;min-height:600px" scrolling="no"></iframe> -->
-            GHL Calendar Embed Goes Here
+    <!-- Live provisioning progress -->
+    <div class="panel">
+        <div class="panel-head">
+            <div class="panel-head-left">
+                <span class="pulse"></span>
+                <span class="panel-title">Building your HiViews engine</span>
+            </div>
+            <span class="panel-eta" id="etaText">~90 seconds</span>
         </div>
+        <ol class="milestones" id="milestones">
+            <li class="m pending" data-k="server"><div class="m-icon">1</div><div class="m-body"><div class="m-label">Spinning up your dedicated server</div><div class="m-detail" id="d-server">Waiting…</div></div></li>
+            <li class="m pending" data-k="bot"><div class="m-icon">2</div><div class="m-body"><div class="m-label">Creating your Telegram bot</div><div class="m-detail" id="d-bot">Waiting…</div></div></li>
+            <li class="m pending" data-k="workspace"><div class="m-icon">3</div><div class="m-body"><div class="m-label">Building your content workspace</div><div class="m-detail" id="d-workspace">Waiting…</div></div></li>
+            <li class="m pending" data-k="configure"><div class="m-icon">4</div><div class="m-body"><div class="m-label">Configuring your AI agent</div><div class="m-detail" id="d-configure">Waiting…</div></div></li>
+            <li class="m pending" data-k="ready"><div class="m-icon">5</div><div class="m-body"><div class="m-label">Final checks</div><div class="m-detail" id="d-ready">Waiting…</div></div></li>
+        </ol>
     </div>
 
-    <div style="text-align:center;padding:24px 0">
-        <p style="font-size:15px;color:var(--t2)">Questions? Email <a href="mailto:support@hiviews.ai" style="color:var(--green);text-decoration:none">support@hiviews.ai</a></p>
+    <!-- Ready CTA (shows on customer.provisioned) -->
+    <div class="ready-cta" id="readyCTA">
+        <a class="ready-btn" href="/portal/dashboard">Open your dashboard →</a>
     </div>
+
+    <!-- Failure state -->
+    <div class="fail" id="failState">
+        Something snagged during setup. Our team has been alerted — your purchase is safe. Please email <a href="mailto:support@hiviews.ai" style="color:inherit;text-decoration:underline">support@hiviews.ai</a> and we'll resolve it directly.
+    </div>
+
+    <p class="help">Questions? <a href="mailto:support@hiviews.ai">support@hiviews.ai</a></p>
 </div>
 
 <footer><p>© 2026 HiViews · New Empire AI</p></footer>
+
+<script>
+(function(){
+    'use strict';
+
+    // ── Supabase config (publishable anon key, safe client-side) ──
+    var SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
+    var SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+
+    // ── Read email from ThriveCart success URL (?email={customer_email}) ──
+    // Fallback: page still shows generic "check inbox" copy without the
+    // targeted email + the resend button will no-op until email is known.
+    var params = new URLSearchParams(location.search);
+    var email = (params.get('email') || '').trim();
+    var cid = (params.get('cid') || '').trim();
+
+    // Derive customer_id from email using the same rules as app.py:
+    //   email.split('@')[0].lower().replace('.', '').replace('+', '')
+    //   then re.sub(r'[^a-z0-9-]', '', ...)
+    if (!cid && email) {
+        var local = email.split('@')[0].toLowerCase()
+            .replace(/\./g, '').replace(/\+/g, '');
+        cid = local.replace(/[^a-z0-9-]/g, '') || 'customer';
+    }
+
+    // Show the targeted email in the confirmation card (if we know it).
+    if (email) {
+        var emailEl = document.getElementById('emailTarget');
+        emailEl.classList.add('targeted');
+        emailEl.textContent = email;
+    }
+
+    // ── Milestones state machine ──
+    // Map Supabase event types → milestone keys. Events fire in order
+    // during provisioning (see app.py _log_to_supabase calls).
+    var EVENTS = {
+        'droplet.creating':          {k:'server',    state:'active', detail:'Provisioning 2 vCPU · 4 GB RAM'},
+        'droplet.ready':             {k:'server',    state:'done',   detail:'Dedicated server online'},
+        'telegram.bot_created':      {k:'bot',       state:'done',   detail:'Bot ready'},
+        'clickup.structure_created': {k:'workspace', state:'done',   detail:'Scout + Video boards created'},
+        'droplet.configured':        {k:'configure', state:'done',   detail:'Brand config applied'},
+        'customer.provisioned':      {k:'ready',     state:'done',   detail:'All systems go'},
+        'welcome.magic_link_sent':   {k:'ready',     state:'done',   detail:null},  // auxiliary
+        'customer.provision_failed': {k:'_failed',   state:'failed', detail:null},
+    };
+
+    // Apply an event to the milestone UI. Only advances — never regresses
+    // (so a transient older event doesn't unwind completed state).
+    function applyEvent(ev) {
+        var spec = EVENTS[ev.event_type];
+        if (!spec) return;
+
+        if (spec.k === '_failed') {
+            document.getElementById('failState').classList.add('visible');
+            document.querySelector('.panel-head .pulse').style.animation = 'none';
+            document.getElementById('etaText').textContent = 'halted';
+            return;
+        }
+
+        var row = document.querySelector('.m[data-k="' + spec.k + '"]');
+        if (!row) return;
+
+        // If the row is already 'done', don't downgrade to 'active'.
+        if (row.classList.contains('done') && spec.state !== 'done') return;
+
+        row.classList.remove('pending', 'active', 'done');
+        row.classList.add(spec.state);
+        row.querySelector('.m-icon').textContent =
+            spec.state === 'done'   ? '✓'
+          : spec.state === 'active' ? '•'
+          :                           row.querySelector('.m-icon').dataset.n || row.querySelector('.m-icon').textContent;
+
+        if (spec.detail) {
+            var detailEl = document.getElementById('d-' + spec.k);
+            if (detailEl) detailEl.textContent = spec.detail;
+        }
+    }
+
+    // After customer.provisioned, reveal the dashboard CTA + stop polling fast.
+    function markReady() {
+        document.getElementById('readyCTA').classList.add('visible');
+        document.querySelector('.panel-title').textContent = 'Setup complete';
+        document.getElementById('etaText').textContent = 'ready';
+        document.querySelector('.panel-head .pulse').style.background = '#00ff88';
+    }
+
+    // ── Fetch + apply events ──
+    function fetchEvents() {
+        if (!cid) return Promise.resolve();
+        var url = SB_URL + '/rest/v1/events?customer_id=eq.' +
+            encodeURIComponent(cid) +
+            '&order=created_at.asc&limit=100';
+        return fetch(url, { headers: { apikey: SB_KEY } })
+            .then(function(r){ return r.ok ? r.json() : []; })
+            .then(function(events) {
+                events.forEach(applyEvent);
+                var types = events.map(function(e){ return e.event_type; });
+                if (types.indexOf('customer.provisioned') !== -1) {
+                    markReady();
+                    return true;
+                }
+                return false;
+            })
+            .catch(function(){ return false; });
+    }
+
+    // ── Polling loop — 3s while pending, stops on ready/failed ──
+    var pollInterval = null;
+    function startPolling() {
+        fetchEvents().then(function(done){
+            if (done) return;
+            pollInterval = setInterval(function(){
+                fetchEvents().then(function(done){
+                    if (done && pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+                });
+            }, 3000);
+        });
+    }
+
+    // ── Send magic link (defensive — server also sends one post-provision;
+    //    Supabase dedupes rapid resends so firing twice is harmless) ──
+    function sendMagicLink(btn) {
+        if (!email) {
+            alert('No email in URL. Please check your purchase confirmation.');
+            return;
+        }
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+        var redirectTo = 'https://www.hiviews.ai/portal/dashboard';
+        fetch(SB_URL + '/auth/v1/otp?redirect_to=' + encodeURIComponent(redirectTo), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SB_KEY,
+                'Authorization': 'Bearer ' + SB_KEY
+            },
+            body: JSON.stringify({ email: email, create_user: true })
+        }).then(function(r){
+            if (!r.ok) {
+                return r.json().then(function(j){ throw new Error(j.msg || j.error_description || 'Send failed'); });
+            }
+            if (btn) { btn.textContent = 'Sent ✓'; }
+        }).catch(function(err){
+            if (btn) { btn.disabled = false; btn.textContent = 'Resend'; }
+            alert(err.message || 'Send failed. Try again.');
+        });
+    }
+
+    // ── Wire up ──
+    document.getElementById('resendBtn').addEventListener('click', function(){
+        sendMagicLink(this);
+    });
+
+    // Defensive send on page load — if the server didn't (e.g. because
+    // provisioning hasn't reached step 7 yet) the customer still gets
+    // a link immediately. Supabase rate-limits back-to-back OTPs per
+    // email so a duplicate fires no extra email.
+    if (email) sendMagicLink(null);
+
+    // If we have no cid (e.g. ThriveCart didn't pass email), the panel
+    // stays in its initial "Waiting…" state — user still sees the
+    // celebratory message + email card + can resend.
+    startPolling();
+})();
+</script>
+
 </body>
 </html>
