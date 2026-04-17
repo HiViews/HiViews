@@ -95,14 +95,31 @@
     <h1>You're in.</h1>
     <p class="sub" id="subText">Your AI CMO is spinning up now. Check your email for a one-click login link.</p>
 
-    <!-- Email confirmation card -->
-    <div class="email-card">
+    <!-- Email confirmation card — personalized mode (shown when we know the email) -->
+    <div class="email-card" id="emailCardPersonal" style="display:none">
         <div class="mail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
         <div class="mail-body">
             <div class="mail-title">Login link sent</div>
-            <div class="mail-sub" id="emailTarget">Check your inbox for the magic link.</div>
+            <div class="mail-sub targeted" id="emailTarget">Check your inbox for the magic link.</div>
         </div>
         <button class="resend-btn" id="resendBtn" type="button">Resend</button>
+    </div>
+
+    <!-- Generic mode (shown when we don't have a valid email in URL) — lets
+         the user type their purchase email to (re)request a login link. -->
+    <div class="email-card" id="emailCardManual" style="display:none;flex-direction:column;align-items:stretch;gap:12px">
+        <div style="display:flex;align-items:center;gap:14px">
+            <div class="mail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div class="mail-body">
+                <div class="mail-title">Get your login link</div>
+                <div class="mail-sub">Enter the email you used at checkout. We'll send a one-click sign-in link.</div>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px">
+            <input type="email" id="manualEmail" placeholder="you@example.com" autocomplete="email" inputmode="email"
+                style="flex:1;background:var(--card);border:0.5px solid var(--border-em);border-radius:6px;padding:10px 12px;color:var(--t1);font:14px var(--f);outline:0">
+            <button class="resend-btn" id="manualSendBtn" type="button" style="padding:10px 14px">Send link</button>
+        </div>
     </div>
 
     <!-- Live provisioning progress -->
@@ -146,12 +163,21 @@
     var SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
     var SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
 
-    // ── Read email from ThriveCart success URL (?email={customer_email}) ──
-    // Fallback: page still shows generic "check inbox" copy without the
-    // targeted email + the resend button will no-op until email is known.
+    // ── Read email from ThriveCart success URL (if configured) ──
+    // ThriveCart's variable substitution is inconsistent — some accounts
+    // literally paste {customer_email} without substituting. Defensive
+    // parsing: reject anything that looks like a template placeholder or
+    // doesn't pass an email-format regex, and fall back to a manual-entry
+    // UI. The page works whether or not ThriveCart is configured correctly.
     var params = new URLSearchParams(location.search);
-    var email = (params.get('email') || '').trim();
-    var cid = (params.get('cid') || '').trim();
+    var rawEmail = (params.get('email') || '').trim();
+    var rawCid = (params.get('cid') || '').trim();
+
+    function looksLikeTemplate(s){ return /^\{.*\}$/.test(s); }
+    function isValidEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+
+    var email = (!looksLikeTemplate(rawEmail) && isValidEmail(rawEmail)) ? rawEmail : '';
+    var cid = (!looksLikeTemplate(rawCid) && /^[a-z0-9-]+$/.test(rawCid)) ? rawCid : '';
 
     // Derive customer_id from email using the same rules as app.py:
     //   email.split('@')[0].lower().replace('.', '').replace('+', '')
@@ -162,11 +188,21 @@
         cid = local.replace(/[^a-z0-9-]/g, '') || 'customer';
     }
 
-    // Show the targeted email in the confirmation card (if we know it).
+    // Personalize the page when we have a valid email; otherwise show a
+    // manual-entry card so the user can (re)request their link by typing
+    // their purchase email. Both cards are mutually exclusive.
     if (email) {
+        document.getElementById('emailCardPersonal').style.display = 'flex';
         var emailEl = document.getElementById('emailTarget');
-        emailEl.classList.add('targeted');
         emailEl.textContent = email;
+    } else {
+        document.getElementById('emailCardManual').style.display = 'flex';
+        // Without a cid we can't poll events — swap the progress panel for a
+        // simpler reassurance block.
+        var panel = document.querySelector('.panel');
+        if (panel) {
+            panel.innerHTML = '<div class="panel-head"><div class="panel-head-left"><span class="pulse"></span><span class="panel-title">Your setup is running in the background</span></div><span class="panel-eta">~2 min</span></div><div style="padding:20px;color:var(--t2);font-size:14px;line-height:1.55">We\'re provisioning your dedicated server, Telegram bot, and content workspace right now. You\'ll get an email the moment everything\'s ready. Nothing more for you to do here.</div>';
+        }
     }
 
     // ── Milestones state machine ──
@@ -285,20 +321,41 @@
     }
 
     // ── Wire up ──
-    document.getElementById('resendBtn').addEventListener('click', function(){
-        sendMagicLink(this);
-    });
+    var resendBtn = document.getElementById('resendBtn');
+    if (resendBtn) {
+        resendBtn.addEventListener('click', function(){ sendMagicLink(this); });
+    }
 
-    // Defensive send on page load — if the server didn't (e.g. because
-    // provisioning hasn't reached step 7 yet) the customer still gets
-    // a link immediately. Supabase rate-limits back-to-back OTPs per
-    // email so a duplicate fires no extra email.
-    if (email) sendMagicLink(null);
+    // Manual-entry flow: user types email, clicks "Send link".
+    var manualBtn = document.getElementById('manualSendBtn');
+    var manualInput = document.getElementById('manualEmail');
+    if (manualBtn && manualInput) {
+        function submitManual(){
+            var v = manualInput.value.trim();
+            if (!isValidEmail(v)) {
+                manualInput.focus();
+                manualInput.style.borderColor = '#ff4444';
+                setTimeout(function(){ manualInput.style.borderColor = ''; }, 1200);
+                return;
+            }
+            email = v;  // promote to the page-level email
+            sendMagicLink(manualBtn);
+        }
+        manualBtn.addEventListener('click', submitManual);
+        manualInput.addEventListener('keydown', function(e){
+            if (e.key === 'Enter') { e.preventDefault(); submitManual(); }
+        });
+    }
 
-    // If we have no cid (e.g. ThriveCart didn't pass email), the panel
-    // stays in its initial "Waiting…" state — user still sees the
-    // celebratory message + email card + can resend.
-    startPolling();
+    // NOTE: intentionally NOT firing send-on-load. The provisioning server's
+    // step-5 (invite_user_by_email) already emails new auth users their
+    // login link — firing again from the browser within 60s just trips
+    // Supabase's per-email rate limiter (429 over_email_send_rate_limit).
+    // The user manually clicks Resend/Send if they need another copy.
+
+    // Polling only runs when we have a valid cid. Without one the panel
+    // has been swapped for a static reassurance block above.
+    if (cid) startPolling();
 })();
 </script>
 
