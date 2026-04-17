@@ -163,21 +163,38 @@
     var SB_URL = 'https://rkudnkbpnfxpxglaklqs.supabase.co';
     var SB_KEY = 'sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
 
-    // ── Read email from ThriveCart success URL (if configured) ──
-    // ThriveCart's variable substitution is inconsistent — some accounts
-    // literally paste {customer_email} without substituting. Defensive
-    // parsing: reject anything that looks like a template placeholder or
-    // doesn't pass an email-format regex, and fall back to a manual-entry
-    // UI. The page works whether or not ThriveCart is configured correctly.
+    // ── Read email from the success URL ──
+    // Two sources, tried in order:
+    //   1. Our own ?email= (works if ThriveCart substitutes a variable)
+    //   2. ThriveCart's auto-appended `thrivecart[customer][email]` —
+    //      appended to every success URL regardless of configuration,
+    //      bracket syntax URL-encodes to thrivecart%5Bcustomer%5D%5Bemail%5D
+    //      but URLSearchParams decodes it for us.
+    // Either way, the page falls back to a manual-entry card if neither
+    // yields a valid email.
     var params = new URLSearchParams(location.search);
-    var rawEmail = (params.get('email') || '').trim();
-    var rawCid = (params.get('cid') || '').trim();
 
     function looksLikeTemplate(s){ return /^\{.*\}$/.test(s); }
     function isValidEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); }
+    function cleanEmail(raw){
+        var v = (raw || '').trim();
+        if (!v || looksLikeTemplate(v) || !isValidEmail(v)) return '';
+        return v;
+    }
 
-    var email = (!looksLikeTemplate(rawEmail) && isValidEmail(rawEmail)) ? rawEmail : '';
+    // Primary: our ?email= ; Fallback: ThriveCart auto-append
+    var email = cleanEmail(params.get('email'))
+             || cleanEmail(params.get('thrivecart[customer][email]'));
+
+    var rawCid = (params.get('cid') || '').trim();
     var cid = (!looksLikeTemplate(rawCid) && /^[a-z0-9-]+$/.test(rawCid)) ? rawCid : '';
+
+    // Grab the name from ThriveCart too — lets us personalize the greeting.
+    var customerName = (params.get('thrivecart[customer][name]') || '').trim();
+    if (customerName && !looksLikeTemplate(customerName)) {
+        var h1 = document.querySelector('h1');
+        if (h1) h1.textContent = "You're in, " + customerName.split(' ')[0] + '.';
+    }
 
     // Derive customer_id from email using the same rules as app.py:
     //   email.split('@')[0].lower().replace('.', '').replace('+', '')
