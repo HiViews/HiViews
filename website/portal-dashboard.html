@@ -686,9 +686,18 @@ async function init() {
     const customers = await sbGet('customers', 'id=eq.' + CID + '&limit=1');
     const events = await sbGet('events', 'customer_id=eq.' + CID + '&order=created_at.asc&limit=100');
 
-    if (customers.length) showCustomer(customers[0]);
-    else if (events.length) showEventsOnly();
-    else { document.getElementById('loadingState').style.display='none'; document.getElementById('errorState').style.display='block'; return; }
+    if (customers.length) {
+        showCustomer(customers[0]);
+    } else if (events.length) {
+        showEventsOnly();
+    } else {
+        // user_metadata had a customer_id but nothing's in the customers
+        // table yet (happens on test accounts / abandoned-cart artifacts).
+        // Fall back to the free-user experience so they still get value
+        // instead of a dead "Dashboard not found" screen.
+        await showFreeView(USER_EMAIL, USER_NAME);
+        return;
+    }
 
     showEvents(events);
 
