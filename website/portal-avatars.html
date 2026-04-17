@@ -76,13 +76,13 @@
         failed:  {label:'Clone failed',    c:'text-red-400'},
     };
 
-    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, customerPlan}){
+    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, customerPlan, thumbSrc}){
         const s=STATUS[avatar.status]||{label:avatar.status,c:'text-white/60'};
         const vs = VOICE_STATUS[avatar.voice_status||'none'] || VOICE_STATUS.none;
         const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
         return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start'},
-            avatar.thumbnail_url
-                ?h('img',{src:avatar.thumbnail_url,alt:avatar.name,className:'w-14 h-14 rounded-lg object-cover bg-black/40'})
+            thumbSrc
+                ?h('img',{src:thumbSrc,alt:avatar.name,className:'w-14 h-14 rounded-lg object-cover bg-black/40',loading:'lazy',referrerPolicy:'no-referrer'})
                 :h('div',{className:'w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center text-2xl'},'🎭'),
             h('div',{className:'flex-1 min-w-0'},
                 h('div',{className:'flex items-center gap-2 mb-1 flex-wrap'},
@@ -126,6 +126,7 @@
         const [customerId,setCustomerId]=useState(null);
         const [customerPlan,setCustomerPlan]=useState('launch');
         const [avatars,setAvatars]=useState(null);
+        const [thumbs,setThumbs]=useState({});       // avatar.id → signed thumbnail URL
         const [uploading,setUploading]=useState(false);
         const [voiceUploadingFor,setVoiceUploadingFor]=useState(null);   // avatar.id | null
         const [dragActive,setDragActive]=useState(false);
@@ -150,12 +151,34 @@
             setCustomerId(cid);
         })()},[]);
 
+        // Thumbnail URLs stored on the avatars row use /object/public/ paths,
+        // but the client-uploads bucket is PRIVATE — those render as broken
+        // images. Generate short-lived signed URLs at render time instead.
+        // 1-hour expiry is fine because the portal holds the session open and
+        // Realtime triggers re-renders anyway.
+        const signThumb=useCallback(async(row)=>{
+            const raw=row.thumbnail_url;
+            if(!raw) return null;
+            // Parse the storage path from the URL. Supabase object URLs look like
+            // https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
+            const m = raw.match(/\/object\/(?:public|authenticated|sign)\/[^/]+\/(.+?)(?:\?|$)/);
+            if(!m) return raw;  // unexpected shape — try rendering verbatim
+            const path = decodeURIComponent(m[1]);
+            const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(path, 3600);
+            if(error){ console.warn('signed url failed for',path,error); return null; }
+            return data.signedUrl;
+        },[]);
+
         const load=useCallback(async()=>{
             if(!customerId)return;
             const {data,error}=await sb.from('avatars').select('*').eq('customer_id',customerId).order('created_at',{ascending:false});
             if(error){setError(error.code==='PGRST205'?'Portal tables not deployed yet.':error.message);setAvatars([]);return}
-            setAvatars(data||[]);
-        },[customerId]);
+            const rows = data||[];
+            setAvatars(rows);
+            // Resolve thumbnails in parallel; update state once all are in.
+            const entries = await Promise.all(rows.map(async r => [r.id, await signThumb(r)]));
+            setThumbs(Object.fromEntries(entries));
+        },[customerId, signThumb]);
 
         useEffect(()=>{
             if(!customerId)return;
@@ -296,6 +319,7 @@
                     :h('div',{className:'space-y-3'},
                         avatars.map(a=>h(AvatarCard,{
                             key:a.id, avatar:a,
+                            thumbSrc:thumbs[a.id]||null,
                             onSetDefault:setDefault,
                             onUploadVoice:uploadVoice,
                             voiceUploading:voiceUploadingFor===a.id,
