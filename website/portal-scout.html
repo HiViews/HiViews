@@ -11,6 +11,7 @@
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/portal-manifest.json">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -382,6 +383,13 @@
     }
 
     createRoot(document.getElementById('root')).render(h(App));
+
+    // PWA service worker — best-effort, never breaks the page.
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {});
+        });
+    }
 </script>
 
 </body>

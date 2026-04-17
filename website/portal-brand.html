@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>HiViews — Brand</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/portal-manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { theme: { extend: { colors: { 'hv-green':'#00ff88','hv-orange':'#ff8a00' }, fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['"Fira Code"','ui-monospace','monospace'] } } } }
+    </script>
+    <style>
+        html,body{background:#000}
+        body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;min-height:100dvh}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+        .pulse-green{animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+        input[type="text"],input[type="email"],textarea,select{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.12);color:#fff;border-radius:8px;padding:10px 12px;font-size:14px;width:100%;font-family:inherit}
+        input:focus,textarea:focus,select:focus{outline:0;border-color:rgba(0,255,136,0.5)}
+        textarea{min-height:72px;resize:vertical}
+        label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5);margin-bottom:6px;font-weight:500}
+        .chip{display:inline-flex;align-items:center;gap:4px;background:rgba(0,255,136,0.08);border:0.5px solid rgba(0,255,136,0.3);color:#00ff88;padding:3px 10px;border-radius:100px;font-size:12px;font-family:ui-monospace,monospace}
+        .chip button{background:none;border:0;color:#00ff88;cursor:pointer;padding:0;margin-left:2px;opacity:0.6}
+        .chip button:hover{opacity:1}
+        .saved-toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);background:#00ff88;color:#000;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:60;animation:slideUp 0.3s ease-out}
+        @keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script type="importmap">
+      {"imports":{"react":"https://esm.sh/react@18.3.1","react-dom":"https://esm.sh/react-dom@18.3.1","react-dom/client":"https://esm.sh/react-dom@18.3.1/client"}}
+    </script>
+</head>
+<body>
+<div id="root" class="relative z-10"></div>
+<script type="module">
+    import React,{useEffect,useState,useCallback,useRef} from 'react';
+    import {createRoot} from 'react-dom/client';
+    const h=React.createElement;
+
+    const SB_URL='https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY='sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+    const TONES=['confident','direct','warm','playful','analytical','bold','empathetic'];
+    const ENERGIES=['low','medium','high'];
+    const FORMALITIES=['conversational','professional','casual'];
+
+    function Nav(){
+        const tabs=[
+            {id:'dashboard',label:'Home',icon:'🏠',href:'/portal/dashboard'},
+            {id:'brand',label:'Brand',icon:'📝',href:'/portal/brand'},
+            {id:'avatars',label:'Avtr',icon:'🎭',href:'/portal/avatars'},
+            {id:'scout',label:'Scout',icon:'🔍',href:'/portal/scout'},
+            {id:'videos',label:'Video',icon:'🎬',href:'/portal/videos'},
+        ];
+        return h('nav',{className:'fixed bottom-0 inset-x-0 z-50 bg-black/90 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]'},
+            h('ul',{className:'grid grid-cols-5 h-14'},
+                tabs.map(t=>h('li',{key:t.id,className:'flex'},
+                    h('a',{href:t.href,className:['flex flex-col items-center justify-center gap-0.5 w-full text-[10px] uppercase tracking-wider',t.id==='brand'?'text-hv-green':'text-white/50'].join(' ')},
+                        h('span',{className:'text-lg leading-none'},t.icon),
+                        h('span',null,t.label))))));
+    }
+
+    function ChipSelect({label,value,options,onChange}){
+        return h('div',null,
+            h('label',null,label),
+            h('div',{className:'flex flex-wrap gap-1.5'},
+                options.map(opt=>h('button',{
+                    key:opt,type:'button',onClick:()=>onChange(opt),
+                    className:['px-3 py-1.5 rounded-full text-[12px] font-medium border transition',value===opt?'bg-hv-green text-black border-hv-green':'border-white/10 text-white/70 hover:border-white/25'].join(' ')
+                },opt))));
+    }
+
+    function HashtagEditor({value,onChange}){
+        const [draft,setDraft]=useState('');
+        const add=()=>{
+            const v=draft.trim().replace(/^#/,'');
+            if(!v||(value||[]).includes(v))return;
+            onChange([...(value||[]),v]);
+            setDraft('');
+        };
+        const remove=t=>onChange((value||[]).filter(x=>x!==t));
+        return h('div',null,
+            h('label',null,'Hashtags'),
+            h('div',{className:'flex flex-wrap gap-1.5 mb-2'},
+                (value||[]).map(t=>h('span',{key:t,className:'chip'},'#'+t,h('button',{onClick:()=>remove(t),type:'button'},'×')))),
+            h('div',{className:'flex gap-2'},
+                h('input',{type:'text',placeholder:'#marketing',value:draft,onChange:e=>setDraft(e.target.value),onKeyDown:e=>{if(e.key==='Enter'){e.preventDefault();add()}}}),
+                h('button',{type:'button',onClick:add,className:'px-4 py-2 bg-hv-green text-black rounded-md text-sm font-semibold whitespace-nowrap'},'Add')));
+    }
+
+    function App(){
+        const [session,setSession]=useState(null);
+        const [customerId,setCustomerId]=useState(null);
+        const [brand,setBrand]=useState(null);
+        const [saved,setSaved]=useState(false);
+        const [saving,setSaving]=useState(false);
+        const [error,setError]=useState(null);
+        const saveTimer=useRef(null);
+
+        useEffect(()=>{(async()=>{
+            const {data:{session:s}}=await sb.auth.getSession();
+            if(!s){window.location.replace('/sign-in');return}
+            setSession(s);
+            const cid=s.user.user_metadata?.customer_id;
+            if(cid){setCustomerId(cid);return}
+            const {data:c}=await sb.from('customers').select('id').eq('email',s.user.email).maybeSingle();
+            if(c?.id)setCustomerId(c.id);else setError('No customer record for your account.');
+        })()},[]);
+
+        useEffect(()=>{
+            if(!customerId)return;
+            (async()=>{
+                const {data,error}=await sb.from('brand_config').select('*').eq('customer_id',customerId).maybeSingle();
+                if(error&&error.code!=='PGRST116'){
+                    setError(error.code==='PGRST205'?'Portal tables not deployed yet.':error.message);return;
+                }
+                // If no row yet, give the form sensible defaults
+                setBrand(data||{
+                    customer_id:customerId,tone:'confident',energy:'high',formality:'conversational',
+                    hashtags:[],primary_color:'#00ff88',
+                });
+            })();
+        },[customerId]);
+
+        // Debounced upsert to Supabase. On commit, also propagate to the Droplet.
+        const commit=useCallback(async(patch)=>{
+            if(!customerId)return;
+            setSaving(true);
+            const row={customer_id:customerId,...brand,...patch};
+            // RLS allows updating own row; upsert on PK-unique customer_id.
+            const {error}=await sb.from('brand_config').upsert(row,{onConflict:'customer_id'});
+            if(error){setError(error.message);setSaving(false);return}
+            // Propagate to Droplet via provisioning server.
+            if(session){
+                fetch('https://provision.hiviews.ai/api/brand-save',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body:JSON.stringify({customer_id:customerId}),
+                }).catch(()=>{});
+            }
+            setBrand(row);setSaved(true);setSaving(false);
+            clearTimeout(saveTimer.current);
+            saveTimer.current=setTimeout(()=>setSaved(false),1600);
+        },[brand,customerId,session]);
+
+        const update=k=>v=>commit({[k]:v});
+
+        if(error&&!brand)return h('div',{className:'p-8 text-red-400 text-sm'},error);
+        if(!brand)return h('div',{className:'min-h-[60vh] flex items-center justify-center'},h('div',{className:'w-6 h-6 border-2 border-white/10 border-t-hv-green rounded-full animate-spin'}));
+
+        return h(React.Fragment,null,
+            h('header',{className:'sticky top-0 z-40 bg-black/90 backdrop-blur border-b border-white/10 px-4 py-3'},
+                h('div',{className:'flex items-center justify-between'},
+                    h('h1',{className:'text-lg font-bold tracking-tight'},'Brand'),
+                    saving
+                        ?h('span',{className:'text-[10px] font-mono text-hv-orange'},'Saving…')
+                        :h('span',{className:'flex items-center gap-1.5 text-[10px] font-mono text-white/40'},
+                            h('span',{className:'w-1.5 h-1.5 bg-hv-green rounded-full pulse-green'}),'LIVE'))),
+
+            h('main',{className:'max-w-2xl mx-auto px-4 py-6 pb-24 space-y-6'},
+
+                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
+                    h('h2',{className:'text-sm font-semibold text-white/80'},'Identity'),
+                    h('div',null,h('label',null,'Brand name'),
+                        h('input',{type:'text',defaultValue:brand.brand_name||'',onBlur:e=>update('brand_name')(e.target.value)})),
+                    h('div',null,h('label',null,'Instagram handle'),
+                        h('input',{type:'text',placeholder:'@yourhandle',defaultValue:brand.instagram_handle||'',onBlur:e=>update('instagram_handle')(e.target.value.replace(/^@/,''))})),
+                    h('div',null,h('label',null,'Niche'),
+                        h('input',{type:'text',placeholder:'e.g. real estate, fitness coaching',defaultValue:brand.niche||'',onBlur:e=>update('niche')(e.target.value)})),
+                    h('div',null,h('label',null,'Target audience'),
+                        h('input',{type:'text',placeholder:'e.g. founders scaling from $1M to $10M',defaultValue:brand.target_audience||'',onBlur:e=>update('target_audience')(e.target.value)})),
+                ),
+
+                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
+                    h('h2',{className:'text-sm font-semibold text-white/80'},'Voice'),
+                    h(ChipSelect,{label:'Tone',value:brand.tone||'confident',options:TONES,onChange:update('tone')}),
+                    h(ChipSelect,{label:'Energy',value:brand.energy||'high',options:ENERGIES,onChange:update('energy')}),
+                    h(ChipSelect,{label:'Formality',value:brand.formality||'conversational',options:FORMALITIES,onChange:update('formality')}),
+                    h('div',null,h('label',null,'Never use these words or phrases'),
+                        h('textarea',{placeholder:"e.g. 'leverage', 'synergy', 'game-changer'",defaultValue:brand.vocabulary_notes||'',onBlur:e=>update('vocabulary_notes')(e.target.value)})),
+                    h('div',null,h('label',null,'Key messages (your brand position)'),
+                        h('textarea',{placeholder:'What do you want every video to reinforce?',defaultValue:brand.key_messages||'',onBlur:e=>update('key_messages')(e.target.value)})),
+                    h('div',null,h('label',null,'Topics to avoid'),
+                        h('textarea',{placeholder:'Subjects off-limits for your videos',defaultValue:brand.topics_to_avoid||'',onBlur:e=>update('topics_to_avoid')(e.target.value)})),
+                ),
+
+                h('section',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-5 space-y-4'},
+                    h('h2',{className:'text-sm font-semibold text-white/80'},'Scout Targets'),
+                    h(HashtagEditor,{value:brand.hashtags,onChange:update('hashtags')}),
+                    h('p',{className:'text-xs text-white/40'},'Your 2 AM scout scans these hashtags every night for viral trends to rewrite in your voice. 3-5 is ideal.'),
+                ),
+
+                h('p',{className:'text-xs text-white/40 text-center'},'Changes save automatically on blur. Agent picks up new voice on next response.'),
+            ),
+            saved&&h('div',{className:'saved-toast'},'Saved ✓'),
+            h(Nav));
+    }
+    createRoot(document.getElementById('root')).render(h(App));
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => { navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {}); });
+    }
+</script>
+</body>
+</html>

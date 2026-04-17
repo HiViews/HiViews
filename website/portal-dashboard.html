@@ -7,6 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/portal-manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -113,14 +117,28 @@
             <span class="tier tier-launch" id="tierBadge">Launch</span>
         </div>
 
-        <a href="/portal/scout"
-           style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:12px;padding:14px 18px;margin-bottom:24px;text-decoration:none;color:var(--t1);transition:all .2s">
-            <div>
-                <div style="font-weight:700;font-size:15px;margin-bottom:2px">Your Script Inbox</div>
-                <div style="font-size:12px;color:var(--t3)">Swipe through overnight scripts. Promote the ones you want turned into videos.</div>
-            </div>
-            <div style="font-size:20px;color:var(--green)">→</div>
-        </a>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:24px">
+            <a href="/portal/scout"   style="display:flex;flex-direction:column;gap:4px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:12px;padding:14px;text-decoration:none;color:var(--t1)">
+                <span style="font-size:22px">🔍</span>
+                <span style="font-weight:700;font-size:14px">Scout</span>
+                <span style="font-size:11px;color:var(--t3)">Script inbox</span>
+            </a>
+            <a href="/portal/videos"  style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;text-decoration:none;color:var(--t1)">
+                <span style="font-size:22px">🎬</span>
+                <span style="font-weight:700;font-size:14px">Videos</span>
+                <span style="font-size:11px;color:var(--t3)">Production pipeline</span>
+            </a>
+            <a href="/portal/brand"   style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;text-decoration:none;color:var(--t1)">
+                <span style="font-size:22px">📝</span>
+                <span style="font-weight:700;font-size:14px">Brand</span>
+                <span style="font-size:11px;color:var(--t3)">Voice + hashtags</span>
+            </a>
+            <a href="/portal/avatars" style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;text-decoration:none;color:var(--t1)">
+                <span style="font-size:22px">🎭</span>
+                <span style="font-weight:700;font-size:14px">Avatars</span>
+                <span style="font-size:11px;color:var(--t3)">Photos + trained</span>
+            </a>
+        </div>
 
         <div class="details">
             <div class="detail">
@@ -372,6 +390,13 @@ async function init() {
         const ev = await sbGet('events', 'customer_id=eq.' + CID + '&order=created_at.asc&limit=100');
         showEvents(ev);
     }, polling ? 3000 : 30000);
+}
+
+// PWA service worker — scoped to /portal/ so marketing pages stay uncached.
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {});
+    });
 }
 </script>
 </body>

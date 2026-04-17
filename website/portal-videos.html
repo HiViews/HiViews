@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>HiViews — Video Production</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/portal-manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { theme: { extend: { colors: { 'hv-green':'#00ff88','hv-orange':'#ff8a00' }, fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['"Fira Code"','ui-monospace','monospace'] } } } }
+    </script>
+    <style>
+        html,body{background:#000}
+        body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:#fff;letter-spacing:-0.005em;-webkit-font-smoothing:antialiased;min-height:100dvh}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+        .pulse-green{animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+        .swipe-approve{background:#00ff88;color:#000}
+        .swipe-reject{background:#ef4444;color:#fff}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script type="importmap">
+      {"imports":{"react":"https://esm.sh/react@18.3.1","react-dom":"https://esm.sh/react-dom@18.3.1","react-dom/client":"https://esm.sh/react-dom@18.3.1/client","react-swipeable-list":"https://esm.sh/react-swipeable-list@1.9.3?bundle-deps"}}
+    </script>
+    <link rel="stylesheet" href="https://esm.sh/react-swipeable-list@1.9.3/dist/styles.css">
+</head>
+<body>
+<div id="root" class="relative z-10"></div>
+<script type="module">
+    import React,{useEffect,useState,useCallback} from 'react';
+    import {createRoot} from 'react-dom/client';
+    import {SwipeableList,SwipeableListItem,SwipeAction,TrailingActions,LeadingActions,Type as ListType} from 'react-swipeable-list';
+    const h=React.createElement;
+
+    const SB_URL='https://rkudnkbpnfxpxglaklqs.supabase.co';
+    const SB_KEY='sb_publishable_Ll3KUfVgGqeCMUTSlAd4bA_YoD-SHkA';
+    const sb=window.supabase.createClient(SB_URL,SB_KEY);
+
+    function ago(iso){const s=Math.max(1,Math.floor((Date.now()-new Date(iso).getTime())/1000));if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return new Date(iso).toLocaleDateString()}
+
+    // Map internal status → user-facing label + color class + whether swipeable.
+    const STATUS = {
+        scripted:        {label:'Scripted',      c:'text-white/60',    swipe:false},
+        rendering:       {label:'Rendering',     c:'text-hv-orange',   swipe:false},
+        raw_delivered:   {label:'Ready to review', c:'text-hv-green',  swipe:true,  next_right:'final_delivered', next_left:'scripted', rLabel:'APPROVE', lLabel:'REJECT'},
+        compositing:     {label:'Compositing',   c:'text-hv-orange',   swipe:false},
+        final_delivered: {label:'Ready to publish', c:'text-hv-green', swipe:true,  next_right:'approved', next_left:'scripted', rLabel:'APPROVE', lLabel:'REWRITE'},
+        approved:        {label:'Approved',      c:'text-hv-green',    swipe:false},
+        published:       {label:'Published',     c:'text-blue-400',    swipe:false},
+        rejected:        {label:'Rejected',      c:'text-white/30',    swipe:false},
+    };
+
+    function Nav(){
+        const tabs=[
+            {id:'dashboard',label:'Home',icon:'🏠',href:'/portal/dashboard'},
+            {id:'brand',label:'Brand',icon:'📝',href:'/portal/brand'},
+            {id:'avatars',label:'Avtr',icon:'🎭',href:'/portal/avatars'},
+            {id:'scout',label:'Scout',icon:'🔍',href:'/portal/scout'},
+            {id:'videos',label:'Video',icon:'🎬',href:'/portal/videos'},
+        ];
+        return h('nav',{className:'fixed bottom-0 inset-x-0 z-50 bg-black/90 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]'},
+            h('ul',{className:'grid grid-cols-5 h-14'},
+                tabs.map(t=>h('li',{key:t.id,className:'flex'},
+                    h('a',{href:t.href,className:['flex flex-col items-center justify-center gap-0.5 w-full text-[10px] uppercase tracking-wider',t.id==='videos'?'text-hv-green':'text-white/50'].join(' ')},
+                        h('span',{className:'text-lg leading-none'},t.icon),
+                        h('span',null,t.label),
+                    ))))
+        );
+    }
+
+    function VideoCard({task}){
+        const s=STATUS[task.status]||{label:task.status,c:'text-white/60'};
+        const firstLine=(task.script_text||'').split('\n')[0].slice(0,100);
+        return h('div',{className:'bg-white/[0.02] border-b border-white/5 px-4 py-3.5'},
+            h('div',{className:'flex items-start justify-between gap-3 mb-1.5'},
+                h('div',{className:'flex items-center gap-2 flex-wrap'},
+                    h('span',{className:'font-mono text-[10px] text-white/50'},task.task_code||''),
+                    h('span',{className:'font-mono text-[10px] '+s.c},s.label),
+                    task.avatar_name&&h('span',{className:'font-mono text-[10px] text-white/40'},'@'+task.avatar_name),
+                ),
+                h('span',{className:'font-mono text-[10px] text-white/30 whitespace-nowrap'},ago(task.created_at)),
+            ),
+            h('p',{className:'text-sm text-white/85 leading-snug line-clamp-2'},firstLine),
+            task.final_video_url&&h('video',{className:'mt-2 w-full max-h-72 rounded bg-black',controls:true,preload:'metadata',src:task.final_video_url}),
+            !task.final_video_url&&task.raw_video_url&&h('video',{className:'mt-2 w-full max-h-72 rounded bg-black',controls:true,preload:'metadata',src:task.raw_video_url}),
+            task.post_url&&h('a',{href:task.post_url,target:'_blank',className:'inline-block mt-2 text-[11px] font-medium text-hv-green hover:underline'},'View on Instagram →'),
+        );
+    }
+
+    function App(){
+        const [customerId,setCustomerId]=useState(null);
+        const [session,setSession]=useState(null);
+        const [tasks,setTasks]=useState(null);
+        const [filter,setFilter]=useState('all');
+        const [error,setError]=useState(null);
+
+        useEffect(()=>{(async()=>{
+            const {data:{session:s}}=await sb.auth.getSession();
+            if(!s){window.location.replace('/sign-in');return}
+            setSession(s);
+            const cid=s.user.user_metadata?.customer_id;
+            if(cid){setCustomerId(cid);return}
+            const {data:c}=await sb.from('customers').select('id').eq('email',s.user.email).maybeSingle();
+            if(c?.id)setCustomerId(c.id);else setError('No customer record for your account.');
+        })()},[]);
+
+        useEffect(()=>{
+            if(!customerId)return;
+            let ch;const load=async()=>{
+                let q=sb.from('video_tasks').select('*').eq('customer_id',customerId).order('created_at',{ascending:false}).limit(100);
+                if(filter!=='all')q=q.eq('status',filter);
+                const {data,error}=await q;
+                if(error){setError(error.code==='PGRST205'?'Portal tables not deployed yet.':error.message);setTasks([]);return}
+                setTasks(data||[]);
+            };load();
+            ch=sb.channel(`video-${customerId}`).on('postgres_changes',{event:'*',schema:'public',table:'video_tasks',filter:`customer_id=eq.${customerId}`},()=>load()).subscribe();
+            return()=>ch&&sb.removeChannel(ch);
+        },[customerId,filter]);
+
+        const transition=useCallback(async(id,newStatus)=>{
+            await sb.from('video_tasks').update({status:newStatus}).eq('id',id);
+        },[]);
+
+        if(error&&!tasks)return h('div',{className:'p-8 text-red-400 text-sm'},error);
+        if(tasks===null)return h('div',{className:'min-h-[60vh] flex items-center justify-center'},h('div',{className:'w-6 h-6 border-2 border-white/10 border-t-hv-green rounded-full animate-spin'}));
+
+        const filtered=filter==='all'?tasks.filter(t=>t.status!=='rejected'):tasks;
+
+        return h(React.Fragment,null,
+            h('header',{className:'sticky top-0 z-40 bg-black/90 backdrop-blur border-b border-white/10 px-4 py-3'},
+                h('div',{className:'flex items-center justify-between mb-2'},
+                    h('div',{className:'flex items-center gap-2'},
+                        h('h1',{className:'text-lg font-bold tracking-tight'},'Video Production'),
+                        tasks.length>0&&h('span',{className:'text-[10px] font-mono text-hv-green bg-hv-green/10 border border-hv-green/30 px-1.5 py-0.5 rounded'},filtered.length),
+                    ),
+                    h('span',{className:'flex items-center gap-1.5 text-[10px] font-mono text-white/40'},
+                        h('span',{className:'w-1.5 h-1.5 bg-hv-green rounded-full pulse-green'}),'LIVE'),
+                ),
+                h('div',{className:'flex gap-1.5 overflow-x-auto -mx-4 px-4'},
+                    ['all','scripted','rendering','raw_delivered','final_delivered','published'].map(f=>
+                        h('button',{key:f,onClick:()=>setFilter(f),className:['whitespace-nowrap px-3 py-1 rounded-full text-[11px] font-medium border transition',filter===f?'bg-hv-green text-black border-hv-green':'border-white/10 text-white/60 hover:border-white/20'].join(' ')},
+                            f.charAt(0).toUpperCase()+f.slice(1).replace('_',' '))
+                    ))),
+            error&&h('div',{className:'bg-orange-500/10 border-b border-orange-500/30 px-4 py-2 text-xs text-orange-300'},error),
+            h('main',{className:'pb-20'},
+                filtered.length===0
+                    ?h('div',{className:'min-h-[60vh] flex flex-col items-center justify-center px-6 text-center'},
+                        h('div',{className:'text-5xl mb-4 opacity-40'},'🎬'),
+                        h('h2',{className:'text-lg font-medium mb-2'},'No videos yet'),
+                        h('p',{className:'text-sm text-white/50 max-w-xs'},'Promote a script from your Scout inbox to kick off video production. Rendering takes ~5 minutes once promoted.'))
+                    :h(SwipeableList,{type:ListType.IOS,fullSwipe:true,threshold:0.4},
+                        filtered.map(task=>{
+                            const s=STATUS[task.status];
+                            if(!s||!s.swipe)return h(SwipeableListItem,{key:task.id},h(VideoCard,{task}));
+                            return h(SwipeableListItem,{
+                                key:task.id,
+                                leadingActions:h(LeadingActions,null,h(SwipeAction,{onClick:()=>transition(task.id,s.next_right),destructive:true},h('div',{className:'swipe-approve flex items-center justify-center px-6 font-bold text-base'},'▶ '+s.rLabel))),
+                                trailingActions:h(TrailingActions,null,h(SwipeAction,{onClick:()=>transition(task.id,s.next_left),destructive:true},h('div',{className:'swipe-reject flex items-center justify-center px-6 font-bold text-base'},'✕ '+s.lLabel))),
+                            },h(VideoCard,{task}));
+                        }))),
+            h(Nav),
+        );
+    }
+    createRoot(document.getElementById('root')).render(h(App));
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => { navigator.serviceWorker.register('/portal-sw.js', { scope: '/portal/' }).catch(() => {}); });
+    }
+</script>
+</body>
+</html>
