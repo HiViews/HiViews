@@ -9,7 +9,8 @@
 // This SW is intentionally thin. No background sync, no push. The
 // heavy lifting (realtime updates) is already handled by Supabase.
 
-const VERSION = 'hv-portal-v1';
+// Bump VERSION on every significant portal change to force cache invalidation.
+const VERSION = 'hv-portal-v2-' + '2026-04-17';
 const STATIC_CACHE = 'hv-portal-static-' + VERSION;
 
 const STATIC_HOSTS = [
