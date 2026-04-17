@@ -8,6 +8,7 @@
     { "source": "/set-password", "destination": "/set-password.html" },
     { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/portal/dashboard", "destination": "/portal-dashboard.html" },
+    { "source": "/portal/scout", "destination": "/portal-scout.html" },
     { "source": "/portal", "destination": "/portal-dashboard.html" },
     { "source": "/about", "destination": "/about.html" },
     { "source": "/pricing", "destination": "/pricing.html" },
