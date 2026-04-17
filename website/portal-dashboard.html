@@ -130,10 +130,12 @@
         .script-preview .sp-text{font-size:13px;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
         .script-preview .sp-use{display:inline-block;margin-top:10px;font:600 11px/1 var(--f);color:var(--green)}
 
-        /* Bottom nav — shared shape with every other portal page */
-        .bottomnav{position:fixed;bottom:0;inset-inline:0;z-index:50;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.1);padding-bottom:env(safe-area-inset-bottom)}
-        .bottomnav ul{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);height:56px}
-        .bottomnav li{display:flex}
+        /* Bottom nav — shared shape with every other portal page.
+           The generic top-of-file `nav{display:flex;...}` rule bleeds into
+           this element, so we override each property explicitly. */
+        .bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.1);border-bottom:0;display:block;padding:0;padding-bottom:env(safe-area-inset-bottom);justify-content:initial;align-items:initial}
+        .bottomnav ul{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);height:56px;width:100%;margin:0;padding:0}
+        .bottomnav li{display:flex;margin:0;padding:0}
         .bottomnav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;text-decoration:none;font:500 10px/1 'Inter',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5)}
         .bottomnav a:hover{color:#fff}
         .bottomnav a.on{color:#00ff88}
@@ -345,9 +347,36 @@ const PROVISION_URL = 'https://provision.hiviews.ai';
 
 // ─── Free-user dashboard ────────────────────────────────────────────
 async function showFreeView(email, name) {
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('freeState').style.display = 'block';
+    // Swap loader → free view first so the page never stays blank even
+    // if any of the downstream lookups or template work throws.
+    try {
+        document.getElementById('loadingState').style.display = 'none';
+    } catch(_) {}
+    const freeState = document.getElementById('freeState');
+    if (freeState) freeState.style.display = 'block';
+    else {
+        document.body.insertAdjacentHTML('beforeend',
+            '<div style="padding:40px;color:#fff;text-align:center">Loaded, but the page markup is out of sync. Try a hard refresh.</div>');
+        return;
+    }
 
+    try {
+        await _renderFreeView(email, name);
+    } catch (err) {
+        console.error('Free dashboard render failed:', err);
+        const hero = document.getElementById('freeHero');
+        if (hero) hero.innerHTML = `
+            <div class="hero-card">
+                <h1>Welcome 👋</h1>
+                <p>Your dashboard's loaded — grab your free viral analysis to unlock the full picture (viral score + 3 ready-to-record scripts tailored to your niche).</p>
+                <a class="cta" href="/?email=${encodeURIComponent(email || '')}#analyze">Get your free analysis →</a>
+            </div>`;
+        // Rewriter still works without the hero/analysis data
+        try { wireRewriter(email); } catch(_) {}
+    }
+}
+
+async function _renderFreeView(email, name) {
     const hero = document.getElementById('freeHero');
     const statsEl = document.getElementById('freeStats');
     const scriptsEl = document.getElementById('freeScripts');
@@ -363,7 +392,7 @@ async function showFreeView(email, name) {
                 + `&order=created_at.desc&limit=1&select=event_data,created_at`;
             const r = await fetch(q, { headers: { apikey: SB_KEY } });
             const rows = await r.json();
-            if (rows.length) analysis = rows[0].event_data;
+            if (Array.isArray(rows) && rows.length) analysis = rows[0].event_data;
         } catch (e) { console.warn('analysis lookup failed (non-fatal):', e); }
     }
 
