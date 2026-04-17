@@ -53,6 +53,8 @@
         .btn-primary{background:#00ff88;color:#000;border:0;padding:10px 18px;border-radius:8px;font:600 14px/1 'Inter',sans-serif;cursor:pointer}
         .btn-primary:hover:not(:disabled){background:#33ff9f}
         .btn-primary:disabled{opacity:.5;cursor:not-allowed}
+        .chip-prompt{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:6px 11px;border-radius:100px;font:500 12px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s}
+        .chip-prompt:hover{border-color:rgba(0,255,136,.4);color:#00ff88;background:rgba(0,255,136,.06)}
 
         /* Inbox ──────────────────────────────────────────────── */
         .wrap{position:relative;z-index:1;padding-bottom:80px}
@@ -79,6 +81,25 @@
         .row-time{font-family:'Fira Code',ui-monospace,monospace;font-size:10px;color:rgba(255,255,255,.3);white-space:nowrap}
         .row-line2{font-size:13px;color:rgba(255,255,255,.65);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .row.expanded .row-line2{white-space:normal;overflow:visible}
+
+        /* Inline edit ───────────────────────────────────────── */
+        .row-edit{display:none;margin-top:10px}
+        .row.editing .row-edit{display:block}
+        .row.editing .row-line2{display:none}
+        .row-edit textarea{width:100%;background:rgba(0,0,0,.45);border:1px solid rgba(0,255,136,.25);color:#fff;border-radius:8px;padding:11px 13px;font:400 14px/1.55 'Inter',sans-serif;outline:0;resize:vertical;min-height:160px;max-height:60dvh}
+        .row-edit textarea:focus{border-color:rgba(0,255,136,.55)}
+        .row-edit-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:10px;flex-wrap:wrap}
+        .row-edit-actions .meta{font-family:'Fira Code',ui-monospace,monospace;font-size:10px;color:rgba(255,255,255,.35)}
+        .row-edit-actions .right{display:flex;gap:6px}
+        .row-edit-cancel{background:transparent;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.7);padding:8px 14px;border-radius:8px;font:500 12px/1 'Inter',sans-serif;cursor:pointer}
+        .row-edit-save{background:#00ff88;color:#000;border:0;padding:8px 16px;border-radius:8px;font:600 12px/1 'Inter',sans-serif;cursor:pointer}
+        .row-edit-save:hover:not(:disabled){background:#33ff9f}
+        .row-edit-save:disabled{opacity:.5;cursor:not-allowed}
+        .row-expand-tools{display:none;margin-top:8px;gap:8px;flex-wrap:wrap}
+        .row.expanded:not(.editing) .row-expand-tools{display:flex}
+        .tool-btn{background:transparent;border:1px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.55);padding:6px 11px;border-radius:6px;font:500 11px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+        .tool-btn:hover{border-color:rgba(255,255,255,.3);color:#fff;border-style:solid}
+        .versions-pill{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.3);color:#60a5fa;padding:2px 7px;border-radius:100px;font:500 10px/1 'Fira Code',ui-monospace,monospace;margin-left:6px}
 
         .row-actions{display:flex;align-items:center;padding-right:10px;gap:4px;flex-shrink:0}
         .act{background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:8px 10px;border-radius:8px;font:500 11px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s;white-space:nowrap;min-width:44px;min-height:44px;justify-content:center}
@@ -183,6 +204,30 @@
     </div>
 </div>
 
+<!-- Rewrite modal (AI rewrite with optional instructions) -->
+<div class="modal-bg" id="rewriteBg">
+    <div class="modal" role="dialog" aria-labelledby="rewriteTitle">
+        <button class="close" id="rewriteClose" aria-label="Close">×</button>
+        <h2 id="rewriteTitle">Rewrite in your brand voice</h2>
+        <p style="font-size:13px;color:rgba(255,255,255,.6);margin-top:-4px" id="rewriteSubtitle">Leave blank for a default brand-voice pass, or tell your AI CMO exactly what to change.</p>
+        <div>
+            <label for="rewriteInstructions">What would you like changed? <span style="color:rgba(255,255,255,.35);text-transform:none;letter-spacing:normal;font-weight:400">(optional)</span></label>
+            <textarea id="rewriteInstructions" placeholder="e.g. Improve the opening hook. Make it more casual. Cut to 40 seconds. Add 'follow for more' at the end." rows="5"></textarea>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:-2px">
+            <button class="chip-prompt" data-pfx="Improve the opening hook. ">Sharper hook</button>
+            <button class="chip-prompt" data-pfx="Make it more casual and conversational. ">More casual</button>
+            <button class="chip-prompt" data-pfx="Make it more authoritative and confident. ">More authoritative</button>
+            <button class="chip-prompt" data-pfx="Cut it down to under 40 seconds. ">Shorter (40s)</button>
+            <button class="chip-prompt" data-pfx="Add a clear CTA at the end — follow for more. ">Add CTA</button>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-secondary" id="rewriteCancel" type="button">Cancel</button>
+            <button class="btn-primary" id="rewriteSubmit" type="button">Rewrite</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -199,6 +244,9 @@
     let filter = 'all';
     let tasks = [];
     let expandedId = null;
+    let editingId = null;       // scout_task id currently in inline-edit mode
+    let versionCounts = {};     // scout_task_id → count (from script_versions table)
+    let rewriteTargetId = null; // id passed into the Rewrite modal
     let loaded = false;
 
     const main = document.getElementById('main');
@@ -207,6 +255,7 @@
     const toastEl = document.getElementById('toast');
     const newBtn = document.getElementById('newBtn');
     const modalBg = document.getElementById('modalBg');
+    const rewriteBg = document.getElementById('rewriteBg');
 
     function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
     function ago(iso){const s=Math.max(1,Math.floor((Date.now()-new Date(iso).getTime())/1000));if(s<60)return s+'s ago';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return new Date(iso).toLocaleDateString()}
@@ -259,25 +308,43 @@
 
         main.innerHTML = list.map(t => {
             const expanded = t.id === expandedId;
+            const editing  = t.id === editingId;
             const title = titleFor(t);
             const script = t.script_text || '';
             const isRewriting = t.status === 'rewriting';
+            const vCount = versionCounts[t.id] || 0;
+            const versionsBadge = vCount > 1
+                ? `<span class="versions-pill" title="${vCount} versions saved">v${vCount}</span>`
+                : '';
             return `
-              <div class="row${expanded?' expanded':''}" data-id="${t.id}">
+              <div class="row${expanded?' expanded':''}${editing?' editing':''}" data-id="${t.id}">
                 <div class="row-content" data-toggle="${t.id}">
                   <div class="row-line1">
                     <span class="row-code">${esc(t.task_code||'')}</span>
                     <span class="badge ${hookClass(t.hook_type)}">${esc((t.hook_type||'hook'))}</span>
-                    <span class="row-title">${esc(title)}</span>
+                    <span class="row-title">${esc(title)}${versionsBadge}</span>
                     <span class="row-meta">
                       <span class="row-status ${statusClass(t.status)}">${esc(t.status||'')}</span>
-                      <span class="row-time">${ago(t.created_at)}</span>
+                      <span class="row-time">${ago(t.updated_at || t.created_at)}</span>
                     </span>
                   </div>
                   <div class="row-line2">${esc(script) || '<em style="color:rgba(255,255,255,.3)">(no script text yet — tap Rewrite)</em>'}</div>
+                  <div class="row-edit">
+                    <textarea data-editbox="${t.id}" placeholder="Script…">${esc(script)}</textarea>
+                    <div class="row-edit-actions">
+                      <span class="meta" data-wordcount="${t.id}">${script.trim().split(/\s+/).filter(Boolean).length} words</span>
+                      <div class="right">
+                        <button class="row-edit-cancel" data-act="edit-cancel" data-id="${t.id}">Cancel</button>
+                        <button class="row-edit-save"   data-act="edit-save"   data-id="${t.id}">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row-expand-tools">
+                    <button class="tool-btn" data-act="edit" data-id="${t.id}">✎ Edit directly</button>
+                  </div>
                 </div>
                 <div class="row-actions">
-                  <button class="act rewrite" data-act="rewrite" data-id="${t.id}" ${isRewriting?'disabled':''} title="Rewrite in brand voice">
+                  <button class="act rewrite" data-act="rewrite" data-id="${t.id}" ${isRewriting?'disabled':''} title="Rewrite with AI">
                     <span>${isRewriting?'⋯':'🔄'}</span><span class="label">Rewrite</span>
                   </button>
                   <button class="act promote" data-act="promote" data-id="${t.id}" title="Promote to video production">
@@ -289,6 +356,19 @@
                 </div>
               </div>`;
         }).join('');
+
+        // Live word count + auto-resize while editing
+        if (editingId) {
+            const ta = document.querySelector(`[data-editbox="${editingId}"]`);
+            const wc = document.querySelector(`[data-wordcount="${editingId}"]`);
+            if (ta) {
+                ta.focus();
+                ta.addEventListener('input', () => {
+                    const n = (ta.value||'').trim().split(/\s+/).filter(Boolean).length;
+                    if (wc) wc.textContent = `${n} word${n===1?'':'s'}`;
+                });
+            }
+        }
     }
 
     // Event delegation
@@ -301,16 +381,17 @@
     });
 
     main.addEventListener('click', async e => {
-        // Expand/collapse row
+        const btn = e.target.closest('[data-act]');
+        // Expand/collapse row (only on card tap, not on any action)
         const toggleEl = e.target.closest('[data-toggle]');
-        if(toggleEl && !e.target.closest('[data-act]')){
+        if(toggleEl && !btn){
+            // Don't collapse while mid-edit — that would silently lose work
+            if(editingId) return;
             const id = Number(toggleEl.dataset.toggle);
             expandedId = (expandedId===id) ? null : id;
             renderList();
             return;
         }
-        // Action buttons
-        const btn = e.target.closest('[data-act]');
         if(!btn) return;
         e.stopPropagation();
         const id = Number(btn.dataset.id);
@@ -318,6 +399,54 @@
         const task = tasks.find(t=>t.id===id);
         if(!task) return;
 
+        // ── Inline edit ──────────────────────────────────────────
+        if(act==='edit'){
+            editingId = id;
+            expandedId = id;
+            renderList();
+            return;
+        }
+        if(act==='edit-cancel'){
+            editingId = null;
+            renderList();
+            return;
+        }
+        if(act==='edit-save'){
+            const ta = document.querySelector(`[data-editbox="${id}"]`);
+            if(!ta) return;
+            const newText = ta.value.trim();
+            if(!newText){ toast('Script cannot be empty',{err:true,ms:2000}); return; }
+            btn.disabled = true;
+            btn.textContent = 'Saving…';
+            const { error } = await sb.from('scout_tasks')
+                .update({ script_text: newText, updated_at: new Date().toISOString() })
+                .eq('id', id);
+            if(error){
+                toast('Save failed: '+error.message,{err:true,ms:3500});
+                btn.disabled=false; btn.textContent='Save';
+                return;
+            }
+            editingId = null;
+            // Optimistic local update; Realtime will confirm shortly
+            task.script_text = newText;
+            task.updated_at = new Date().toISOString();
+            renderList();
+            toast('Saved ✓ (new version logged)',{ms:1800});
+            return;
+        }
+
+        // ── Rewrite opens modal (was inline call — now collects instructions)
+        if(act==='rewrite'){
+            rewriteTargetId = id;
+            const sub = document.getElementById('rewriteSubtitle');
+            if(sub) sub.textContent = `Rewriting ${task.task_code}. Leave blank for a default brand-voice pass, or tell your AI CMO exactly what to change.`;
+            document.getElementById('rewriteInstructions').value = '';
+            rewriteBg.classList.add('show');
+            setTimeout(()=>document.getElementById('rewriteInstructions').focus(), 80);
+            return;
+        }
+
+        // ── Archive + Promote ────────────────────────────────────
         btn.disabled = true;
         if(act==='archive'){
             const { error } = await sb.from('scout_tasks').update({status:'archived'}).eq('id',id);
@@ -336,30 +465,82 @@
             }
             toast('Promoted — video production starting ✓',{ms:2400});
         }
-        else if(act==='rewrite'){
-            // Immediately flip status so the UI shows progress + disables the button.
-            const { error: uerr } = await sb.from('scout_tasks').update({status:'rewriting'}).eq('id',id);
-            if(uerr){toast('Rewrite failed: '+uerr.message,{err:true,ms:3000});btn.disabled=false;return}
-            if(!session){toast('Sign-in required',{err:true,ms:3000});return}
-            try{
-                const r = await fetch(`${PROVISION_URL}/api/rewrite`,{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
-                    body:JSON.stringify({customer_id:customerId,scout_task_id:id}),
-                });
-                if(!r.ok){
-                    const j = await r.json().catch(()=>({}));
-                    toast('Rewrite trigger failed: '+(j.error||r.status),{err:true,ms:3500});
-                    // Roll status back so user can retry.
-                    await sb.from('scout_tasks').update({status:task.status||'discovered'}).eq('id',id);
-                    return;
-                }
-                toast('Rewriting in your brand voice…',{ms:2400});
-            }catch(err){
-                toast('Network error',{err:true,ms:3000});
-                await sb.from('scout_tasks').update({status:task.status||'discovered'}).eq('id',id);
-            }
+    });
+
+    // ── Rewrite modal handlers ──────────────────────────────────────
+    const rewriteInstructions = document.getElementById('rewriteInstructions');
+    function closeRewrite(){
+        rewriteBg.classList.remove('show');
+        rewriteTargetId = null;
+        rewriteInstructions.value = '';
+    }
+    document.getElementById('rewriteClose').addEventListener('click', closeRewrite);
+    document.getElementById('rewriteCancel').addEventListener('click', closeRewrite);
+    rewriteBg.addEventListener('click', e => { if(e.target===rewriteBg) closeRewrite(); });
+
+    // Prompt-chip shortcuts append to the instruction textarea
+    rewriteBg.querySelectorAll('.chip-prompt').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const cur = rewriteInstructions.value.trim();
+            const pfx = chip.dataset.pfx || '';
+            rewriteInstructions.value = cur ? cur + '\n' + pfx : pfx;
+            rewriteInstructions.focus();
+            // move caret to end
+            const v = rewriteInstructions.value;
+            rewriteInstructions.setSelectionRange(v.length, v.length);
+        });
+    });
+
+    document.getElementById('rewriteSubmit').addEventListener('click', async () => {
+        if(!rewriteTargetId) return;
+        const id = rewriteTargetId;
+        const task = tasks.find(t=>t.id===id);
+        if(!task) return;
+        const instructions = (rewriteInstructions.value || '').trim();
+        const submitBtn = document.getElementById('rewriteSubmit');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Starting…';
+
+        // Flip status so the UI shows progress
+        const { error: uerr } = await sb.from('scout_tasks').update({status:'rewriting'}).eq('id',id);
+        if(uerr){
+            toast('Rewrite failed: '+uerr.message,{err:true,ms:3000});
+            submitBtn.disabled=false; submitBtn.textContent='Rewrite';
+            return;
         }
+
+        try{
+            const r = await fetch(`${PROVISION_URL}/api/rewrite`,{
+                method:'POST',
+                headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                body: JSON.stringify({
+                    customer_id: customerId,
+                    scout_task_id: id,
+                    instructions: instructions || null,
+                }),
+            });
+            if(!r.ok){
+                const j = await r.json().catch(()=>({}));
+                toast('Rewrite trigger failed: '+(j.error||r.status),{err:true,ms:3500});
+                await sb.from('scout_tasks').update({status:task.status||'discovered'}).eq('id',id);
+                submitBtn.disabled=false; submitBtn.textContent='Rewrite';
+                return;
+            }
+            closeRewrite();
+            submitBtn.disabled=false; submitBtn.textContent='Rewrite';
+            toast(instructions ? 'Applying your notes…' : 'Rewriting in your brand voice…', {ms:2400});
+        }catch(err){
+            toast('Network error',{err:true,ms:3000});
+            await sb.from('scout_tasks').update({status:task.status||'discovered'}).eq('id',id);
+            submitBtn.disabled=false; submitBtn.textContent='Rewrite';
+        }
+    });
+
+    // Close on Escape for both modals
+    document.addEventListener('keydown', e => {
+        if(e.key !== 'Escape') return;
+        if(rewriteBg.classList.contains('show')) closeRewrite();
+        else if(modalBg.classList.contains('show')) closeCompose();
     });
 
     // ── Compose flow ────────────────────────────────────────────────
@@ -376,7 +557,6 @@
     document.getElementById('modalClose').addEventListener('click', closeCompose);
     document.getElementById('modalCancel').addEventListener('click', closeCompose);
     modalBg.addEventListener('click', e => { if(e.target===modalBg) closeCompose(); });
-    document.addEventListener('keydown', e => { if(e.key==='Escape' && modalBg.classList.contains('show')) closeCompose(); });
 
     document.getElementById('modalSave').addEventListener('click', async () => {
         const titleEl = document.getElementById('composeTitle');
@@ -430,12 +610,31 @@
             return;
         }
 
+        async function loadVersionCounts(){
+            // Lightweight aggregate: one row per scout_task_id with its max version.
+            // We read the whole table scoped by RLS (always own-customer only).
+            const { data, error } = await sb.from('script_versions')
+                .select('scout_task_id, version')
+                .eq('customer_id', customerId);
+            if(error) return;
+            const m = {};
+            for(const r of (data||[])){
+                if(!m[r.scout_task_id] || r.version > m[r.scout_task_id]) {
+                    m[r.scout_task_id] = r.version;
+                }
+            }
+            versionCounts = m;
+        }
+
         async function load(){
-            const { data, error } = await sb.from('scout_tasks')
-                .select('*')
-                .eq('customer_id', customerId)
-                .order('created_at', { ascending: false })
-                .limit(200);
+            const [{ data, error }] = await Promise.all([
+                sb.from('scout_tasks')
+                    .select('*')
+                    .eq('customer_id', customerId)
+                    .order('created_at', { ascending: false })
+                    .limit(200),
+                loadVersionCounts(),
+            ]);
             if(error){
                 main.innerHTML = '<div class="err">'+esc(error.message||'Failed to load scripts.')+'</div>';
                 return;
@@ -446,10 +645,19 @@
         }
         await load();
 
+        // Realtime: any change to scout_tasks → reload list.
         sb.channel(`scout-${customerId}`)
           .on('postgres_changes',
               { event:'*', schema:'public', table:'scout_tasks', filter:`customer_id=eq.${customerId}` },
               () => load())
+          .subscribe();
+
+        // Separate channel for new version rows — cheap to reload counts
+        // only and update badges without re-fetching the main list.
+        sb.channel(`versions-${customerId}`)
+          .on('postgres_changes',
+              { event:'INSERT', schema:'public', table:'script_versions', filter:`customer_id=eq.${customerId}` },
+              async () => { await loadVersionCounts(); renderList(); })
           .subscribe();
     })();
 
