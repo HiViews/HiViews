@@ -8,6 +8,8 @@
     { "source": "/set-password", "destination": "/set-password.html" },
     { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/portal/dashboard", "destination": "/portal-dashboard.html" },
+    { "source": "/portal/scout/:code",  "destination": "/portal-scout.html" },
+    { "source": "/portal/videos/:code", "destination": "/portal-videos.html" },
     { "source": "/portal/scout",     "destination": "/portal-scout.html" },
     { "source": "/portal/videos",    "destination": "/portal-videos.html" },
     { "source": "/portal/brand",     "destination": "/portal-brand.html" },
