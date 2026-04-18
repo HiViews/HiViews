@@ -70,15 +70,30 @@
     };
 
     const VOICE_STATUS = {
-        none:    {label:'No voice clone',  c:'text-white/35'},
-        pending: {label:'Cloning voice…',  c:'text-hv-orange'},
-        ready:   {label:'Voice ready',     c:'text-hv-green'},
-        failed:  {label:'Clone failed',    c:'text-red-400'},
+        none:    {label:'No voice clone',       c:'text-white/35'},
+        pending: {label:'Cloning voice…',       c:'text-hv-orange'},
+        ready:   {label:'Voice ready',          c:'text-hv-green'},
+        failed:  {label:'Clone failed — retry', c:'text-red-400'},
+        stuck:   {label:'Clone stuck — retry',  c:'text-red-400'},
     };
+
+    // A "pending" voice clone should finish in ~1 minute. If a row is
+    // still pending after 10 minutes, treat it as stuck and show the
+    // retry affordance instead of an infinite spinner. Belt-and-suspenders
+    // for silent-failure modes on the droplet.
+    function effectiveVoiceStatus(avatar){
+        const s = avatar.voice_status || 'none';
+        if (s !== 'pending') return s;
+        const updated = new Date(avatar.updated_at || avatar.created_at || Date.now()).getTime();
+        if (Date.now() - updated > 10 * 60 * 1000) return 'stuck';
+        return 'pending';
+    }
 
     function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, onDelete, customerPlan, thumbSrc}){
         const s=STATUS[avatar.status]||{label:avatar.status,c:'text-white/60'};
-        const vs = VOICE_STATUS[avatar.voice_status||'none'] || VOICE_STATUS.none;
+        const effVoice = effectiveVoiceStatus(avatar);
+        const vs = VOICE_STATUS[effVoice] || VOICE_STATUS.none;
+        const voiceStuck = effVoice === 'stuck' || effVoice === 'failed';
         const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
         const num = avatar.display_number;
         return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start relative'},
@@ -110,11 +125,20 @@
                         onClick:()=>onSetDefault(avatar.id),
                         className:'text-[11px] text-white/60 hover:text-hv-green underline',
                     },'Set as default'),
-                    canClone && avatar.voice_status !== 'pending' && h('label',{
-                        className:'text-[11px] '+(voiceUploading?'text-white/30 cursor-wait':'text-white/60 hover:text-hv-green underline cursor-pointer'),
+                    // Show upload label when: clone is not actively running
+                    // (not a fresh 'pending'), or is stuck/failed/ready. We
+                    // key off `effVoice`, not raw voice_status, so a row
+                    // that's been pending for >10 min is still retryable.
+                    canClone && effVoice !== 'pending' && h('label',{
+                        className:'text-[11px] '+(voiceUploading
+                            ?'text-white/30 cursor-wait'
+                            :(voiceStuck?'text-red-400 hover:text-red-300 underline cursor-pointer'
+                                        :'text-white/60 hover:text-hv-green underline cursor-pointer')),
                     },
                         voiceUploading ? 'Uploading voice…' :
-                        (avatar.voice_status === 'ready' ? 'Replace voice sample' : 'Upload voice sample'),
+                        (effVoice === 'ready' ? 'Replace voice sample'
+                          : voiceStuck ? 'Retry voice clone'
+                          : 'Upload voice sample'),
                         h('input',{
                             type:'file',accept:'audio/*',className:'hidden',
                             disabled: voiceUploading,
