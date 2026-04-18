@@ -76,14 +76,22 @@
         failed:  {label:'Clone failed',    c:'text-red-400'},
     };
 
-    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, customerPlan, thumbSrc}){
+    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, onDelete, customerPlan, thumbSrc}){
         const s=STATUS[avatar.status]||{label:avatar.status,c:'text-white/60'};
         const vs = VOICE_STATUS[avatar.voice_status||'none'] || VOICE_STATUS.none;
         const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
-        return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start'},
+        const num = avatar.display_number;
+        return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start relative'},
+            // Big #N badge — the client-facing identifier so they can say
+            // "use avatar #3" in Telegram and the agent routes correctly.
+            h('div',{className:'flex flex-col items-center justify-center w-12 shrink-0 mt-0.5'},
+                h('div',{className:'font-mono text-[10px] text-white/35 leading-none mb-0.5'},'AVT'),
+                h('div',{className:'font-mono text-2xl font-black leading-none '+(avatar.is_default?'text-hv-green':'text-white/80')},
+                    num ? ('#'+num) : '—'),
+            ),
             thumbSrc
                 ?h('img',{src:thumbSrc,alt:avatar.name,className:'w-14 h-14 rounded-lg object-cover bg-black/40',loading:'lazy',referrerPolicy:'no-referrer'})
-                :h('div',{className:'w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center text-2xl'},'🎭'),
+                :h('div',{className:'w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center text-2xl shrink-0'},'🎭'),
             h('div',{className:'flex-1 min-w-0'},
                 h('div',{className:'flex items-center gap-2 mb-1 flex-wrap'},
                     h('span',{className:'text-sm font-semibold'},avatar.name||'Unnamed'),
@@ -102,7 +110,6 @@
                         onClick:()=>onSetDefault(avatar.id),
                         className:'text-[11px] text-white/60 hover:text-hv-green underline',
                     },'Set as default'),
-                    // Voice clone upload trigger (gated by plan)
                     canClone && avatar.voice_status !== 'pending' && h('label',{
                         className:'text-[11px] '+(voiceUploading?'text-white/30 cursor-wait':'text-white/60 hover:text-hv-green underline cursor-pointer'),
                     },
@@ -118,6 +125,11 @@
                         className:'text-[11px] text-white/30',
                         title:'Voice cloning is available on Dominate and Special Ops plans.',
                     },'🔒 Voice clone (Dominate+)'),
+                    h('button',{
+                        onClick: () => onDelete(avatar),
+                        className: 'text-[11px] text-white/40 hover:text-red-400 underline ml-auto',
+                        title: 'Delete this avatar. To refresh the face or voice, delete and re-upload.',
+                    }, 'Delete'),
                 )));
     }
 
@@ -231,6 +243,35 @@
             if(error)setError(error.message);
             else{setSaved('Default avatar updated');setTimeout(()=>setSaved(''),1600)}
         },[customerId]);
+
+        // Delete an avatar — wipes the Supabase row AND the droplet's
+        // avatars.json entry via /api/avatar-delete, so the agent can't
+        // accidentally route to a stale engine_id on the next render.
+        // Numbers are sticky: the deleted #N is retired, next new avatar
+        // gets max+1. Keeps "your avatar #4" references stable.
+        const deleteAvatar=useCallback(async(avatar)=>{
+            if(!customerId||!session)return;
+            const n = avatar.display_number;
+            const prompt = `Delete avatar${n?' #'+n:''} (${avatar.name||'Unnamed'})?\n\n`+
+                `This removes it from your roster. To refresh the face or voice, `+
+                `delete then re-upload a fresh photo or training video.`;
+            if(!window.confirm(prompt))return;
+            try{
+                const r = await fetch('https://provision.hiviews.ai/api/avatar-delete',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body: JSON.stringify({customer_id: customerId, avatar_id: avatar.id}),
+                });
+                if(!r.ok){
+                    const j = await r.json().catch(()=>({}));
+                    setError('Delete failed: '+(j.error||r.status));
+                    return;
+                }
+                setSaved(n ? `Avatar #${n} deleted` : 'Avatar deleted');
+                setTimeout(()=>setSaved(''),1800);
+                // Realtime subscription will refresh the list automatically.
+            }catch(e){ setError(e.message||'Delete failed'); }
+        },[customerId,session]);
 
         // Digital Twin training-video upload (Dominate+). Creates an avatars
         // row with type='digital_twin' + status='pending', signs a short-lived
@@ -431,6 +472,7 @@
                             onSetDefault:setDefault,
                             onUploadVoice:uploadVoice,
                             voiceUploading:voiceUploadingFor===a.id,
+                            onDelete:deleteAvatar,
                             customerPlan:customerPlan,
                         })))),
 
