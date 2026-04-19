@@ -26,6 +26,22 @@
         @keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
         .drop-zone{border:1px dashed rgba(255,255,255,0.15);border-radius:12px;transition:all 0.2s}
         .drop-zone.active{border-color:rgba(0,255,136,0.5);background:rgba(0,255,136,0.04)}
+
+        /* Stock avatar browse grid — HeyGen UGC catalog, hover-autoplay */
+        .stk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+        @media (min-width:640px){.stk-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}}
+        @media (min-width:960px){.stk-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+        .stk-tile{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#0a0a0a;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .18s cubic-bezier(.2,.7,.2,1),border-color .18s,box-shadow .18s}
+        .stk-tile:hover{border-color:rgba(0,255,136,.5);box-shadow:0 8px 32px -8px rgba(0,255,136,.25)}
+        @media (min-width:640px){.stk-tile:hover{transform:scale(1.03)}}
+        .stk-tile img,.stk-tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0a0a0a}
+        .stk-tile video{z-index:1;opacity:0;transition:opacity .2s}
+        .stk-tile.playing video{opacity:1}
+        .stk-tile .meta{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px 10px 9px;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.4) 60%,transparent);pointer-events:none}
+        .stk-tile .meta .n{font:700 13px/1.1 Inter,sans-serif;color:#fff}
+        .stk-tile .meta .g{font:500 10px/1 "Fira Code",ui-monospace,monospace;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+        .stk-tile.on-roster{border-color:rgba(0,255,136,.6)}
+        .stk-tile.on-roster .meta::after{content:'✓ on your roster';display:block;color:#00ff88;font:700 10px/1 "Fira Code",ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script type="importmap">
@@ -157,6 +173,87 @@
                 )));
     }
 
+    // Browse HeyGen's public UGC catalog. Pulls from /api/public-avatars
+    // once on mount (server-side 1h cache, ~50 items). Hover-autoplays the
+    // HeyGen preview video; tap picks the avatar and adds it to the roster.
+    function StockAvatarBrowse({ onPick, adding, rosterEngineIds }){
+        const [loaded, setLoaded] = useState(false);
+        const [items, setItems] = useState([]);
+        const [gender, setGender] = useState('');
+        const [error, setError] = useState(null);
+
+        useEffect(()=>{
+            let cancelled = false;
+            fetch('https://provision.hiviews.ai/api/public-avatars')
+                .then(r => r.json())
+                .then(j => { if (!cancelled) { setItems(j.avatars || []); setLoaded(true); }})
+                .catch(e => { if (!cancelled) { setError(e.message||'Failed'); setLoaded(true); }});
+            return ()=>{ cancelled = true; };
+        }, []);
+
+        const visible = gender
+            ? items.filter(a => (a.gender||'').toLowerCase() === gender.toLowerCase())
+            : items;
+
+        // Hover autoplay (desktop) — same pattern as portal-videos tiles
+        function onEnter(e){
+            const tile = e.currentTarget;
+            const v = tile.querySelector('video');
+            if (v) { tile.classList.add('playing'); v.play().catch(()=>{}); }
+        }
+        function onLeave(e){
+            const tile = e.currentTarget;
+            const v = tile.querySelector('video');
+            if (v) { tile.classList.remove('playing'); v.pause(); try{v.currentTime=0}catch(_){} }
+        }
+
+        return h('div', { className:'rounded-xl p-4 border border-white/10 bg-white/[0.02]' },
+            h('div', { className:'flex items-center justify-between gap-2 mb-3 flex-wrap' },
+                h('div', null,
+                    h('div',{className:'text-sm font-semibold flex items-center gap-2'}, '🎭 Browse stock avatars'),
+                    h('div',{className:'text-[11px] text-white/40 mt-0.5'},'Tap an avatar to add it to your roster. Each one gets the next number.'),
+                ),
+                h('div', { className:'flex items-center gap-1' },
+                    ['','Woman','Man'].map(g =>
+                        h('button', {
+                            key: g||'all',
+                            onClick: () => setGender(g),
+                            className: 'font-mono text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border transition '+
+                                (gender === g
+                                    ? 'border-hv-green text-hv-green bg-hv-green/10'
+                                    : 'border-white/10 text-white/50 hover:text-white hover:border-white/25'),
+                        }, g || 'All')
+                    )
+                ),
+            ),
+            error && h('div',{className:'text-xs text-red-400 mb-2'}, 'Couldn\u2019t load catalog: '+error),
+            !loaded
+                ? h('div',{className:'text-center text-xs text-white/40 py-8'},'Loading HeyGen UGC catalog…')
+                : visible.length === 0
+                    ? h('div',{className:'text-center text-xs text-white/40 py-8'},'No avatars match that filter.')
+                    : h('div',{className:'stk-grid'},
+                        visible.map(a => {
+                            const onRoster = rosterEngineIds.has(a.id);
+                            return h('div', {
+                                key: a.id,
+                                className: 'stk-tile ' + (onRoster ? 'on-roster ' : '') + (adding === a.id ? 'opacity-60' : ''),
+                                onMouseEnter: onEnter,
+                                onMouseLeave: onLeave,
+                                onClick: () => { if (!adding && !onRoster) onPick(a); },
+                                title: onRoster ? 'Already on your roster' : `Add ${a.name} to your roster`,
+                            },
+                                a.preview_image_url && h('img', { src:a.preview_image_url, alt:a.name, loading:'lazy', referrerPolicy:'no-referrer' }),
+                                a.preview_video_url && h('video', { src:a.preview_video_url, muted:true, loop:true, playsInline:true, preload:'none' }),
+                                h('div', { className:'meta' },
+                                    h('div',{className:'n'}, a.name),
+                                    h('div',{className:'g'}, (a.gender||'').toString()),
+                                )
+                            );
+                        })
+                    )
+        );
+    }
+
     function App(){
         const [session,setSession]=useState(null);
         const [customerId,setCustomerId]=useState(null);
@@ -168,6 +265,7 @@
         const [dragActive,setDragActive]=useState(false);
         const [saved,setSaved]=useState('');
         const [error,setError]=useState(null);
+        const [stockAdding,setStockAdding]=useState(null);               // heygen_id | null
         const fileInput=useRef(null);
 
         useEffect(()=>{(async()=>{
@@ -295,6 +393,41 @@
                 setTimeout(()=>setSaved(''),1800);
                 // Realtime subscription will refresh the list automatically.
             }catch(e){ setError(e.message||'Delete failed'); }
+        },[customerId,session]);
+
+        // Pick a stock avatar from HeyGen's public UGC catalog. Calls
+        // /api/avatar-select-stock which creates the avatars row (status
+        // ready, display_number max+1) and mirrors the entry into the
+        // droplet's avatars.json. Realtime subscription refreshes the
+        // roster, so the new card (with its sticky #N) just appears.
+        const pickStockAvatar=useCallback(async(stock)=>{
+            if(!customerId||!session||!stock?.id)return;
+            setStockAdding(stock.id);
+            setError(null);
+            try{
+                const r = await fetch('https://provision.hiviews.ai/api/avatar-select-stock',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        heygen_avatar_id: stock.id,
+                        heygen_voice_id: stock.default_voice_id || null,
+                        name: stock.name || 'Stock Avatar',
+                        gender: stock.gender || '',
+                        preview_image_url: stock.preview_image_url || '',
+                    }),
+                });
+                const j = await r.json().catch(()=>({}));
+                if(!r.ok){ setError(j.error || ('Add failed: '+r.status)); return; }
+                if(j.status==='already_on_roster'){
+                    setSaved(`${stock.name} is already on your roster`);
+                }else{
+                    const n = j.display_number;
+                    setSaved(n ? `Added ${stock.name} as avatar #${n}` : `Added ${stock.name}`);
+                }
+                setTimeout(()=>setSaved(''),2200);
+            }catch(e){ setError(e.message||'Add failed'); }
+            finally{ setStockAdding(null); }
         },[customerId,session]);
 
         // Digital Twin training-video upload (Dominate+). Creates an avatars
@@ -486,6 +619,14 @@
                     h('div',{className:'text-xs text-white/40'},'Fast path — a clear selfie is all you need. Lower quality mouth motion than a trained avatar.'),
                     h('input',{ref:fileInput,type:'file',accept:'image/*,video/*',multiple:true,className:'hidden',onChange:e=>handleFiles(e.target.files)}),
                 ),
+
+                // Browse HeyGen's public UGC catalog — pulled live via
+                // /api/public-avatars, hover to preview, tap to add.
+                h(StockAvatarBrowse, {
+                    onPick: pickStockAvatar,
+                    adding: stockAdding,
+                    rosterEngineIds: new Set((avatars||[]).map(a=>a.avatar_engine_id).filter(Boolean)),
+                }),
 
                 avatars.length===0
                     ?h('div',{className:'text-center py-10 text-white/40 text-sm'},'No avatars yet. Upload one above to get started.')
