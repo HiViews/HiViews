@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiViews — Quick Start</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#000;--t1:#fff;--t2:rgba(255,255,255,.65);--t3:rgba(255,255,255,.4);
+            --green:#00ff88;--green-d:rgba(0,255,136,.08);--green-b:rgba(0,255,136,.3);
+            --orange:#ff8a00;
+            --border:rgba(255,255,255,.1);--border-em:rgba(255,255,255,.15);
+            --panel:rgba(255,255,255,.02);--card:rgba(255,255,255,.03);
+            --f:'Inter',system-ui,-apple-system,sans-serif;
+            --fc:'Fira Code',ui-monospace,monospace;
+        }
+        body{background:var(--bg);color:var(--t1);font-family:var(--f);min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-0.005em}
+        body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+        nav{position:relative;z-index:2;padding:20px 32px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto}
+        nav .logo{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--t1);text-decoration:none}
+        nav a.back{font-size:12px;color:var(--t3)}
+        nav a.back:hover{color:var(--t1)}
+        .wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:56px 24px 80px}
+        .eyebrow{font-family:var(--fc);font-size:11px;color:var(--green);text-transform:uppercase;letter-spacing:.15em;text-align:center;margin-bottom:14px}
+        h1{font-size:40px;font-weight:500;letter-spacing:-0.02em;text-align:center;margin-bottom:14px}
+        .lede{font-size:16px;color:var(--t2);text-align:center;line-height:1.55;margin-bottom:48px;max-width:560px;margin-left:auto;margin-right:auto}
+        h2{font-size:22px;font-weight:600;letter-spacing:-0.015em;margin:56px 0 14px;display:flex;align-items:center;gap:10px}
+        h2 .num{font-family:var(--fc);font-size:13px;color:var(--green);background:var(--green-d);border:0.5px solid var(--green-b);padding:3px 9px;border-radius:6px;font-weight:500}
+        p{color:var(--t2);line-height:1.65;margin-bottom:14px;font-size:15px}
+        p strong{color:var(--t1);font-weight:600}
+        code{font-family:var(--fc);font-size:13px;background:var(--card);padding:2px 7px;border-radius:4px;color:var(--t1);border:0.5px solid var(--border)}
+
+        .panel{background:var(--panel);border:0.5px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:20px}
+        .panel h3{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--t1)}
+        .panel p{font-size:14px;margin-bottom:10px}
+        .panel a{color:var(--green);text-decoration:none;font-weight:500;font-size:14px;border-bottom:1px solid var(--green-b);padding-bottom:1px;transition:color 0.15s}
+        .panel a:hover{color:#66ffaa;border-color:#66ffaa}
+
+        .channels{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+        @media (max-width:560px){.channels{grid-template-columns:1fr}}
+        .chan{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:16px 18px}
+        .chan .icon{font-size:22px;margin-bottom:8px;display:block}
+        .chan h4{font-size:14px;font-weight:600;margin-bottom:4px}
+        .chan p{font-size:12.5px;color:var(--t3);line-height:1.5;margin-bottom:0}
+
+        ol.steps{list-style:none;counter-reset:step;margin:0}
+        ol.steps li{counter-increment:step;display:flex;gap:16px;padding:16px 0;border-top:0.5px solid var(--border)}
+        ol.steps li:first-child{border-top:none;padding-top:0}
+        ol.steps li::before{content:counter(step);font-family:var(--fc);font-size:14px;font-weight:600;color:var(--green);width:26px;height:26px;border:0.5px solid var(--green-b);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--green-d);flex-shrink:0;margin-top:2px}
+        ol.steps h3{font-size:16px;font-weight:600;margin-bottom:6px}
+        ol.steps p{font-size:14px;margin-bottom:8px}
+
+        .callout{border:0.5px solid var(--border);border-radius:10px;padding:16px 20px;margin:20px 0;background:var(--panel)}
+        .callout.tip{background:rgba(0,255,136,0.04);border-color:rgba(0,255,136,0.2)}
+        .callout.warn{background:rgba(255,138,0,0.04);border-color:rgba(255,138,0,0.25)}
+        .callout h4{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+        .callout p{font-size:13px;color:var(--t2);margin-bottom:0;line-height:1.55}
+
+        .footer{margin-top:64px;padding-top:32px;border-top:0.5px solid var(--border);text-align:center;font-size:13px;color:var(--t3)}
+        .footer a{color:var(--t2);text-decoration:none}
+        .footer a:hover{color:var(--green)}
+    </style>
+</head>
+<body>
+<nav>
+    <a class="logo" href="/">HiViews</a>
+    <a class="back" href="/portal/dashboard">Dashboard →</a>
+</nav>
+
+<div class="wrap">
+    <div class="eyebrow">Quick Start</div>
+    <h1>Welcome. Here&rsquo;s what just happened.</h1>
+    <p class="lede">You just bought HiViews. Behind the scenes, an AI agent is being spun up just for you. Here&rsquo;s how to find it, what to do first, and when you&rsquo;ll see your first video.</p>
+
+    <!-- ─────────────────────────────────────────── -->
+    <h2><span class="num">1</span>Your four channels</h2>
+    <p>HiViews talks to you in four places. You don&rsquo;t need to use all of them, but here&rsquo;s where each lives:</p>
+
+    <div class="channels">
+        <div class="chan">
+            <span class="icon">📧</span>
+            <h4>Email</h4>
+            <p>Magic-link sign-in to the portal, onboarding emails, renewal notices.</p>
+        </div>
+        <div class="chan">
+            <span class="icon">🖥️</span>
+            <h4>Portal</h4>
+            <p><strong>hiviews.ai/portal</strong> — visual control: avatars, brand, scout inbox, videos.</p>
+        </div>
+        <div class="chan">
+            <span class="icon">💬</span>
+            <h4>Telegram</h4>
+            <p>Chat directly with your AI agent. Approve scripts, ask questions, get updates.</p>
+        </div>
+        <div class="chan">
+            <span class="icon">📝</span>
+            <h4>Brand form</h4>
+            <p>5-minute questionnaire — teaches your agent who you are.</p>
+        </div>
+    </div>
+
+    <div class="callout tip">
+        <h4>💡 First thing to look for</h4>
+        <p>Within 5 minutes of purchase, check your email for a magic link from HiViews. Click it to land in your portal. Around the same time, your Telegram bot will DM you. Both are normal &mdash; either one works to get started.</p>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <h2><span class="num">2</span>Three things to do today</h2>
+
+    <ol class="steps">
+        <li>
+            <div>
+                <h3>Fill out your brand questionnaire</h3>
+                <p>5 minutes, one page. Tells your agent your niche, audience, voice, and what success looks like. <strong>Without this, your reels will be generic.</strong></p>
+                <p><a href="/onboarding" style="color:var(--green)">Open the questionnaire &rarr;</a></p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <h3>Choose your avatar</h3>
+                <p>Your AI reels need a face. Options:</p>
+                <p>&bull; <strong>Photo avatar</strong> (fastest) &mdash; upload a clear selfie<br>
+                &bull; <strong>Stock avatar</strong> (easiest) &mdash; pick from HeyGen&rsquo;s UGC catalog<br>
+                &bull; <strong>Digital Twin</strong> (best quality, Dominate plan) &mdash; 30-60s training video</p>
+                <p><a href="/portal/avatars" style="color:var(--green)">Go to Avatars &rarr;</a></p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <h3>Review your first scout picks (tomorrow morning)</h3>
+                <p>Scout runs overnight (~1:30am your local time) and surfaces viral reels worth adapting for your niche. You&rsquo;ll wake up to a fresh inbox of scored picks, each with a rewritten script ready to produce.</p>
+                <p><a href="/portal/scout" style="color:var(--green)">Go to Scout &rarr;</a></p>
+            </div>
+        </li>
+    </ol>
+
+    <!-- ─────────────────────────────────────────── -->
+    <h2><span class="num">3</span>Your first video</h2>
+    <p>Once you pick an avatar and promote a scout pick (either in the portal or by telling your Telegram agent), the full pipeline kicks in:</p>
+    <div class="panel">
+        <h3>What happens behind the scenes</h3>
+        <p>&rarr; <strong>Script rewrite</strong> (~30s) &mdash; your agent tunes the viral script to your brand voice.<br>
+        &rarr; <strong>Avatar render</strong> (3-8 min) &mdash; HeyGen generates a reel with your avatar speaking the script.<br>
+        &rarr; <strong>Branded wrapper</strong> (soon) &mdash; logo, handle, end-card.<br>
+        &rarr; <strong>Publish</strong> (immediate or on schedule) &mdash; pushed live to your connected Instagram.</p>
+        <p style="margin-top:10px">Total: under 10 minutes from promote to published reel.</p>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <h2><span class="num">4</span>If something looks wrong</h2>
+
+    <div class="callout warn">
+        <h4>⚠️ Magic link never arrived</h4>
+        <p>Supabase (our auth provider) caps email sends. If you refresh or hit &ldquo;resend&rdquo; quickly, you&rsquo;ll get rate-limited and wait ~60s. Give it 2 minutes, then check spam. Still nothing? Email <a href="mailto:support@hiviews.ai" style="color:var(--green)">support@hiviews.ai</a>.</p>
+    </div>
+
+    <div class="callout warn">
+        <h4>⚠️ Telegram bot didn&rsquo;t say hi</h4>
+        <p>Your bot username is on your portal dashboard once you&rsquo;re logged in. Open it manually in Telegram, send <code>/start</code>, and you&rsquo;re connected.</p>
+    </div>
+
+    <div class="callout warn">
+        <h4>⚠️ Dashboard says &ldquo;Provisioning&hellip;&rdquo; forever</h4>
+        <p>Most provisioning finishes in 3&ndash;5 minutes. If it&rsquo;s stuck past 10 minutes, something went sideways. Email <a href="mailto:support@hiviews.ai" style="color:var(--green)">support@hiviews.ai</a> with your email on file &mdash; we&rsquo;ll re-run it in a minute.</p>
+    </div>
+
+    <div class="callout tip">
+        <h4>💡 Talk to us</h4>
+        <p>We respond to <a href="mailto:support@hiviews.ai" style="color:var(--green)">support@hiviews.ai</a> within a few hours on business days. You can also DM your agent on Telegram and say &ldquo;tell Brian about X&rdquo; &mdash; it&rsquo;ll relay.</p>
+    </div>
+
+    <div class="footer">
+        <a href="/portal/dashboard">Back to dashboard</a> &middot;
+        <a href="mailto:support@hiviews.ai">Support</a> &middot;
+        <a href="/privacy">Privacy</a>
+    </div>
+</div>
+
+</body>
+</html>
