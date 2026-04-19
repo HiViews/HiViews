@@ -42,6 +42,35 @@
         .stk-tile .meta .g{font:500 10px/1 "Fira Code",ui-monospace,monospace;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
         .stk-tile.on-roster{border-color:rgba(0,255,136,.6)}
         .stk-tile.on-roster .meta::after{content:'✓ on your roster';display:block;color:#00ff88;font:700 10px/1 "Fira Code",ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+
+        /* Avatar detail popup — shared by roster cards + stock tiles */
+        .apop-back{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.8);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;animation:apFade .15s ease}
+        @keyframes apFade{from{opacity:0}to{opacity:1}}
+        .apop{background:#0a0a0a;border:1px solid rgba(255,255,255,.12);border-radius:16px 16px 0 0;width:100%;max-width:100%;max-height:92dvh;display:flex;flex-direction:column;position:relative;animation:apSlide .2s cubic-bezier(.22,1,.36,1);overflow:hidden}
+        @keyframes apSlide{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @media (min-width:640px){.apop-back{align-items:center}.apop{max-width:540px;max-height:85vh;border-radius:16px}.apop-handle{display:none}}
+        .apop-handle{width:36px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:10px auto 4px;flex-shrink:0}
+        .apop-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.5);border:0;color:#fff;font-size:18px;cursor:pointer;padding:6px 10px;border-radius:6px;line-height:1;z-index:3;backdrop-filter:blur(6px)}
+        .apop-close:hover{background:rgba(0,0,0,.75)}
+        .apop-media{position:relative;background:#000;width:100%;aspect-ratio:9/16;max-height:45vh;overflow:hidden;flex-shrink:0}
+        .apop-media img,.apop-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
+        .apop-media .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;opacity:.3}
+        .apop-body{padding:18px 20px 22px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+        .apop-id{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:500 12px/1 "Fira Code",ui-monospace,monospace;color:rgba(255,255,255,.55)}
+        .apop-id .n{color:#00ff88;font-weight:800;font-size:14px}
+        .apop-title{font:700 18px/1.25 Inter,sans-serif;color:#fff;margin-top:8px;letter-spacing:-.2px}
+        .apop-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;font:500 10px/1 "Fira Code",ui-monospace,monospace;color:rgba(255,255,255,.45)}
+        .apop-meta .sep{color:rgba(255,255,255,.2)}
+        .apop-voice{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:8px;font:500 12px/1.3 Inter,sans-serif}
+        .apop-voice .lbl{font-family:"Fira Code",ui-monospace,monospace;font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-right:4px}
+        .apop-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+        .apop-act{flex:1;min-width:120px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.8);font:600 13px/1 Inter,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px;transition:all .12s}
+        .apop-act:hover:not(:disabled){border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.03)}
+        .apop-act:disabled{opacity:.5;cursor:not-allowed}
+        .apop-act.primary{background:#00ff88;color:#000;border-color:#00ff88}
+        .apop-act.primary:hover:not(:disabled){background:#33ff9f}
+        .apop-act.danger{background:rgba(239,68,68,.08);color:#f87171;border-color:rgba(239,68,68,.25)}
+        .apop-act.danger:hover:not(:disabled){background:rgba(239,68,68,.15);color:#fca5a5}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script type="importmap">
@@ -105,14 +134,23 @@
         return 'pending';
     }
 
-    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, onDelete, customerPlan, thumbSrc}){
+    function AvatarCard({avatar, onSetDefault, onUploadVoice, voiceUploading, onDelete, onOpen, customerPlan, thumbSrc}){
         const s=STATUS[avatar.status]||{label:avatar.status,c:'text-white/60'};
         const effVoice = effectiveVoiceStatus(avatar);
         const vs = VOICE_STATUS[effVoice] || VOICE_STATUS.none;
         const voiceStuck = effVoice === 'stuck' || effVoice === 'failed';
         const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
         const num = avatar.display_number;
-        return h('div',{className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start relative'},
+        // Row tap opens the popup. Action-button clicks stop propagation in
+        // their own handlers so they don't also open the popup.
+        const handleCardClick = e => {
+            if (e.target.closest('button') || e.target.closest('label') || e.target.closest('input')) return;
+            onOpen && onOpen(avatar);
+        };
+        return h('div',{
+            onClick: handleCardClick,
+            className:'bg-white/[0.02] border border-white/10 rounded-xl p-4 flex gap-3 items-start relative cursor-pointer hover:border-white/20 transition',
+        },
             // Big #N badge — the client-facing identifier so they can say
             // "use avatar #3" in Telegram and the agent routes correctly.
             h('div',{className:'flex flex-col items-center justify-center w-12 shrink-0 mt-0.5'},
@@ -254,6 +292,117 @@
         );
     }
 
+    // Popup works for both roster avatars and stock (catalog) avatars.
+    // Mode inferred from the shape of `data`:
+    //   roster → has `display_number`, `avatar_engine_id`, `voice_status`
+    //   stock  → has `id` (heygen id), `preview_video_url`, no display_number
+    function AvatarPopup({ data, mode, customerPlan, thumbSrc,
+                           onClose, onPick, onSetDefault, onUploadVoice,
+                           onDelete, adding, voiceUploading }){
+        if (!data) return null;
+
+        useEffect(() => {
+            const onKey = e => { if (e.key === 'Escape') onClose(); };
+            document.addEventListener('keydown', onKey);
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.removeEventListener('keydown', onKey);
+                document.body.style.overflow = '';
+            };
+        }, [onClose]);
+
+        const canClone = customerPlan === 'dominate' || customerPlan === 'special_ops';
+        const isRoster = mode === 'roster';
+        const isStock  = mode === 'stock';
+        const onRosterMatch = isStock && data.__alreadyOnRoster;
+
+        const imgSrc = isRoster
+            ? (thumbSrc || null)
+            : (data.preview_image_url || null);
+        const videoSrc = isStock ? (data.preview_video_url || null) : null;
+
+        const num   = isRoster ? data.display_number : null;
+        const name  = data.name || (isStock ? 'Stock Avatar' : 'Unnamed');
+        const type  = isRoster
+            ? (data.type || 'photo')
+            : 'stock · HeyGen UGC';
+        const status = isRoster ? (data.status || '—') : 'available';
+        const gender = data.gender || '';
+        const voiceStatus = isRoster ? effectiveVoiceStatus(data) : null;
+        const vs = voiceStatus && (VOICE_STATUS[voiceStatus] || VOICE_STATUS.none);
+        const voiceStuck = voiceStatus === 'stuck' || voiceStatus === 'failed';
+
+        return h('div', { className:'apop-back', onClick: e => { if (e.target.className === 'apop-back') onClose(); }},
+            h('div', { className:'apop', role:'dialog', 'aria-modal':'true' },
+                h('div', { className:'apop-handle' }),
+                h('button', { className:'apop-close', onClick:onClose, 'aria-label':'Close' }, '✕'),
+                h('div', { className:'apop-media' },
+                    videoSrc && h('video', {
+                        src:videoSrc, autoPlay:true, loop:true, muted:true, playsInline:true, preload:'metadata',
+                    }),
+                    !videoSrc && imgSrc && h('img', { src:imgSrc, alt:name, referrerPolicy:'no-referrer' }),
+                    !videoSrc && !imgSrc && h('div', { className:'ph' }, '🎭'),
+                ),
+                h('div', { className:'apop-body' },
+                    h('div', { className:'apop-id' },
+                        num ? h('span', { className:'n' }, '#'+num) : null,
+                        num ? h('span', { className:'sep' }, '·') : null,
+                        h('span', null, type),
+                        data.is_default && h('span', { className:'sep' }, '·'),
+                        data.is_default && h('span', { style:{color:'#00ff88',fontWeight:800} }, 'DEFAULT'),
+                    ),
+                    h('div', { className:'apop-title' }, name),
+                    h('div', { className:'apop-meta' },
+                        gender && h('span', null, gender),
+                        isRoster && h('span', null, status),
+                        isRoster && data.created_at && h('span', null, 'added ' + ago(data.created_at)),
+                    ),
+                    isRoster && h('div', { className:'apop-voice' },
+                        h('span', { className:'lbl' }, 'VOICE'),
+                        h('span', { style:{color: vs ? undefined : 'rgba(255,255,255,.4)'} },
+                            '🎙 ' + (vs ? vs.label : 'No clone')),
+                        data.voice_name && h('span', { style:{color:'rgba(255,255,255,.45)'} }, '· ' + data.voice_name),
+                    ),
+
+                    // Actions vary by mode
+                    isStock && h('div', { className:'apop-actions' },
+                        h('button', {
+                            className:'apop-act primary',
+                            disabled: !!adding || onRosterMatch,
+                            onClick: () => onPick(data),
+                        }, onRosterMatch ? '✓ Already on your roster' :
+                           (adding ? '⋯ Adding…' : '✓ Add to my roster')),
+                        h('button', { className:'apop-act', onClick:onClose }, 'Cancel'),
+                    ),
+
+                    isRoster && h('div', { className:'apop-actions' },
+                        !data.is_default && data.status === 'ready' && h('button', {
+                            className:'apop-act primary',
+                            onClick: () => { onSetDefault(data.id); onClose(); },
+                        }, '★ Set as default'),
+                        canClone && voiceStatus !== 'pending' && h('label', {
+                            className:'apop-act ' + (voiceStuck ? 'danger' : ''),
+                            style:{cursor:'pointer'},
+                        },
+                            voiceUploading ? '⋯ Uploading…' :
+                            (voiceStatus === 'ready' ? '🎙 Replace voice sample' :
+                             voiceStuck ? '🎙 Retry voice clone' : '🎙 Upload voice sample'),
+                            h('input', {
+                                type:'file', accept:'audio/*', style:{display:'none'},
+                                disabled: voiceUploading,
+                                onChange: e => { onUploadVoice(data, e.target.files?.[0]); },
+                            }),
+                        ),
+                        h('button', {
+                            className:'apop-act danger',
+                            onClick: () => { onDelete(data); /* confirm handled in handler */ },
+                        }, '✕ Remove from roster'),
+                    ),
+                )
+            )
+        );
+    }
+
     function App(){
         const [session,setSession]=useState(null);
         const [customerId,setCustomerId]=useState(null);
@@ -266,6 +415,7 @@
         const [saved,setSaved]=useState('');
         const [error,setError]=useState(null);
         const [stockAdding,setStockAdding]=useState(null);               // heygen_id | null
+        const [popup,setPopup]=useState(null);    // {data, mode: 'roster'|'stock'} | null
         const fileInput=useRef(null);
 
         useEffect(()=>{(async()=>{
@@ -578,9 +728,40 @@
 
                 error&&h('div',{className:'bg-orange-500/10 border border-orange-500/30 rounded-lg px-4 py-2 text-xs text-orange-300'},error),
 
+                // ═══ YOUR ROSTER — prime real estate at the top ═══
+                // Everything below this is about adding MORE avatars; what the
+                // user already has needs to be the first thing they see.
+                avatars.length === 0
+                    ? h('div',{className:'rounded-xl p-6 text-center border border-white/10 bg-white/[0.02]'},
+                        h('div',{className:'text-3xl mb-2'},'🎭'),
+                        h('div',{className:'text-sm font-semibold mb-1'},'No avatars on your roster yet'),
+                        h('div',{className:'text-xs text-white/40'},'Pick a stock avatar below or upload your own to get started.'))
+                    : h('div',null,
+                        h('div',{className:'flex items-baseline justify-between mb-2 px-1'},
+                            h('div',{className:'text-[11px] font-mono uppercase tracking-wider text-white/40'},'Your roster'),
+                            h('div',{className:'text-[10px] font-mono text-white/30'},'tap any card for details'),
+                        ),
+                        h('div',{className:'space-y-3'},
+                            avatars.map(a=>h(AvatarCard,{
+                                key:a.id, avatar:a,
+                                thumbSrc:thumbs[a.id]||null,
+                                onSetDefault:setDefault,
+                                onUploadVoice:uploadVoice,
+                                voiceUploading:voiceUploadingFor===a.id,
+                                onDelete:deleteAvatar,
+                                onOpen:(av)=>setPopup({data:av, mode:'roster'}),
+                                customerPlan:customerPlan,
+                            })))),
+
+                // ═══ ADD MORE — dig twin, photo, stock browse ═══
+                h('div',{className:'flex items-center gap-3 pt-2'},
+                    h('div',{className:'flex-1 h-px bg-white/10'}),
+                    h('div',{className:'text-[10px] font-mono uppercase tracking-wider text-white/40'},'Add more avatars'),
+                    h('div',{className:'flex-1 h-px bg-white/10'}),
+                ),
+
                 // Dominate-only: "train from video" tile — much better mouth sync
-                // + motion than the photo path below. Renders above the photo
-                // drop-zone so it's the obvious first choice.
+                // + motion than the photo path below.
                 (customerPlan==='dominate'||customerPlan==='special_ops') && h('div',{
                     className:'rounded-xl p-5 cursor-pointer border border-hv-green/30 bg-gradient-to-br from-hv-green/[0.06] to-transparent hover:border-hv-green/60 transition',
                     onClick:()=>!twinUploading&&twinInput.current?.click(),
@@ -620,26 +801,32 @@
                     h('input',{ref:fileInput,type:'file',accept:'image/*,video/*',multiple:true,className:'hidden',onChange:e=>handleFiles(e.target.files)}),
                 ),
 
-                // Browse HeyGen's public UGC catalog — pulled live via
-                // /api/public-avatars, hover to preview, tap to add.
+                // Browse HeyGen's public UGC catalog. Tapping a tile opens the
+                // popup (preview, confirm) instead of auto-adding — Brian's
+                // feedback: "Everyone's gonna be clicking them thinking
+                // there's a pop-up window."
                 h(StockAvatarBrowse, {
-                    onPick: pickStockAvatar,
+                    onPick: (stock)=>{
+                        const already = new Set((avatars||[]).map(a=>a.avatar_engine_id).filter(Boolean)).has(stock.id);
+                        setPopup({data:{...stock, __alreadyOnRoster:already}, mode:'stock'});
+                    },
                     adding: stockAdding,
                     rosterEngineIds: new Set((avatars||[]).map(a=>a.avatar_engine_id).filter(Boolean)),
-                }),
+                })),
 
-                avatars.length===0
-                    ?h('div',{className:'text-center py-10 text-white/40 text-sm'},'No avatars yet. Upload one above to get started.')
-                    :h('div',{className:'space-y-3'},
-                        avatars.map(a=>h(AvatarCard,{
-                            key:a.id, avatar:a,
-                            thumbSrc:thumbs[a.id]||null,
-                            onSetDefault:setDefault,
-                            onUploadVoice:uploadVoice,
-                            voiceUploading:voiceUploadingFor===a.id,
-                            onDelete:deleteAvatar,
-                            customerPlan:customerPlan,
-                        })))),
+            popup && h(AvatarPopup, {
+                data: popup.data,
+                mode: popup.mode,
+                customerPlan: customerPlan,
+                thumbSrc: popup.mode==='roster' ? (thumbs[popup.data.id]||null) : null,
+                adding: popup.mode==='stock' && stockAdding === popup.data?.id,
+                voiceUploading: popup.mode==='roster' && voiceUploadingFor === popup.data?.id,
+                onClose: ()=>setPopup(null),
+                onPick: async (s)=>{ await pickStockAvatar(s); setPopup(null); },
+                onSetDefault: setDefault,
+                onUploadVoice: (av, file)=>{ uploadVoice(av, file); setPopup(null); },
+                onDelete: async (av)=>{ await deleteAvatar(av); setPopup(null); },
+            }),
 
             saved&&h('div',{className:'saved-toast'},saved),
             h(Nav));
