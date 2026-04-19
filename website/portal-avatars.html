@@ -214,15 +214,15 @@
                     h('div',{className:'text-[11px] text-white/40 mt-0.5'},'Tap an avatar to add it to your roster. Each one gets the next number.'),
                 ),
                 h('div', { className:'flex items-center gap-1' },
-                    ['','Woman','Man'].map(g =>
+                    [['','All'],['female','Women'],['male','Men']].map(([val, label]) =>
                         h('button', {
-                            key: g||'all',
-                            onClick: () => setGender(g),
+                            key: val||'all',
+                            onClick: () => setGender(val),
                             className: 'font-mono text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full border transition '+
-                                (gender === g
+                                (gender === val
                                     ? 'border-hv-green text-hv-green bg-hv-green/10'
                                     : 'border-white/10 text-white/50 hover:text-white hover:border-white/25'),
-                        }, g || 'All')
+                        }, label)
                     )
                 ),
             ),
