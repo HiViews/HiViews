@@ -220,6 +220,34 @@
             </div>
 
             <div class="card">
+                <h2><span class="dot"></span>Your wins library
+                    <span style="margin-left:8px;font-family:var(--fc,monospace);font-size:10px;color:var(--t3,#888);font-weight:400">
+                        P1 · highest intent
+                    </span>
+                </h2>
+                <div class="hint" style="margin-bottom:12px">
+                    Paste scripts you KNOW work — your past viral reels, competitors' hits,
+                    or templates you'd happily steal structure from.
+                    <strong style="color:#fff">HiViews uses these to build your voice signature</strong>
+                    and filter what Scout surfaces. Separate scripts with a blank line.
+                </div>
+                <div id="winsCount" class="hint" style="color:#00ff88;font-family:var(--fc,monospace);font-size:11px;margin-bottom:8px">
+                    Loading your library…
+                </div>
+                <textarea id="f_wins_draft" placeholder="Paste a script here.
+
+Separate multiple scripts with a blank line — or paste just one to start.
+
+Every script gets analyzed for hook type, tone, structure, and topic tags. Your voice signature updates automatically." style="min-height:140px"></textarea>
+                <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
+                    <button type="button" class="tag-add" id="winsUploadBtn" style="padding:10px 18px">
+                        Upload &amp; index
+                    </button>
+                    <span id="winsStatus" class="hint" style="font-family:var(--fc,monospace);font-size:11px"></span>
+                </div>
+            </div>
+
+            <div class="card">
                 <h2><span class="dot"></span>Scout Targets</h2>
                 <label>Hashtags your scout watches nightly</label>
                 ${tagList(draft.hashtags)}
@@ -233,6 +261,8 @@
             <p class="hint" style="text-align:center;margin-top:20px">Changes stay here until you hit <strong style="color:#fff">Save</strong> in the top right. Save propagates to your AI agent within seconds.</p>
         `;
         wireEvents();
+        wireWinsLibrary();
+        loadWinsCount();
     }
 
     function esc(s){
@@ -298,6 +328,100 @@
                 markDirty();
                 render();
             });
+        });
+    }
+
+    // ── Wins library (P1 upload) ──────────────────────────────────
+    async function loadWinsCount() {
+        const countEl = document.getElementById('winsCount');
+        if (!countEl || !customerId) return;
+        try {
+            const { data, error } = await sb
+                .from('customer_scripts')
+                .select('source', { count: 'exact', head: false })
+                .eq('customer_id', customerId)
+                .eq('is_active', true);
+            if (error) {
+                countEl.textContent = 'Library not ready yet (migration 010 needed).';
+                return;
+            }
+            const total = data?.length || 0;
+            const uploaded = (data || []).filter(r => r.source === 'uploaded').length;
+            const own = (data || []).filter(r => r.source === 'own_recent').length;
+            countEl.textContent =
+                total === 0
+                    ? 'Library is empty — paste a few scripts to seed it.'
+                    : `${total} script${total === 1 ? '' : 's'} in library ` +
+                      `· ${uploaded} uploaded · ${own} auto-scraped from your reels`;
+        } catch (e) {
+            countEl.textContent = 'Library status unavailable.';
+        }
+    }
+
+    function wireWinsLibrary() {
+        const btn = document.getElementById('winsUploadBtn');
+        const statusEl = document.getElementById('winsStatus');
+        const txt = document.getElementById('f_wins_draft');
+        if (!btn || !txt) return;
+
+        btn.addEventListener('click', async () => {
+            const raw = (txt.value || '').trim();
+            if (!raw) {
+                statusEl.textContent = 'Paste at least one script first.';
+                statusEl.style.color = '#ff8a00';
+                return;
+            }
+
+            // Split on triple-hyphen OR double-newline boundaries.
+            const chunks = raw.split(/\n\s*---+\s*\n|\n{2,}/)
+                              .map(s => s.trim())
+                              .filter(s => s.length >= 20);
+            if (chunks.length === 0) {
+                statusEl.textContent = 'Each script needs >=20 chars. Try pasting longer ones.';
+                statusEl.style.color = '#ff8a00';
+                return;
+            }
+
+            btn.disabled = true;
+            statusEl.textContent = `Uploading & indexing ${chunks.length} script${chunks.length === 1 ? '' : 's'}…`;
+            statusEl.style.color = '#00ff88';
+
+            try {
+                const { data: { session: s } } = await sb.auth.getSession();
+                if (!s) throw new Error('Not signed in — refresh and try again.');
+
+                const r = await fetch('https://provision.hiviews.ai/api/scripts-upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + s.access_token,
+                    },
+                    body: JSON.stringify({
+                        customer_id: customerId,
+                        scripts: chunks.map(text => ({ text })),
+                    }),
+                });
+                if (!r.ok) {
+                    const j = await r.json().catch(() => ({}));
+                    throw new Error(j.detail || j.error || ('HTTP ' + r.status));
+                }
+                const j = await r.json();
+                const inserted = (j.inserted || []).length;
+                const failed   = (j.failures || []).length;
+                const sigTxt   = j.voice_signature_refreshed ? ' · voice signature refreshed' : '';
+                statusEl.textContent =
+                    `✓ Indexed ${inserted} script${inserted === 1 ? '' : 's'}` +
+                    (failed ? ` · ${failed} failed` : '') + sigTxt;
+                statusEl.style.color = '#00ff88';
+                txt.value = '';
+                await loadWinsCount();
+                toast('Library updated ✓');
+            } catch (e) {
+                statusEl.textContent = '✗ ' + (e.message || 'Upload failed.');
+                statusEl.style.color = '#ff4545';
+            } finally {
+                btn.disabled = false;
+            }
         });
     }
 
