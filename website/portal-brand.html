@@ -33,22 +33,22 @@
 
         /* Layout ─────────────────────────────────────────────── */
         .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px 96px}
-        .card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;margin-bottom:14px}
-        .card h2{font-size:14px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:20px;margin-bottom:14px}
+        .card h2{font-size:15px;font-weight:600;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
         .card h2 .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#00ff88}
 
         /* Form fields ────────────────────────────────────────── */
         .field{margin-bottom:14px}
         .field:last-child{margin-bottom:0}
-        label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:6px;font-weight:500}
-        input[type="text"],input[type="email"],textarea{display:block;width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:11px 13px;font:400 15px/1.4 'Inter',sans-serif;outline:0}
-        input:focus,textarea:focus{border-color:rgba(0,255,136,.55);background:rgba(0,255,136,.03)}
+        label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.7);margin-bottom:6px;font-weight:600}
+        input[type="text"],input[type="email"],textarea{display:block;width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:11px 13px;font:400 15px/1.4 'Inter',sans-serif;outline:0}
+        input:focus,textarea:focus{border-color:rgba(0,255,136,.65);background:rgba(0,255,136,.04)}
         textarea{min-height:76px;resize:vertical;line-height:1.5}
-        .hint{font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;line-height:1.5}
+        .hint{font-size:13px;color:rgba(255,255,255,.7);margin-top:8px;line-height:1.55}
 
         /* Chips ──────────────────────────────────────────────── */
         .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
-        .chip{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);padding:9px 16px;border-radius:100px;font:500 13px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s;user-select:none;min-height:38px;display:inline-flex;align-items:center}
+        .chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);color:#fff;padding:9px 16px;border-radius:100px;font:500 13px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s;user-select:none;min-height:38px;display:inline-flex;align-items:center}
         .chip:hover{border-color:rgba(255,255,255,.3);color:#fff}
         .chip.on{background:#00ff88;color:#000;border-color:#00ff88;font-weight:600}
         .chip.on:hover{background:#33ff9f;border-color:#33ff9f}
@@ -56,7 +56,7 @@
         /* Hashtag editor ─────────────────────────────────────── */
         .tag-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:40px;padding:12px;background:rgba(0,0,0,.35);border:1px dashed rgba(255,255,255,.1);border-radius:10px}
         .tag-list.empty{align-items:center;justify-content:center}
-        .tag-list.empty::before{content:'No hashtags yet — add your first below';color:rgba(255,255,255,.3);font-size:12px;font-style:italic}
+        .tag-list.empty::before{content:'No hashtags yet — add your first below';color:rgba(255,255,255,.6);font-size:13px;font-style:italic}
         .tag-list:not(.empty)::before{display:none}
         .tag{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.35);color:#00ff88;padding:5px 12px;border-radius:100px;font:500 13px/1 'Fira Code',ui-monospace,monospace;display:inline-flex;align-items:center;gap:6px}
         .tag button{background:transparent;border:0;color:#00ff88;opacity:.55;cursor:pointer;padding:0;font-size:15px;line-height:1}
@@ -233,7 +233,7 @@
                     <strong style="color:#fff">HiViews uses these to build your voice signature</strong>
                     and filter what Scout surfaces. Save one, paste another, repeat.
                 </div>
-                <div id="winsCount" class="hint" style="color:#00ff88;font-family:var(--fc,monospace);font-size:11px;margin-bottom:8px">
+                <div id="winsCount" class="hint" style="color:#00ff88;font-family:var(--fc,monospace);font-size:12px;margin-bottom:10px">
                     Loading your library…
                 </div>
                 <textarea id="f_wins_draft" placeholder="Paste one script here. Line breaks, blank lines, formatting — all fine. The whole paste is treated as a single script.
@@ -243,7 +243,7 @@ Click Add to save it. Your voice signature updates automatically." style="min-he
                     <button type="button" class="tag-add" id="winsUploadBtn" style="padding:10px 18px">
                         Add script
                     </button>
-                    <span id="winsStatus" class="hint" style="font-family:var(--fc,monospace);font-size:11px"></span>
+                    <span id="winsStatus" class="hint" style="font-family:var(--fc,monospace);font-size:12px;color:rgba(255,255,255,.85)"></span>
                 </div>
             </div>
 
@@ -263,7 +263,7 @@ Click Add to save it. Your voice signature updates automatically." style="min-he
                     <input type="text" id="creatorDraft" placeholder="garyvee (no @ needed)" autocomplete="off">
                     <button type="button" class="tag-add" id="creatorAddBtn">Add</button>
                 </div>
-                <div class="hint" style="margin-top:10px;font-size:11px;color:var(--t3,#888)">
+                <div class="hint" style="margin-top:10px">
                     When empty, scout falls back to hashtags below. Once you have 5+ creators here, hashtags go silent and the signal-to-noise jumps materially.
                 </div>
             </div>

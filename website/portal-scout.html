@@ -28,7 +28,7 @@
         .new-btn:hover{background:#33ff9f}
         .chips{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -16px;padding:0 16px}
         .chips::-webkit-scrollbar{display:none}
-        .chip{white-space:nowrap;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:6px 14px;border-radius:100px;font:500 11px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s;user-select:none}
+        .chip{white-space:nowrap;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);padding:7px 14px;border-radius:100px;font:500 12px/1 'Inter',sans-serif;cursor:pointer;transition:all .12s;user-select:none}
         .chip:hover{border-color:rgba(255,255,255,.25);color:#fff}
         .chip.on{background:#00ff88;color:#000;border-color:#00ff88;font-weight:600}
 
@@ -79,7 +79,7 @@
         .st-promoted{color:#ff8a00}
         .st-archived{color:rgba(255,255,255,.3)}
         .row-time{font-family:'Fira Code',ui-monospace,monospace;font-size:10px;color:rgba(255,255,255,.3);white-space:nowrap}
-        .row-line2{font-size:13px;color:rgba(255,255,255,.65);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .row-line2{font-size:14px;color:rgba(255,255,255,.8);line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .row.expanded .row-line2{white-space:normal;overflow:visible}
 
         /* Inline edit ───────────────────────────────────────── */
@@ -97,12 +97,12 @@
         .row-edit-save:disabled{opacity:.5;cursor:not-allowed}
         .row-expand-tools{display:none;margin-top:8px;gap:8px;flex-wrap:wrap}
         .row.expanded:not(.editing) .row-expand-tools{display:flex}
-        .tool-btn{background:transparent;border:1px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.55);padding:6px 11px;border-radius:6px;font:500 11px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+        .tool-btn{background:transparent;border:1px dashed rgba(255,255,255,.22);color:rgba(255,255,255,.75);padding:7px 12px;border-radius:6px;font:500 12px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
         .tool-btn:hover{border-color:rgba(255,255,255,.3);color:#fff;border-style:solid}
         .versions-pill{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.3);color:#60a5fa;padding:2px 7px;border-radius:100px;font:500 10px/1 'Fira Code',ui-monospace,monospace;margin-left:6px}
 
         .row-actions{display:flex;align-items:center;padding-right:10px;gap:4px;flex-shrink:0}
-        .act{background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);padding:8px 10px;border-radius:8px;font:500 11px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s;white-space:nowrap;min-width:44px;min-height:44px;justify-content:center}
+        .act{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);padding:8px 10px;border-radius:8px;font:600 12px/1 'Inter',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all .12s;white-space:nowrap;min-width:44px;min-height:44px;justify-content:center}
         .act:hover:not(:disabled){border-color:rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.03)}
         .act:disabled{opacity:.5;cursor:not-allowed}
         .act.rewrite:hover:not(:disabled){border-color:rgba(96,165,250,.4);color:#60a5fa;background:rgba(96,165,250,.06)}
@@ -135,7 +135,7 @@
         .empty{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;text-align:center}
         .empty-icon{font-size:44px;margin-bottom:16px;opacity:.4}
         .empty h2{font-size:16px;font-weight:600;margin-bottom:8px}
-        .empty p{font-size:13px;color:rgba(255,255,255,.55);max-width:320px;line-height:1.5;margin-bottom:18px}
+        .empty p{font-size:14px;color:rgba(255,255,255,.75);max-width:360px;line-height:1.55;margin-bottom:18px}
 
         .toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:#00ff88;color:#000;padding:10px 20px;border-radius:100px;font:600 13px/1 'Inter',sans-serif;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
         .toast.show{opacity:1;transform:translate(-50%,-6px)}

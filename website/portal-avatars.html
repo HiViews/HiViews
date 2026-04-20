@@ -167,27 +167,27 @@
                     h('span',{className:'font-mono text-[10px] '+s.c},s.label),
                     avatar.is_default&&h('span',{className:'font-mono text-[10px] text-hv-green'},'DEFAULT'),
                 ),
-                h('div',{className:'text-[11px] text-white/40 font-mono'},
+                h('div',{className:'text-xs text-white/65 font-mono'},
                     (avatar.type||'photo')+' · '+((avatar.source_files||[]).length)+' file'+((avatar.source_files||[]).length===1?'':'s')+' · '+ago(avatar.created_at)),
                 // Voice status row
-                h('div',{className:'text-[11px] mt-1 flex items-center gap-2 flex-wrap'},
-                    h('span',{className:'font-mono '+vs.c},'🎙 '+vs.label),
-                    avatar.voice_name && h('span',{className:'text-white/35'},'· '+avatar.voice_name),
+                h('div',{className:'text-xs mt-1.5 flex items-center gap-2 flex-wrap'},
+                    h('span',{className:'font-mono font-medium '+vs.c},'🎙 '+vs.label),
+                    avatar.voice_name && h('span',{className:'text-white/60'},'· '+avatar.voice_name),
                 ),
-                h('div',{className:'mt-2 flex gap-3 flex-wrap items-center'},
+                h('div',{className:'mt-2.5 flex gap-3 flex-wrap items-center'},
                     !avatar.is_default&&avatar.status==='ready'&&h('button',{
                         onClick:()=>onSetDefault(avatar.id),
-                        className:'text-[11px] text-white/60 hover:text-hv-green underline',
+                        className:'text-xs text-white/85 hover:text-hv-green underline font-medium',
                     },'Set as default'),
                     // Show upload label when: clone is not actively running
                     // (not a fresh 'pending'), or is stuck/failed/ready. We
                     // key off `effVoice`, not raw voice_status, so a row
                     // that's been pending for >10 min is still retryable.
                     canClone && effVoice !== 'pending' && h('label',{
-                        className:'text-[11px] '+(voiceUploading
-                            ?'text-white/30 cursor-wait'
+                        className:'text-xs font-medium '+(voiceUploading
+                            ?'text-white/50 cursor-wait'
                             :(voiceStuck?'text-red-400 hover:text-red-300 underline cursor-pointer'
-                                        :'text-white/60 hover:text-hv-green underline cursor-pointer')),
+                                        :'text-white/85 hover:text-hv-green underline cursor-pointer')),
                     },
                         voiceUploading ? 'Uploading voice…' :
                         (effVoice === 'ready' ? 'Replace voice sample'
@@ -200,12 +200,12 @@
                         }),
                     ),
                     !canClone && h('span',{
-                        className:'text-[11px] text-white/30',
+                        className:'text-xs text-white/55',
                         title:'Voice cloning is available on Dominate and Special Ops plans.',
                     },'🔒 Voice clone (Dominate+)'),
                     h('button',{
                         onClick: () => onDelete(avatar),
-                        className: 'text-[11px] text-white/40 hover:text-red-400 underline ml-auto',
+                        className: 'text-xs text-white/65 hover:text-red-400 underline ml-auto font-medium',
                         title: 'Delete this avatar. To refresh the face or voice, delete and re-upload.',
                     }, 'Delete'),
                 )));
@@ -249,7 +249,7 @@
             h('div', { className:'flex items-center justify-between gap-2 mb-3 flex-wrap' },
                 h('div', null,
                     h('div',{className:'text-sm font-semibold flex items-center gap-2'}, '🎭 Browse stock avatars'),
-                    h('div',{className:'text-[11px] text-white/40 mt-0.5'},'Tap an avatar to add it to your roster. Each one gets the next number.'),
+                    h('div',{className:'text-xs text-white/70 mt-1'},'Tap an avatar to add it to your roster. Each one gets the next number.'),
                 ),
                 h('div', { className:'flex items-center gap-1' },
                     [['','All'],['female','Women'],['male','Men']].map(([val, label]) =>

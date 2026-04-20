@@ -14,11 +14,11 @@
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
-            --bg:#000;--bg2:#0a0a0a;--bg3:#111;--bg4:#161616;
-            --t1:#fff;--t2:#c0c0c0;--t3:#888;
-            --green:#00ff88;--green-d:rgba(0,255,136,.08);
+            --bg:#000;--bg2:#121212;--bg3:#171717;--bg4:#1d1d1d;
+            --t1:#fff;--t2:#d8d8d8;--t3:#a8a8a8;
+            --green:#00ff88;--green-d:rgba(0,255,136,.1);
             --orange:#ff8a00;--red:#ff4444;--blue:#4da6ff;
-            --border:#1a1a1a;--border-h:#2a2a2a;
+            --border:#262626;--border-h:#383838;
             --f:'Inter',sans-serif;--fc:'Fira Code',monospace;
         }
         html{font-size:16px;-webkit-font-smoothing:antialiased}
@@ -70,9 +70,9 @@
         .check-item.done{opacity:.5}
         .check-box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border-h);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px;font-weight:700}
         .check-item.done .check-box{background:var(--green);border-color:var(--green);color:#000}
-        .check-body h4{font-size:14px;font-weight:700;margin-bottom:2px}
-        .check-body p{font-size:13px;color:var(--t3);line-height:1.5}
-        .check-body .action{display:inline-block;margin-top:6px;padding:6px 14px;font-size:12px;font-weight:600;color:#000;background:var(--green);border-radius:6px;text-decoration:none;transition:opacity .2s}
+        .check-body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+        .check-body p{font-size:14px;color:var(--t2);line-height:1.55}
+        .check-body .action{display:inline-block;margin-top:8px;padding:8px 16px;font-size:13px;font-weight:600;color:#000;background:var(--green);border-radius:6px;text-decoration:none;transition:opacity .2s}
         .check-body .action:hover{opacity:.85}
 
         .help{text-align:center;padding:24px;border:1px solid var(--border);border-radius:10px;background:var(--bg2)}
@@ -98,7 +98,7 @@
 
         .free-section{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px 20px;margin-bottom:16px}
         .free-section h2{font-size:15px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-        .free-section .lede{font-size:13px;color:var(--t3);line-height:1.55;margin-bottom:16px}
+        .free-section .lede{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:16px}
 
         /* Rewrite widget */
         .rw-input{width:100%;min-height:120px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:#fff;font:500 14px/1.6 var(--f);resize:vertical;outline:none;transition:border-color .15s}
@@ -128,7 +128,7 @@
         .script-preview .sp-n{font:700 11px/1 var(--fc);color:var(--green);letter-spacing:.1em}
         .script-preview .sp-type{font:500 10px/1 var(--fc);color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
         .script-preview .sp-text{font-size:13px;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-        .script-preview .sp-use{display:inline-block;margin-top:10px;font:600 11px/1 var(--f);color:var(--green)}
+        .script-preview .sp-use{display:inline-block;margin-top:10px;font:600 13px/1 var(--f);color:var(--green)}
 
         /* Bottom nav — shared shape with every other portal page.
            The generic top-of-file `nav{display:flex;...}` rule bleeds into
