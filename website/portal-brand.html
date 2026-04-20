@@ -218,22 +218,20 @@
                     </span>
                 </h2>
                 <div class="hint" style="margin-bottom:12px">
-                    Paste scripts you KNOW work — your past viral reels, competitors' hits,
-                    or templates you'd happily steal structure from.
+                    Paste one script you KNOW works — a past viral reel, a competitor's hit,
+                    or a template you'd happily steal structure from.
                     <strong style="color:#fff">HiViews uses these to build your voice signature</strong>
-                    and filter what Scout surfaces. Separate scripts with a blank line.
+                    and filter what Scout surfaces. Save one, paste another, repeat.
                 </div>
                 <div id="winsCount" class="hint" style="color:#00ff88;font-family:var(--fc,monospace);font-size:11px;margin-bottom:8px">
                     Loading your library…
                 </div>
-                <textarea id="f_wins_draft" placeholder="Paste a script here.
+                <textarea id="f_wins_draft" placeholder="Paste one script here. Line breaks, blank lines, formatting — all fine. The whole paste is treated as a single script.
 
-Separate multiple scripts with a blank line — or paste just one to start.
-
-Every script gets analyzed for hook type, tone, structure, and topic tags. Your voice signature updates automatically." style="min-height:140px"></textarea>
+Click Add to save it. Your voice signature updates automatically." style="min-height:140px"></textarea>
                 <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
                     <button type="button" class="tag-add" id="winsUploadBtn" style="padding:10px 18px">
-                        Upload &amp; index
+                        Add script
                     </button>
                     <span id="winsStatus" class="hint" style="font-family:var(--fc,monospace);font-size:11px"></span>
                 </div>
@@ -357,25 +355,22 @@ Every script gets analyzed for hook type, tone, structure, and topic tags. Your 
         if (!btn || !txt) return;
 
         btn.addEventListener('click', async () => {
-            const raw = (txt.value || '').trim();
-            if (!raw) {
-                statusEl.textContent = 'Paste at least one script first.';
+            // Whole textarea = one script. No splitting. Blank lines,
+            // line breaks, formatting — all stay inside the single row.
+            const scriptText = (txt.value || '').trim();
+            if (!scriptText) {
+                statusEl.textContent = 'Paste a script first.';
                 statusEl.style.color = '#ff8a00';
                 return;
             }
-
-            // Split on triple-hyphen OR double-newline boundaries.
-            const chunks = raw.split(/\n\s*---+\s*\n|\n{2,}/)
-                              .map(s => s.trim())
-                              .filter(s => s.length >= 20);
-            if (chunks.length === 0) {
-                statusEl.textContent = 'Each script needs >=20 chars. Try pasting longer ones.';
+            if (scriptText.length < 20) {
+                statusEl.textContent = 'That looks too short. Paste at least one full line.';
                 statusEl.style.color = '#ff8a00';
                 return;
             }
 
             btn.disabled = true;
-            statusEl.textContent = `Uploading & indexing ${chunks.length} script${chunks.length === 1 ? '' : 's'}…`;
+            statusEl.textContent = 'Indexing & saving…';
             statusEl.style.color = '#00ff88';
 
             try {
@@ -390,7 +385,7 @@ Every script gets analyzed for hook type, tone, structure, and topic tags. Your 
                     },
                     body: JSON.stringify({
                         customer_id: customerId,
-                        scripts: chunks.map(text => ({ text })),
+                        scripts: [{ text: scriptText }],
                     }),
                 });
                 if (!r.ok) {
@@ -398,16 +393,19 @@ Every script gets analyzed for hook type, tone, structure, and topic tags. Your 
                     throw new Error(j.detail || j.error || ('HTTP ' + r.status));
                 }
                 const j = await r.json();
-                const inserted = (j.inserted || []).length;
-                const failed   = (j.failures || []).length;
-                const sigTxt   = j.voice_signature_refreshed ? ' · voice signature refreshed' : '';
-                statusEl.textContent =
-                    `✓ Indexed ${inserted} script${inserted === 1 ? '' : 's'}` +
-                    (failed ? ` · ${failed} failed` : '') + sigTxt;
+                const inserted = (j.inserted || [])[0];
+                if (!inserted) {
+                    throw new Error((j.failures && j.failures[0] && j.failures[0].error) || 'Upload rejected.');
+                }
+                const sigTxt = j.voice_signature_refreshed ? ' · signature refreshed' : '';
+                const feat   = inserted.hook_type
+                    ? ` · hook=${inserted.hook_type}, tone=${inserted.tone}`
+                    : '';
+                statusEl.textContent = `✓ Added${feat}${sigTxt}`;
                 statusEl.style.color = '#00ff88';
                 txt.value = '';
                 await loadWinsCount();
-                toast('Library updated ✓');
+                toast('Script added ✓');
             } catch (e) {
                 statusEl.textContent = '✗ ' + (e.message || 'Upload failed.');
                 statusEl.style.color = '#ff4545';
