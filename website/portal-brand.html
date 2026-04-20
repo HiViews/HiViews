@@ -397,15 +397,36 @@ Click Add to save it. Your voice signature updates automatically." style="min-he
                 if (!inserted) {
                     throw new Error((j.failures && j.failures[0] && j.failures[0].error) || 'Upload rejected.');
                 }
-                const sigTxt = j.voice_signature_refreshed ? ' · signature refreshed' : '';
-                const feat   = inserted.hook_type
-                    ? ` · hook=${inserted.hook_type}, tone=${inserted.tone}`
-                    : '';
-                statusEl.textContent = `✓ Added${feat}${sigTxt}`;
+                // Build status line: prefer the task_code + Scout link as the
+                // primary message, since that's what customers actually want
+                // to click next ("I added a script, where do I work on it?").
+                statusEl.innerHTML = '';
+                const tick = document.createElement('span');
+                tick.textContent = '✓ Added as ';
+                statusEl.appendChild(tick);
+                if (inserted.task_code) {
+                    const codeBadge = document.createElement('strong');
+                    codeBadge.textContent = inserted.task_code;
+                    codeBadge.style.color = '#fff';
+                    statusEl.appendChild(codeBadge);
+                    const sep = document.createElement('span');
+                    sep.textContent = ' — ';
+                    statusEl.appendChild(sep);
+                    const link = document.createElement('a');
+                    link.href = '/portal/scout';
+                    link.textContent = 'work on it in Scout →';
+                    link.style.color = '#00ff88';
+                    link.style.textDecoration = 'underline';
+                    statusEl.appendChild(link);
+                } else {
+                    const fallback = document.createElement('span');
+                    fallback.textContent = 'library (scout task creation pending — refresh to see it)';
+                    statusEl.appendChild(fallback);
+                }
                 statusEl.style.color = '#00ff88';
                 txt.value = '';
                 await loadWinsCount();
-                toast('Script added ✓');
+                toast(inserted.task_code ? `Added ${inserted.task_code} ✓` : 'Script added ✓');
             } catch (e) {
                 statusEl.textContent = '✗ ' + (e.message || 'Upload failed.');
                 statusEl.style.color = '#ff4545';
