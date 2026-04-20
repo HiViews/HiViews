@@ -222,6 +222,18 @@
             </div>
         </div>
 
+        <!-- Voice Library — prominence card. Graduates as the library grows. -->
+        <a href="/portal/brand#wins" id="voiceLibCard" style="display:none;text-decoration:none;color:inherit;margin-bottom:18px;border-radius:14px;padding:18px 20px;border:1px solid transparent;transition:all .15s">
+            <div style="display:flex;align-items:center;gap:12px">
+                <div id="voiceLibIcon" style="font-size:28px;line-height:1">🎯</div>
+                <div style="flex:1;min-width:0">
+                    <div id="voiceLibTitle" style="font-size:14px;font-weight:700;letter-spacing:-0.01em;margin-bottom:4px">Your voice library</div>
+                    <div id="voiceLibBody" style="font-size:13px;line-height:1.55;color:rgba(255,255,255,.7)">Loading…</div>
+                </div>
+                <div id="voiceLibArrow" style="font-size:18px;opacity:0.6;flex-shrink:0">→</div>
+            </div>
+        </a>
+
         <!-- Onboarding Checklist -->
         <div class="section">
             <div class="section-h"><span>✅</span> Getting Started</div>
@@ -242,18 +254,19 @@
                         <a class="action" id="stepBotLink" href="#" target="_blank" aria-disabled="true" style="pointer-events:none;opacity:0.6">Setting up...</a>
                     </div>
                 </div>
-                <div class="check-item" id="step-hashtags">
+                <div class="check-item" id="step-watchlist">
                     <div class="check-box">3</div>
                     <div class="check-body">
-                        <h4>Add your hashtags</h4>
-                        <p>Send your agent 3-5 primary hashtags to scan nightly. Example: "#marketing #contentcreator #agencylife"</p>
+                        <h4>Add creators you admire (watchlist)</h4>
+                        <p>Paste 15-30 Instagram handles of people in your niche whose content works — competitors, creators a step ahead of you, anyone you'd happily steal structure from. Scout pulls their recent reels instead of scraping hashtag noise.</p>
+                        <a class="action" href="/portal/brand#watchlist">Add creators →</a>
                     </div>
                 </div>
                 <div class="check-item" id="step-scout">
                     <div class="check-box">4</div>
                     <div class="check-body">
                         <h4>Wait for your first scout report</h4>
-                        <p>At 2AM tonight, your agent scans your hashtags for viral trends. You'll get a report in Telegram by morning. Review it and tell your agent which trends to turn into videos.</p>
+                        <p>Overnight, scout pulls recent posts from your watchlist. You'll get a report in Telegram by morning. Review it and tell your agent which reels to turn into videos in your voice.</p>
                     </div>
                 </div>
             </div>
@@ -605,12 +618,70 @@ function ago(d) {
     return new Date(d).toLocaleDateString();
 }
 
+async function loadVoiceLibrary() {
+    // Graduating prominence — fewer scripts = louder card.
+    // Target: 15 high-quality scripts makes a robust voice signature.
+    const card   = document.getElementById('voiceLibCard');
+    const icon   = document.getElementById('voiceLibIcon');
+    const title  = document.getElementById('voiceLibTitle');
+    const body   = document.getElementById('voiceLibBody');
+    if (!card || !CID) return;
+
+    let count = 0;
+    try {
+        const { data, error } = await sb
+            .from('customer_scripts')
+            .select('source')
+            .eq('customer_id', CID)
+            .eq('is_active', true);
+        if (!error && Array.isArray(data)) count = data.length;
+    } catch (_) { /* silent — dashboard never breaks on this */ }
+
+    const TARGET = 15;
+    let bg, border, iconStr, titleStr, bodyStr;
+    if (count === 0) {
+        bg       = 'linear-gradient(135deg, rgba(255,138,0,0.12), rgba(255,138,0,0.04))';
+        border   = '1px solid rgba(255,138,0,0.35)';
+        iconStr  = '🎯';
+        titleStr = 'Start here — train HiViews on your voice';
+        bodyStr  = "We can't write videos in your voice without scripts you love. Paste 5-15 into your voice library — past reels that worked, competitor hits, anything you'd happily steal structure from.";
+    } else if (count < 5) {
+        bg       = 'linear-gradient(135deg, rgba(255,138,0,0.08), rgba(255,138,0,0.02))';
+        border   = '1px solid rgba(255,138,0,0.25)';
+        iconStr  = '📝';
+        titleStr = 'Voice library: ' + count + ' of ~' + TARGET;
+        bodyStr  = 'Keep going. Each script you add sharpens how your videos sound. ' + (TARGET - count) + ' more gets your voice signature to full strength.';
+    } else if (count < TARGET) {
+        bg       = 'linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,255,136,0.02))';
+        border   = '1px solid rgba(0,255,136,0.3)';
+        iconStr  = '📝';
+        titleStr = 'Voice library: ' + count + ' scripts · signature active';
+        bodyStr  = "You're in the zone. Add more when you find reels worth mimicking — the library improves every new video you ship.";
+    } else {
+        bg       = 'linear-gradient(135deg, rgba(0,255,136,0.06), rgba(0,255,136,0.02))';
+        border   = '1px solid rgba(0,255,136,0.25)';
+        iconStr  = '✅';
+        titleStr = 'Voice library: ' + count + ' scripts';
+        bodyStr  = 'Robust voice signature. Keep adding when you spot something great.';
+    }
+    card.style.background = bg;
+    card.style.border     = border;
+    icon.textContent      = iconStr;
+    title.textContent     = titleStr;
+    body.textContent      = bodyStr;
+    card.style.display    = 'block';
+}
+
+
 function showCustomer(c) {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('dashContent').style.display = 'block';
 
     document.getElementById('welcomeMsg').textContent = 'Welcome, ' + (c.name || CID) + '!';
     document.getElementById('cidText').textContent = CID;
+
+    // Fire in background — card stays hidden until count is known.
+    loadVoiceLibrary();
 
     const t = TIERS[c.plan] || TIERS.launch;
     const b = document.getElementById('tierBadge');

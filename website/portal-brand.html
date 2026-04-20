@@ -164,6 +164,16 @@
         return `<div class="tag-list">${tags}</div>`;
     }
 
+    function creatorList(handles) {
+        if (!handles || handles.length === 0) {
+            return `<div class="tag-list empty"></div>`;
+        }
+        const items = handles.map(h =>
+            `<span class="tag">@${h}<button type="button" data-creator-remove="${h}" aria-label="Remove @${h}">×</button></span>`
+        ).join('');
+        return `<div class="tag-list">${items}</div>`;
+    }
+
     function render() {
         if (!draft) {
             main.innerHTML = '<div class="loading"><div class="spin"></div></div>';
@@ -211,7 +221,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" id="wins">
                 <h2><span class="dot"></span>Your wins library
                     <span style="margin-left:8px;font-family:var(--fc,monospace);font-size:10px;color:var(--t3,#888);font-weight:400">
                         P1 · highest intent
@@ -237,15 +247,40 @@ Click Add to save it. Your voice signature updates automatically." style="min-he
                 </div>
             </div>
 
+            <div class="card" id="watchlist">
+                <h2><span class="dot"></span>Creators you admire
+                    <span style="margin-left:8px;font-family:var(--fc,monospace);font-size:10px;color:var(--t3,#888);font-weight:400">
+                        P3 · where scout looks
+                    </span>
+                </h2>
+                <div class="hint" style="margin-bottom:10px">
+                    Paste Instagram handles of creators whose content you respect — people in your niche, competitors, or creators a step ahead of you.
+                    <strong style="color:#fff">Scout will pull their recent reels instead of scraping hashtags.</strong>
+                    Hashtags are noise; a curated watchlist is signal. 15-30 handles is ideal.
+                </div>
+                ${creatorList(draft.creator_watchlist)}
+                <div class="tag-input-row">
+                    <input type="text" id="creatorDraft" placeholder="garyvee (no @ needed)" autocomplete="off">
+                    <button type="button" class="tag-add" id="creatorAddBtn">Add</button>
+                </div>
+                <div class="hint" style="margin-top:10px;font-size:11px;color:var(--t3,#888)">
+                    When empty, scout falls back to hashtags below. Once you have 5+ creators here, hashtags go silent and the signal-to-noise jumps materially.
+                </div>
+            </div>
+
             <div class="card">
-                <h2><span class="dot"></span>Scout Targets</h2>
-                <label>Hashtags your scout watches nightly</label>
+                <h2><span class="dot"></span>Hashtag fallback
+                    <span style="margin-left:8px;font-family:var(--fc,monospace);font-size:10px;color:var(--t3,#888);font-weight:400">
+                        P4 · only when watchlist is empty
+                    </span>
+                </h2>
+                <label>Hashtags scout falls back to if your watchlist is empty</label>
                 ${tagList(draft.hashtags)}
                 <div class="tag-input-row">
                     <input type="text" id="tagDraft" placeholder="marketing (no # needed)" autocomplete="off">
                     <button type="button" class="tag-add" id="tagAddBtn">Add</button>
                 </div>
-                <div class="hint">3-5 is ideal. The scout scans these every night for viral trends, transcribes the top ones, and queues scripts for you.</div>
+                <div class="hint">Hashtags surface a lot of noise. They're the fallback when your creator watchlist is empty — not the primary source. Fill the watchlist and these go silent.</div>
             </div>
 
             <p class="hint" style="text-align:center;margin-top:20px">Changes stay here until you hit <strong style="color:#fff">Save</strong> in the top right. Save propagates to your AI agent within seconds.</p>
@@ -315,6 +350,51 @@ Click Add to save it. Your voice signature updates automatically." style="min-he
             btn.addEventListener('click', () => {
                 const name = btn.dataset.remove;
                 draft.hashtags = (draft.hashtags || []).filter(t => t !== name);
+                markDirty();
+                render();
+            });
+        });
+
+        // ── Creator watchlist add/remove ──
+        const creatorDraftEl = document.getElementById('creatorDraft');
+        const creatorAddBtn  = document.getElementById('creatorAddBtn');
+        function addCreator() {
+            if (!creatorDraftEl) return;
+            // Normalize: strip @, URL cruft, whitespace. Keep legal IG chars only.
+            let raw = (creatorDraftEl.value || '').trim();
+            // Accept pastes like "https://instagram.com/garyvee/" or "@garyvee"
+            const urlMatch = raw.match(/instagram\.com\/([a-zA-Z0-9_.]+)/i);
+            if (urlMatch) raw = urlMatch[1];
+            raw = raw.replace(/^@+/, '').replace(/\/.*$/, '').trim();
+            raw = raw.replace(/[^a-zA-Z0-9_.]/g, '');
+            if (!raw) return;
+            const lower = raw.toLowerCase();
+            const list = Array.isArray(draft.creator_watchlist) ? [...draft.creator_watchlist] : [];
+            if (list.some(h => h.toLowerCase() === lower)) {
+                creatorDraftEl.value = '';
+                return;
+            }
+            if (list.length >= 100) {
+                return;  // sanity cap per migration 011 comment
+            }
+            list.push(raw);
+            draft.creator_watchlist = list;
+            creatorDraftEl.value = '';
+            markDirty();
+            render();
+            document.getElementById('creatorDraft')?.focus();
+        }
+        if (creatorAddBtn) {
+            creatorAddBtn.addEventListener('click', addCreator);
+            creatorDraftEl.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); addCreator(); }
+            });
+        }
+
+        main.querySelectorAll('[data-creator-remove]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const handle = btn.dataset.creatorRemove;
+                draft.creator_watchlist = (draft.creator_watchlist || []).filter(h => h !== handle);
                 markDirty();
                 render();
             });
