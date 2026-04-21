@@ -40,7 +40,7 @@ const HEAD_INJECT = [
   '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
   '<meta name="hv-logo-wordmark" content="/brand/wordmark-dark.svg">',
   '<script src="/_hv/logo.js" defer></script>',
-  '<style>[data-hv-logo="wordmark"]{display:inline-block;transform:translateY(-4px);vertical-align:middle}</style>',
+  '<style>[data-hv-logo="wordmark"]{display:inline-block;transform:translateY(-4px) scale(0.9);transform-origin:left center;vertical-align:middle}</style>',
 ].join('\n');
 
 // ── Pages excluded from chat widget (favicon + GTM still inject) ──
