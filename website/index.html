@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiViews — 3 Free Viral Scripts for Your Instagram. In 30 Seconds.</title>
-    <meta name="description" content="Enter your Instagram handle. Get 3 viral scripts written for your niche in 30 seconds — free. See how HiViews turns trends into branded videos while you sleep.">
+    <meta name="description" content="Enter your Instagram handle. Get 3 viral scripts written for your niche in 30 seconds — free. HiViews creates branded AI avatar videos and publishes them to Instagram while you sleep.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hiviews.ai">
     <meta property="og:title" content="HiViews — 3 Free Viral Scripts for Your Instagram">
@@ -19,6 +19,7 @@
             --t1:#fff;--t2:#c0c0c0;--t3:#888;
             --green:#00ff88;--green-d:rgba(0,255,136,.1);--green-g:rgba(0,255,136,.25);--green-b:rgba(0,255,136,.06);
             --border:#1a1a1a;--border-h:#2a2a2a;
+            --red:#ff4444;
             --f:'Inter',sans-serif;--fc:'Fira Code',monospace;--fm:'Space Mono',monospace;
         }
         html{font-size:16px;-webkit-font-smoothing:antialiased}
@@ -32,7 +33,7 @@
         /* Nav */
         .nav{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)}
         .nav-l{display:flex;align-items:center;gap:12px}
-        .nav h1{font-size:26px;font-weight:900;letter-spacing:-.5px}
+        .nav-l a{text-decoration:none}
         .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border:1px solid var(--border);border-radius:100px;font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--t2)}
         .badge .dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 6px var(--green-g)}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -43,7 +44,7 @@
         /* Hero */
         .hero{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 180px);padding:48px 24px;text-align:center}
         .hero-tag{font-size:14px;font-weight:500;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .3s forwards}
-        .hero h2{font-size:clamp(36px,7vw,60px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:20px;max-width:700px;opacity:0;animation:fadeUp .6s ease .5s forwards}
+        .hero h2{font-size:clamp(36px,7vw,56px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:20px;max-width:740px;opacity:0;animation:fadeUp .6s ease .5s forwards}
         .hero h2 em{font-style:normal;background:linear-gradient(135deg,var(--green),#00cc6a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .hero-sub{font-size:18px;color:var(--t2);max-width:480px;line-height:1.65;margin-bottom:44px;opacity:0;animation:fadeUp .6s ease .7s forwards}
         .hero-sub strong{color:var(--t1)}
@@ -92,7 +93,7 @@
         .video-modal-close:hover{background:rgba(0,0,0,.9)}
         .video-modal-body{width:100%;aspect-ratio:9/16;display:flex;align-items:center;justify-content:center;color:var(--t3);font-family:var(--fc);font-size:12px}
 
-        /* Mission interstitial */
+        /* Mission */
         .mission{position:relative;z-index:1;padding:56px 24px;border-top:1px solid var(--border);text-align:center}
         .mission-inner{max-width:620px;margin:0 auto}
         .mission h2{font-size:clamp(24px,5vw,36px);font-weight:900;letter-spacing:-1px;margin-bottom:14px;line-height:1.15}
@@ -112,37 +113,31 @@
         .pipe-desc{font-size:12px;color:var(--t3);line-height:1.5;text-align:center}
         .pipe-arrow{color:var(--t3);font-family:var(--fc);font-size:18px;padding:12px 4px 0;align-self:flex-start;opacity:.3}
 
-        /* Dedicated machine */
-        .machine{position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--border)}
-        .machine-inner{max-width:700px;margin:0 auto}
-        .machine-label{font-size:12px;font-weight:600;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px;text-align:center}
-        .machine-title{font-size:clamp(24px,4vw,32px);font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:10px}
-        .machine-sub{font-size:16px;color:var(--t2);text-align:center;max-width:540px;margin:0 auto 36px;line-height:1.65}
-        .machine-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .machine-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 18px;transition:border-color .3s}
-        .machine-card:hover{border-color:var(--green)}
-        .machine-card-idx{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px}
-        .machine-card-title{font-size:15px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px;line-height:1.25}
-        .machine-card-desc{font-size:12px;color:var(--t3);line-height:1.55}
-        .machine-callout{margin-top:28px;text-align:center;padding:20px;border:1px solid var(--border);border-radius:10px;background:var(--green-b)}
-        .machine-callout p{font-size:15px;color:var(--t2);line-height:1.6}
-        .machine-callout strong{color:var(--t1)}
-        .machine-callout .price{font-family:var(--fm);font-size:20px;font-weight:800;color:var(--green);margin-top:8px}
+        /* What you're replacing */
+        .replacing{position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--border);text-align:center}
+        .replacing-inner{max-width:640px;margin:0 auto}
+        .replacing-label{font-size:12px;font-weight:600;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px}
+        .replacing h2{font-size:clamp(24px,4vw,32px);font-weight:900;letter-spacing:-1px;margin-bottom:32px}
+        .replacing-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border)}
+        .replacing-role{font-size:15px;font-weight:600;color:var(--t1)}
+        .replacing-cost{font-size:14px;color:var(--red);text-decoration:line-through;opacity:.7;font-family:var(--fc)}
+        .replacing-total{margin-top:24px;padding:20px;border:1px solid var(--border);border-radius:10px;background:var(--green-b)}
+        .replacing-total p{font-size:15px;color:var(--t2);line-height:1.6}
+        .replacing-total strong{color:var(--t1)}
+        .replacing-total .price{font-family:var(--fm);font-size:20px;font-weight:800;color:var(--green);margin-top:8px}
 
-        /* Squad — compact list */
-        .squad{position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--border)}
-        .squad-inner{max-width:700px;margin:0 auto}
-        .squad-label{font-size:12px;font-weight:600;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px;text-align:center}
-        .squad-title{font-size:clamp(24px,4vw,32px);font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:8px}
-        .squad-sub{font-size:15px;color:var(--t2);text-align:center;max-width:480px;margin:0 auto 36px;line-height:1.6}
-        .squad-list{display:grid;grid-template-columns:1fr 1fr;gap:0}
-        .agent-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .2s}
-        .agent-row:hover{background:var(--bg2)}
-        .agent-row:nth-last-child(-n+2){border-bottom:none}
-        .agent-idx{font-family:var(--fc);font-size:11px;font-weight:700;color:var(--green);width:22px;flex-shrink:0;text-align:right}
-        .agent-info{flex:1;min-width:0}
-        .agent-name{font-size:13px;font-weight:700;letter-spacing:-.2px}
-        .agent-role{font-size:11px;color:var(--t3);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        /* Outcomes grid */
+        .outcomes{position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--border)}
+        .outcomes-inner{max-width:700px;margin:0 auto}
+        .outcomes-label{font-size:12px;font-weight:600;color:var(--green);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px;text-align:center}
+        .outcomes-title{font-size:clamp(24px,4vw,32px);font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:8px}
+        .outcomes-sub{font-size:15px;color:var(--t2);text-align:center;max-width:480px;margin:0 auto 36px;line-height:1.6}
+        .outcomes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .outcome-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px 20px;transition:border-color .3s}
+        .outcome-card:hover{border-color:var(--green)}
+        .outcome-icon{font-size:28px;margin-bottom:12px}
+        .outcome-card h3{font-size:15px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+        .outcome-card p{font-size:13px;color:var(--t3);line-height:1.55}
 
         /* Final CTA */
         .cta-section{position:relative;z-index:1;padding:64px 24px;border-top:1px solid var(--border);text-align:center}
@@ -183,16 +178,14 @@
             .proof{gap:20px}.proof-n{font-size:18px}
             .pipeline{flex-direction:column;align-items:center;gap:20px}
             .pipe-arrow{display:none}
-            .squad-list{grid-template-columns:1fr}
-            .agent-row:nth-last-child(2){border-bottom:1px solid var(--border)}
-            .agent-role{white-space:normal}
+            .outcomes-grid{grid-template-columns:1fr}
+            .replacing-row{flex-direction:column;gap:2px;align-items:flex-start}
             .nav-r .link{display:none}
             .reels{padding:36px 12px}
             .reels-grid{grid-template-columns:repeat(3,1fr);gap:6px}
             .reel-thumb{border-radius:6px}
             .reel-play-icon{width:28px;height:28px}
             .reel-play-icon svg{width:11px;height:11px}
-            .machine-grid{grid-template-columns:1fr}
         }
     </style>
 </head>
@@ -200,28 +193,28 @@
 
 <!-- Terminal -->
 <div class="term" id="term">
-    <div class="ln">Scanning #contentmarketing for viral reels...</div>
+    <div class="ln">Scanning #businesscoaching for viral reels...</div>
     <div class="ln">Found 11 reels · filtering original audio...</div>
     <div class="ln">Transcribing A7K2 via Whisper... viral score: 91</div>
-    <div class="ln on">Rewriting script for Nextgen brand voice...</div>
+    <div class="ln on">Rewriting script in client brand voice...</div>
 </div>
 
 <!-- Nav -->
 <nav class="nav">
     <div class="nav-l">
-        <h1>HiViews</h1>
+        <a href="https://www.hiviews.ai"><span data-hv-logo="wordmark" data-hv-width="140" data-hv-height="46"></span></a>
         <span class="badge"><span class="dot"></span>LIVE</span>
     </div>
     <div class="nav-r">
-        <a class="link" href="/live">Watch it live</a>
+        <a class="link" href="https://www.hiviews.ai/live">Watch it live</a>
         <button class="btn-signin" onclick="openAuth()">Get started for free</button>
     </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
-    <div class="hero-tag">10-Agent Viral Video Engine</div>
-    <h2>Finds daily trends. Creates viral videos. <em>While you sleep.</em></h2>
+    <div class="hero-tag">Your AI CMO — works while you sleep</div>
+    <h2>20 branded videos on your Instagram this month. <em>You didn't make any of them.</em></h2>
     <p class="hero-sub">Enter your Instagram handle. Get <strong>3 free viral scripts</strong> written for your niche — in 30 seconds.</p>
 
     <div class="search-wrap">
@@ -232,14 +225,14 @@
             </div>
             <button class="go" onclick="handleAnalyze()">Free Viral Scripts →</button>
         </div>
-        <p class="search-note">No login required · Takes 30 seconds · <a href="/live">or watch it work live →</a></p>
+        <p class="search-note">No login required · Takes 30 seconds · <a href="https://www.hiviews.ai/live">or watch it work live →</a></p>
     </div>
 
     <div class="proof">
-        <div class="proof-item"><div class="proof-n">10</div><div class="proof-l">AI Agents</div></div>
-        <div class="proof-item"><div class="proof-n">30+</div><div class="proof-l">Videos / Month</div></div>
-        <div class="proof-item"><div class="proof-n">~$16</div><div class="proof-l">Per Video</div></div>
-        <div class="proof-item"><div class="proof-n">0</div><div class="proof-l">Cameras</div></div>
+        <div class="proof-item"><div class="proof-n">20–50</div><div class="proof-l">Videos / Month</div></div>
+        <div class="proof-item"><div class="proof-n">Zero</div><div class="proof-l">Camera Time</div></div>
+        <div class="proof-item"><div class="proof-n">48hrs</div><div class="proof-l">First Video</div></div>
+        <div class="proof-item"><div class="proof-n">Phone</div><div class="proof-l">Approve Anywhere</div></div>
     </div>
 </section>
 
@@ -247,7 +240,7 @@
 <section class="reels">
     <div class="reels-inner">
         <div class="reels-label">Recently Rendered</div>
-        <div class="reels-title">Viral AI Twin videos created by our clients.</div>
+        <div class="reels-title">Branded AI videos created for our clients.</div>
         <div class="reels-grid">
             <div class="reel-thumb" onclick="openVideo(1)"><img src="images/1.jpeg" alt="Reel"><div class="reel-play"><div class="reel-play-icon"><svg viewBox="0 0 24 24" fill="#000"><polygon points="8,5 20,12 8,19"/></svg></div></div></div>
             <div class="reel-thumb" onclick="openVideo(2)"><img src="images/2.jpeg" alt="Reel"><div class="reel-play"><div class="reel-play-icon"><svg viewBox="0 0 24 24" fill="#000"><polygon points="8,5 20,12 8,19"/></svg></div></div></div>
@@ -259,82 +252,95 @@
     </div>
 </section>
 
-<!-- Mission — punchy, right after reels -->
+<!-- Mission -->
 <section class="mission">
     <div class="mission-inner">
-        <h2>The only job of a CMO is to <em>go viral.</em> That's it.</h2>
-        <p>Not to attend meetings. Not to design campaigns that might work. The mission is to go viral — every single day. HiViews is 10 AI agents built to do exactly that.</p>
+        <h2>You know you should be posting. <em>You just don't have time.</em></h2>
+        <p>You're busy running your business. Content falls to the bottom of the list. Meanwhile, the coaches and creators who post daily are getting the clients you're not. HiViews fixes that — 20 finished videos on your Instagram every month, without you touching a camera.</p>
     </div>
 </section>
 
-<!-- Pipeline — numbered, no emojis -->
+<!-- Pipeline -->
 <section class="how">
     <div class="how-inner">
-        <div class="how-label">The Pipeline</div>
-        <h2>From viral trend to published reel — automatically</h2>
+        <div class="how-label">How It Works</div>
+        <h2>From viral trend to your Instagram — automatically</h2>
         <div class="pipeline">
             <div class="pipe-step">
                 <div class="pipe-num">01</div>
                 <div class="pipe-name">Scout</div>
-                <div class="pipe-desc">Scans Instagram nightly for viral talking-head reels in your niche</div>
+                <div class="pipe-desc">Every night, finds what's going viral in your niche</div>
             </div>
             <div class="pipe-arrow">→</div>
             <div class="pipe-step">
                 <div class="pipe-num">02</div>
                 <div class="pipe-name">Rewrite</div>
-                <div class="pipe-desc">Rewrites proven scripts for your brand voice, audience, and CTA</div>
+                <div class="pipe-desc">Rewrites proven hooks in your voice — not a template</div>
             </div>
             <div class="pipe-arrow">→</div>
             <div class="pipe-step">
                 <div class="pipe-num">03</div>
                 <div class="pipe-name">Create</div>
-                <div class="pipe-desc">Generates avatar videos with branded overlays and captions</div>
+                <div class="pipe-desc">Your AI twin delivers the script on video — zero cameras</div>
             </div>
             <div class="pipe-arrow">→</div>
             <div class="pipe-step">
                 <div class="pipe-num">04</div>
                 <div class="pipe-name">Publish</div>
-                <div class="pipe-desc">Publishes approved reels directly to your Instagram</div>
+                <div class="pipe-desc">You approve with one message. Published to Instagram.</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Your Dedicated Machine -->
-<section class="machine">
-    <div class="machine-inner">
-        <div class="machine-label">Your Infrastructure</div>
-        <h2 class="machine-title">Your own dedicated AI team.<br>On your own server.</h2>
-        <p class="machine-sub">This isn't shared software. When you sign up, we deploy a dedicated OpenClaw instance on your own DigitalOcean Droplet — a private VPS running 10 agents exclusively for your brand. We set it up, we maintain it. You just talk to the Commander in Telegram. He runs your team.</p>
-        <div class="machine-callout">
-            <p>Freelancer: <strong>$150–$500/video</strong> · Agency: <strong>$3K–$10K/mo</strong></p>
-            <div class="price">Your dedicated HiViews OpenClaw: $499/mo · ~$16/video</div>
+<!-- What you're replacing -->
+<section class="replacing">
+    <div class="replacing-inner">
+        <div class="replacing-label">What You're Replacing</div>
+        <h2>Everything a content team does. Without the team.</h2>
+        <div class="replacing-row"><span class="replacing-role">Content strategist</span><span class="replacing-cost">$4,000–$8,000/mo</span></div>
+        <div class="replacing-row"><span class="replacing-role">Scriptwriter</span><span class="replacing-cost">$2,000–$4,000/mo</span></div>
+        <div class="replacing-row"><span class="replacing-role">Video producer + editor</span><span class="replacing-cost">$3,000–$5,000/mo</span></div>
+        <div class="replacing-row"><span class="replacing-role">Social media manager</span><span class="replacing-cost">$2,000–$4,000/mo</span></div>
+        <div class="replacing-total">
+            <p>HiViews does <strong>all of it</strong> — automatically, every single day.</p>
+            <div class="price">Starting at $297/mo</div>
         </div>
     </div>
 </section>
 
-<!-- Squad — compact numbered list, no emojis -->
-<section class="squad">
-    <div class="squad-inner">
-        <div class="squad-label">The Team</div>
-        <h2 class="squad-title">10 Agents. Always On.</h2>
-        <p class="squad-sub">Each agent has one job. Together they run a content operation that never sleeps.</p>
-        <div class="squad-list">
-            <div class="agent-row"><span class="agent-idx">01</span><div class="agent-info"><div class="agent-name">Commander</div><div class="agent-role">Orchestrates all agents, routes work, escalates decisions</div></div></div>
-            <div class="agent-row"><span class="agent-idx">02</span><div class="agent-info"><div class="agent-name">Scout</div><div class="agent-role">Scans thousands of signals nightly, finds viral opportunities</div></div></div>
-            <div class="agent-row"><span class="agent-idx">03</span><div class="agent-info"><div class="agent-name">Strategist</div><div class="agent-role">Synthesizes findings into actionable morning briefings</div></div></div>
-            <div class="agent-row"><span class="agent-idx">04</span><div class="agent-info"><div class="agent-name">Writer</div><div class="agent-role">Rewrites scripts in your brand voice with your CTA</div></div></div>
-            <div class="agent-row"><span class="agent-idx">05</span><div class="agent-info"><div class="agent-name">Director</div><div class="agent-role">Manages avatar selection and video production queue</div></div></div>
-            <div class="agent-row"><span class="agent-idx">06</span><div class="agent-info"><div class="agent-name">Captioner</div><div class="agent-role">Generates word-level precision-timed captions</div></div></div>
-            <div class="agent-row"><span class="agent-idx">07</span><div class="agent-info"><div class="agent-name">Editor</div><div class="agent-role">Composites overlays, captions, CTAs — renders final video</div></div></div>
-            <div class="agent-row"><span class="agent-idx">08</span><div class="agent-info"><div class="agent-name">Publisher</div><div class="agent-role">Schedules and publishes content to your platforms</div></div></div>
-            <div class="agent-row"><span class="agent-idx">09</span><div class="agent-info"><div class="agent-name">Sentinel</div><div class="agent-role">Tracks views, engagement, reach — feeds insights back</div></div></div>
-            <div class="agent-row"><span class="agent-idx">10</span><div class="agent-info"><div class="agent-name">Ops</div><div class="agent-role">Monitors pipeline health, retries failures, runs 24/7</div></div></div>
+<!-- What you get -->
+<section class="outcomes">
+    <div class="outcomes-inner">
+        <div class="outcomes-label">What Changes For You</div>
+        <h2 class="outcomes-title">You run your business. We run your content.</h2>
+        <p class="outcomes-sub">Everything happens automatically. You just approve from your phone.</p>
+        <div class="outcomes-grid">
+            <div class="outcome-card">
+                <div class="outcome-icon">🔍</div>
+                <h3>Fresh scripts every morning</h3>
+                <p>Your AI CMO scans your niche overnight and delivers viral script ideas before you've had coffee.</p>
+            </div>
+            <div class="outcome-card">
+                <div class="outcome-icon">🎤</div>
+                <h3>Your voice, not a template</h3>
+                <p>Every script is written in how you actually talk. Your audience can't tell the difference.</p>
+            </div>
+            <div class="outcome-card">
+                <div class="outcome-icon">🎬</div>
+                <h3>Videos without cameras</h3>
+                <p>Your AI twin looks and sounds like you on video. 1080p, branded, ready to post. Zero filming.</p>
+            </div>
+            <div class="outcome-card">
+                <div class="outcome-icon">📱</div>
+                <h3>Approve from your phone</h3>
+                <p>Say "promote" and the video is scripted, produced, and published. Two words. Done.</p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Final CTA — mirrors hero with second input -->
+<!-- Final CTA -->
 <section class="cta-section">
     <div class="cta-inner">
         <h2>Your competitors are posting right now.</h2>
@@ -356,9 +362,10 @@
 <footer>
     <div class="foot-inner">
         <div class="foot-links">
-            <a href="/live">Live Demo</a>
-            <a href="/terms">Terms</a>
-            <a href="/privacy">Privacy</a>
+            <a href="https://www.hiviews.ai/pricing">Pricing</a>
+            <a href="https://www.hiviews.ai/live">Live Demo</a>
+            <a href="https://www.hiviews.ai/terms">Terms</a>
+            <a href="https://www.hiviews.ai/privacy">Privacy</a>
         </div>
         <span class="foot-copy">© 2026 HiViews · New Empire AI</span>
     </div>
@@ -372,7 +379,7 @@
         <p class="modal-sub">Enter your email to create your account.</p>
         <input type="email" placeholder="your@email.com" id="authEmail">
         <button class="modal-go" onclick="handleAuth()">Continue →</button>
-        <p class="modal-note">By continuing, you agree to our <a href="/terms" style="color:#666">Terms</a> and <a href="/privacy" style="color:#666">Privacy Policy</a>.</p>
+        <p class="modal-note">By continuing, you agree to our <a href="https://www.hiviews.ai/terms" style="color:#666">Terms</a> and <a href="https://www.hiviews.ai/privacy" style="color:#666">Privacy Policy</a>.</p>
     </div>
 </div>
 
@@ -394,17 +401,13 @@
     <div class="video-modal">
         <button class="video-modal-close" onclick="closeVideo()">×</button>
         <div class="video-modal-body" id="videoPlayer">
-            <!-- Player embed code goes here -->
             <span>Player code placeholder</span>
         </div>
     </div>
 </div>
 
 <script>
-// Supabase magic-link hash catcher — if a signed-in user lands on the homepage
-// (because Supabase's allowlist fallback dumped them here instead of
-// /portal/dashboard), forward them to the dashboard with the auth hash intact
-// so the portal picks up the session seamlessly.
+// Supabase magic-link hash catcher
 (function(){
     var h = window.location.hash || '';
     if (h.indexOf('access_token=') !== -1 && h.indexOf('type=magiclink') !== -1) {
@@ -413,7 +416,7 @@
 })();
 
 // Terminal cycling
-const tl=['Scanning #contentmarketing for viral reels...','Found 11 reels · filtering original audio...','Transcribing A7K2 via Whisper... viral score: 91','Writing to ClickUp → Viral Scripts → analyzed','Rewriting A7K2 for Nextgen brand voice...','Script rewrite complete → review','Customer approved → avatar generating...','Avatar engine processing (2m 14s)','Avatar engine complete ✓','Compositing 1080x1920 · captions + overlays','A7K2-final.mp4 → approved','Published ✓ → Instagram Reels','Scanning #agencylife for viral reels...','Found 6 talking-head reels (original audio)','B3M9 → Score: 74 → captured','Overnight scout report → delivered'];
+const tl=['Scanning #businesscoaching for viral reels...','Found 11 reels · filtering original audio...','Transcribing A7K2 via Whisper... viral score: 91','Saving A7K2 to scout inbox → scored','Rewriting A7K2 in client brand voice...','Script rewrite complete → ready to promote','Client approved → avatar rendering...','Avatar engine processing (2m 14s)','Avatar engine complete ✓','Compositing 1080x1920 · captions + overlays','A7K2-final.mp4 → approved','Published ✓ → Instagram Reels','Scanning #fitnesscoaching for viral reels...','Found 6 talking-head reels (original audio)','B3M9 → Score: 74 → captured','Overnight scout report → delivered to inbox'];
 const term=document.getElementById('term');let ti=0;
 setInterval(()=>{const ls=term.querySelectorAll('.ln');ls.forEach(l=>l.classList.remove('on'));if(ls.length>=4)ls[0].remove();const n=document.createElement('div');n.className='ln on';n.textContent=tl[ti%tl.length];term.appendChild(n);ti++},3200);
 
@@ -486,8 +489,6 @@ function submitCapture(){
 
 // Video modal
 function openVideo(n) {
-    // TODO: Replace placeholder with your player embed code
-    // The 'n' parameter is the reel number (1-6) so you can load different videos
     const player = document.getElementById('videoPlayer');
     player.innerHTML = '<span>Reel ' + n + ' — paste player embed code here</span>';
     document.getElementById('videoModal').classList.add('open');
