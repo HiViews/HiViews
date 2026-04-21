@@ -27,9 +27,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->`;
 
 // ── Global <head> injections (favicon, meta) — inserted before </head> ──
+// Logo injector resolves `<span data-hv-logo="wordmark">` placeholders at
+// DOMContentLoaded by reading hv-logo-* meta tags.
+// See HiViews-Engine/docs/LOGO_TREATMENT.md for the full contract.
 const HEAD_INJECT = [
   '<link rel="icon" href="/favicon.ico" type="image/x-icon">',
   '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
+  '<meta name="hv-logo-wordmark" content="/brand/wordmark-dark.svg">',
+  '<script src="/_hv/logo.js" defer></script>',
 ].join('\n');
 
 // ── Pages excluded from chat widget (favicon + GTM still inject) ──
