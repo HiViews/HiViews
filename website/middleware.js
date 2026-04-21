@@ -30,11 +30,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 // Logo injector resolves `<span data-hv-logo="wordmark">` placeholders at
 // DOMContentLoaded by reading hv-logo-* meta tags.
 // See HiViews-Engine/docs/LOGO_TREATMENT.md for the full contract.
+// Optical-centering nudge: the wordmark's geometric viewBox extends above
+// the dumbbell (light visual weight) and below the "Views" letterforms
+// (dense visual weight), so the geometric center sits ~4px below the
+// optical center. One-line CSS correction applied globally so any nav
+// bar using the placeholder looks balanced without per-page tweaks.
 const HEAD_INJECT = [
   '<link rel="icon" href="/favicon.ico" type="image/x-icon">',
   '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
   '<meta name="hv-logo-wordmark" content="/brand/wordmark-dark.svg">',
   '<script src="/_hv/logo.js" defer></script>',
+  '<style>[data-hv-logo="wordmark"]{display:inline-block;transform:translateY(-4px);vertical-align:middle}</style>',
 ].join('\n');
 
 // ── Pages excluded from chat widget (favicon + GTM still inject) ──
